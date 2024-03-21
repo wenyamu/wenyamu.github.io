@@ -1,0 +1,519 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="format-detection" content="telephone=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><link rel="icon" href="/images/icons/favicon-16x16.png?v=2.8.0" type="image/png" sizes="16x16"><link rel="icon" href="/images/icons/favicon-32x32.png?v=2.8.0" type="image/png" sizes="32x32"><meta name="description" content="使用 flask 搭建 python web 应用 Flask是一个使用 Python 编写的轻量级 Web 应用框架   gunicorn 作为 flask 的 http 服务器 gunicorn 类似于 nginx, 它是专用于 python 的 http 服务器   supervisor 管理进程 supervisor 把进程作为其子进程进行管理，还可以管理远程服务器上的进程https:&#x2F;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一文搞懂 flask gunicorn supervisor 的作用和关系">
+<meta property="og:url" content="http://8.210.236.200:4000/p/15af28d0.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="使用 flask 搭建 python web 应用 Flask是一个使用 Python 编写的轻量级 Web 应用框架   gunicorn 作为 flask 的 http 服务器 gunicorn 类似于 nginx, 它是专用于 python 的 http 服务器   supervisor 管理进程 supervisor 把进程作为其子进程进行管理，还可以管理远程服务器上的进程https:&#x2F;">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-01-09T03:56:00.000Z">
+<meta property="article:modified_time" content="2024-03-21T18:18:49.263Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="flask">
+<meta name="twitter:card" content="summary"><title>一文搞懂 flask gunicorn supervisor 的作用和关系 | Hexo</title><link ref="canonical" href="http://8.210.236.200:4000/p/15af28d0.html"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.12.1/css/all.min.css" type="text/css"><link rel="stylesheet" href="/css/index.css?v=2.8.0"><link rel="stylesheet" href="css/custom.css"><script>var Stun = window.Stun || {};
+var CONFIG = {
+  root: '/',
+  algolia: undefined,
+  assistSearch: undefined,
+  fontIcon: {"prompt":{"success":"fas fa-check-circle","info":"fas fa-arrow-circle-right","warning":"fas fa-exclamation-circle","error":"fas fa-times-circle"},"copyBtn":"fas fa-copy"},
+  sidebar: undefined,
+  header: undefined,
+  postWidget: {"endText":true},
+  nightMode: {"enable":true},
+  back2top: {"enable":true},
+  codeblock: {"style":"default","highlight":"light","wordWrap":false},
+  reward: false,
+  fancybox: false,
+  zoomImage: {"gapAside":"20px"},
+  galleryWaterfall: undefined,
+  lazyload: false,
+  pjax: undefined,
+  externalLink: {"icon":{"enable":true,"name":"fas fa-external-link-alt"}},
+  shortcuts: undefined,
+  prompt: {"copyButton":"复制","copySuccess":"复制成功","copyError":"复制失败"},
+  sourcePath: {"js":"js","css":"css","images":"images"},
+};
+
+window.CONFIG = CONFIG;</script><meta name="generator" content="Hexo 7.1.1"></head><body><div class="container" id="container"><header class="header" id="header"><div class="header-inner header-inner--height header-inner--bgcolor"><nav class="header-nav header-nav--sticky"><div class="header-nav-inner"><div class="header-nav-menubtn"><i class="fas fa-bars"></i></div><div class="header-nav-menu"><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/"><span class="header-nav-menu-item__icon"><i class="fas fa-home"></i></span><span class="header-nav-menu-item__text">首页</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="javascript:;" onclick="return false;"><span class="header-nav-menu-item__icon"><i class="fas fa-file-alt"></i></span><span class="header-nav-menu-item__text">文章</span></a><div class="header-nav-submenu"><div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link" href="/categories/"><span class="header-nav-submenu-item__text">分类</span></a></div><div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link" href="/tags/"><span class="header-nav-submenu-item__text">标签</span></a></div><div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link" href="/archives/"><span class="header-nav-submenu-item__text">归档</span></a></div></div></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="javascript:;" onclick="return false;"><span class="header-nav-menu-item__icon"><i class="fas fa-code"></i></span><span class="header-nav-menu-item__text">语言</span></a><div class="header-nav-submenu"><div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link" href="/categories/python/"><span class="header-nav-submenu-item__text">python</span></a></div><div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link" href="/categories/node/"><span class="header-nav-submenu-item__text">node</span></a></div><div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link" href="/categories/php/"><span class="header-nav-submenu-item__text">php</span></a></div></div></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="javascript:;" onclick="return false;"><span class="header-nav-menu-item__icon"><i class="fas fa-tv"></i></span><span class="header-nav-menu-item__text">前端</span></a><div class="header-nav-submenu"><div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link" href="/categories/html/"><span class="header-nav-submenu-item__text">html</span></a></div><div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link" href="/categories/js/"><span class="header-nav-submenu-item__text">js</span></a></div></div></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="javascript:;" onclick="return false;"><span class="header-nav-menu-item__icon"><i class="fas fa-server"></i></span><span class="header-nav-menu-item__text">后端</span></a><div class="header-nav-submenu"><div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link" href="/categories/linux/"><span class="header-nav-submenu-item__text">linux</span></a></div><div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link" href="/categories/docker/"><span class="header-nav-submenu-item__text">docker</span></a></div><div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link" href="/categories/nginx/"><span class="header-nav-submenu-item__text">nginx</span></a></div></div></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="javascript:;" onclick="return false;"><span class="header-nav-menu-item__icon"><i class="fas fa-microchip"></i></span><span class="header-nav-menu-item__text">物联网</span></a><div class="header-nav-submenu"><div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link" href="/categories/c51/"><span class="header-nav-submenu-item__text">C51单片机</span></a></div><div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link" href="/categories/arduino/"><span class="header-nav-submenu-item__text">arduino</span></a></div><div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link" href="/categories/rpi/"><span class="header-nav-submenu-item__text">树霉派</span></a></div></div></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/categories/other/"><span class="header-nav-menu-item__icon"><i class="fas fa-align-justify"></i></span><span class="header-nav-menu-item__text">其它</span></a></div></div><div class="header-nav-search"><span class="header-nav-search__icon"><i class="fas fa-search"></i></span><span class="header-nav-search__text">搜索</span></div><div class="header-nav-mode"><div class="mode"><div class="mode-track"><span class="mode-track-moon"></span><span class="mode-track-sun"></span></div><div class="mode-thumb"></div></div></div></div></nav></div></header><main class="main" id="main"><div class="main-inner"><div class="content-wrap" id="content-wrap"><div class="content" id="content"><!-- Just used to judge whether it is an article page--><div id="is-post"></div><div class="post"><header class="post-header"><h1 class="post-title">一文搞懂 flask gunicorn supervisor 的作用和关系</h1><div class="post-meta"><span class="post-meta-item post-meta-item--createtime"><span class="post-meta-item__icon"><i class="far fa-calendar-plus"></i></span><span class="post-meta-item__info">发表于</span><span class="post-meta-item__value">2022-01-09</span></span><span class="post-meta-item post-meta-item--updatetime"><span class="post-meta-item__icon"><i class="far fa-calendar-check"></i></span><span class="post-meta-item__info">更新于</span><span class="post-meta-item__value">2024-03-22</span></span></div></header><div class="post-body"><ul>
+<li>使用 flask 搭建 python web 应用<blockquote>
+<p>Flask是一个使用 Python 编写的轻量级 Web 应用框架</p>
+</blockquote>
+</li>
+<li>gunicorn 作为 flask 的 http 服务器<blockquote>
+<p>gunicorn 类似于 nginx, 它是专用于 python 的 http 服务器</p>
+</blockquote>
+</li>
+<li>supervisor 管理进程<blockquote>
+<p>supervisor 把进程作为其子进程进行管理，还可以管理远程服务器上的进程<br><span class="exturl"><a class="exturl__link" target="_blank" rel="noopener" href="https://github.com/wenyamu/python_demo">https://github.com/wenyamu/python_demo</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span></p>
+</blockquote>
+</li>
+</ul>
+<span id="more"></span>
+
+<!-- toc -->
+
+<ul>
+<li><a href="#%E5%88%9B%E5%BB%BA-python-%E7%8E%AF%E5%A2%83">创建 python 环境</a></li>
+<li><a href="#flask-%E9%A1%B9%E7%9B%AE%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84">flask 项目目录结构</a><ul>
+<li><a href="#%E5%90%AF%E5%8A%A8-flask-%E5%BA%94%E7%94%A8">启动 flask 应用</a></li>
+</ul>
+</li>
+<li><a href="#gunicorn-%E5%90%AF%E5%8A%A8-flask-%E5%BA%94%E7%94%A8">gunicorn 启动 flask 应用</a><ul>
+<li><a href="#gconf80py-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6">gconf80.py 配置文件</a></li>
+<li><a href="#gunicorn-%E7%9A%84-gevent-%E6%A8%A1%E5%BC%8F">gunicorn 的 gevent 模式</a></li>
+</ul>
+</li>
+<li><a href="#supervisor-%E9%A1%B9%E7%9B%AE%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84">supervisor 项目目录结构</a><ul>
+<li><a href="#supervisor-%E7%AE%A1%E7%90%86%E8%BF%9B%E7%A8%8B">supervisor 管理进程</a></li>
+<li><a href="#%E5%AE%89%E8%A3%85-supervisor">安装 supervisor</a></li>
+<li><a href="#%E5%90%AF%E5%8A%A8-supervisord-%E8%BF%9B%E7%A8%8B">启动 supervisord 进程</a></li>
+</ul>
+</li>
+<li><a href="#gunicorn-%E4%B8%8E-supervisor-%E6%80%BB%E7%BB%93">gunicorn 与 supervisor 总结</a></li>
+<li><a href="#supervisor-%E8%BF%9C%E7%A8%8B%E7%AE%A1%E7%90%86%E8%BF%9B%E7%A8%8B">supervisor 远程管理进程</a><ul>
+<li><a href="#%E9%A1%B9%E7%9B%AE%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84">项目目录结构</a></li>
+<li><a href="#%E7%9B%91%E6%8E%A7%E7%A8%8B%E5%BA%8F">监控程序</a></li>
+<li><a href="#%E7%9B%91%E6%8E%A7%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%A8%A1%E6%9D%BF%E6%96%87%E4%BB%B6">监控程序的模板文件</a></li>
+<li><a href="#%E7%9B%91%E6%8E%A7%E7%A8%8B%E5%BA%8F%E7%9A%84%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6">监控程序的配置文件</a></li>
+<li><a href="#%E5%90%AF%E5%8A%A8%E7%9B%91%E6%8E%A7%E7%A8%8B%E5%BA%8F">启动监控程序</a></li>
+</ul>
+</li>
+<li><a href="#%E9%99%84%E4%BB%B6">附件</a></li>
+</ul>
+<!-- tocstop -->
+
+
+        <h2><span id="创建-python-环境">
+          创建 python 环境</span></h2>
+      <blockquote>
+<p>docker compose -f python.yml up -d</p>
+</blockquote>
+<figure class="highlight yml"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">&#x27;3&#x27;</span></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">dc1:</span></span><br><span class="line">    <span class="comment"># 镜像本地无则自动下载</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">python:alpine</span></span><br><span class="line">    <span class="attr">hostname:</span> <span class="string">pythonHost</span></span><br><span class="line">    <span class="comment"># 映射端口 【宿主机端口:容器端口】</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;5000:5000&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;8000:8000&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;80:80&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;443:443&quot;</span></span><br><span class="line">    <span class="comment"># 目录挂载 【宿主机目录:容器目录】</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/root/python:/python</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 容器名称</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">pythontest</span></span><br><span class="line">    <span class="comment">#environment:</span></span><br><span class="line">    <span class="comment">#  - &quot;SERSYNC=true&quot;</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="comment"># 相当于 docker run -i</span></span><br><span class="line">    <span class="attr">stdin_open:</span> <span class="literal">true</span></span><br><span class="line">    <span class="comment"># 相当于 docker run -t</span></span><br><span class="line">    <span class="attr">tty:</span> <span class="literal">true</span></span><br></pre></td></tr></table></div></figure>
+<blockquote>
+<p>查看 python 和 pip 版本</p>
+</blockquote>
+<figure class="highlight shell"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">查看 python 版本</span></span><br><span class="line">python --version</span><br><span class="line">Python 3.11.4</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">查看 pip 版本</span></span><br><span class="line">pip --version</span><br><span class="line">pip 23.1.2 from /usr/local/lib/python3.11/site-packages/pip (python 3.11)</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">pip 升级</span></span><br><span class="line">pip install --upgrade pip</span><br></pre></td></tr></table></div></figure>
+<blockquote>
+<p>安装程序运行用到的包</p>
+</blockquote>
+<figure class="highlight shell"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install gunicorn flask gevent pymysql</span><br></pre></td></tr></table></div></figure>
+
+
+        <h2><span id="flask-项目目录结构">
+          flask 项目目录结构</span></h2>
+      <figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">/</span><br><span class="line">-- python</span><br><span class="line">---- flasktest.py</span><br><span class="line">---- gconf80.py</span><br><span class="line">---- templates</span><br><span class="line">------ index.html</span><br><span class="line"></span><br></pre></td></tr></table></div></figure>
+
+<blockquote>
+<p>新建 &#x2F;python&#x2F;flasktest.py</p>
+</blockquote>
+<figure class="highlight py"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask, render_template, url_for, request</span><br><span class="line"><span class="keyword">import</span> pymysql</span><br><span class="line">app = Flask(__name__,</span><br><span class="line">  template_folder=<span class="string">&#x27;/python/templates&#x27;</span>,</span><br><span class="line">  static_folder=<span class="string">&#x27;/python/asset&#x27;</span>,</span><br><span class="line">  static_url_path=<span class="string">&quot;/&quot;</span>,</span><br><span class="line">  )</span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/&#x27;</span></span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">index</span>():</span><br><span class="line">  <span class="keyword">return</span> render_template(<span class="string">&#x27;index.html&#x27;</span>, title=<span class="string">&#x27;python&#x27;</span>,info=<span class="string">&quot;flask web app&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#以下命令，只有在使用 python this.py 才起作用</span></span><br><span class="line"><span class="keyword">if</span> __name__==<span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">  app.run(debug=<span class="literal">True</span>,host=<span class="string">&#x27;0.0.0.0&#x27;</span>,port=<span class="number">5000</span>)</span><br><span class="line"></span><br></pre></td></tr></table></div></figure>
+<blockquote>
+<p>代码段设置的解释</p>
+</blockquote>
+<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">app = Flask(__name__,</span><br><span class="line">  template_folder=&#x27;/python/templates&#x27;,</span><br><span class="line">  static_folder=&#x27;/python/asset&#x27;,</span><br><span class="line">  static_url_path=&quot;/&quot;,</span><br><span class="line">  )</span><br><span class="line"></span><br><span class="line"># __name__ 本文件的文件名（不含后缀）</span><br><span class="line"></span><br><span class="line"># template_folder 存放模板的目录，缺省值为当前项目目录下的templates目录</span><br><span class="line"></span><br><span class="line"># static_folder 存放静态文件的目录（注意：存放在此目录下的文件，都会被当成静态文件处理，</span><br><span class="line">例如php、py文件），通常存放css/js/jpg/html等文件（假设项目的绝对路径为&quot;/py&quot;,</span><br><span class="line">如果参数值为&quot;/py/sss&quot;时，可以直接通过xxx.com/sss/x.jpg 进行访问，此时static_folder的值</span><br><span class="line">做为存放目录以及url访问），缺省值为当前项目目录下的static目录</span><br><span class="line"></span><br><span class="line"># static_url_path 访问静态文件的路由设置，可以配合static_folder使用，</span><br><span class="line">例如：当static_url_path参数值为&quot;/aaa&quot;时，可以直接通过xxx.com/aaa/x.jpg 进行访问，</span><br><span class="line">此时static_folder的值仅做为存放目录，不作为url访问</span><br></pre></td></tr></table></div></figure>
+
+<blockquote>
+<p>新建 &#x2F;python&#x2F;templates&#x2F;index.html</p>
+</blockquote>
+<figure class="highlight html"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>&#123;&#123; title &#125;&#125;<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">h1</span>&gt;</span>欢迎来到 &#123;&#123;info&#125;&#125; ，我是一个模板文件<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br><span class="line"></span><br></pre></td></tr></table></div></figure>
+
+        <h3><span id="启动-flask-应用">
+          启动 flask 应用</span></h3>
+      <figure class="highlight shell"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">进入项目根目录</span></span><br><span class="line">cd /python</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">使用 python 启动 flask 应用(仅用于开发环境)</span></span><br><span class="line">python flasktest.py</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">使用 gunicorn 启动 flask 应用</span></span><br><span class="line">gunicorn -w 4 -b 0.0.0.0:5000 flasktest:app</span><br></pre></td></tr></table></div></figure>
+
+<blockquote>
+<p>使用 ip:5000 访问 得到如下结果</p>
+</blockquote>
+<figure class="highlight html"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>python<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">h1</span>&gt;</span>欢迎来到 flask web app ，我是一个模板文件<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></div></figure>
+
+        <h2><span id="gunicorn-启动-flask-应用">
+          gunicorn 启动 flask 应用</span></h2>
+      <blockquote>
+<p>gunicorn 作用类似于 nginx，只不过它是专用于 python 的 http 服务器</p>
+</blockquote>
+<figure class="highlight shell"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">gunicorn 命令详解</span></span><br><span class="line">gunicorn -w 4 -b 0.0.0.0:5000 -b [::]:5000 --reload flasktest:app</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">flasktest:app flasktest指的是flasktest.py, app指的是flasktest.py中的app=Flask(...)</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">-w 指启动的进程数</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">-b 指绑定ip:端口号, 如果是本地端口 127.0.0.1:80 对应ipv6是 [::1]:80</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">--reload 代码更新时将热载入（模板更新时，测试发现不太稳定，时好时坏，建议手动重启应用）</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">推荐把 gunicorn 的参数集中放入一个配置文件中(跟 nginx 启动一样，也是需要配置文件)</span></span><br><span class="line">gunicorn -c /python/gconf80.py flasktest:app --preload</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">--preload 运行前先检查是否有错误，有则直接输出错误信息</span></span><br></pre></td></tr></table></div></figure>
+
+        <h3><span id="gconf80py-配置文件">
+          gconf80.py 配置文件</span></h3>
+      <figure class="highlight python"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#gconf80.py 内容开始 与 gconf443.py 相比，端口80改成443，多了ssl配置</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> gevent <span class="keyword">import</span> monkey</span><br><span class="line">monkey.patch_all()</span><br><span class="line"><span class="keyword">import</span> multiprocessing</span><br><span class="line"><span class="comment">#debug = True # 调试模式运行</span></span><br><span class="line">daemon = <span class="literal">False</span> <span class="comment"># 守护Gunicorn进程，默认False(即不让其在后台运行，而是使用supervisor管理进程)</span></span><br><span class="line"><span class="comment"># True，表示代码更新时将被热载入（不用手动重启进程了）。如果是直接运行gunicorn命令，直接加参数 --reload 即可</span></span><br><span class="line">reload = <span class="literal">True</span></span><br><span class="line"><span class="comment">#绑定与Nginx通信的端口ipv4、ipv6</span></span><br><span class="line">bind = <span class="string">&#x27;0.0.0.0:80&#x27;</span></span><br><span class="line">bind = <span class="string">&#x27;[::]:80&#x27;</span></span><br><span class="line">workers = multiprocessing.cpu_count()</span><br><span class="line"><span class="comment">#workers = 3</span></span><br><span class="line"><span class="comment">#默认为sync阻塞模式，最好选择gevent模式，需要安装gevent模块</span></span><br><span class="line"><span class="comment">#Flask+gevent高效部署（基于gevent模块实现并发）：适用于io访问频繁的项目(比如对数据库的读写, 发送Http请求等等)，算法类型不适用</span></span><br><span class="line">worker_class = <span class="string">&#x27;gevent&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#设置环境变量(key=value)，将变量传递给flask</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string"># flask.py 中调用变量</span></span><br><span class="line"><span class="string">import os</span></span><br><span class="line"><span class="string">os.getenv(&#x27;ljs1&#x27;)</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line">raw_env=[<span class="string">&quot;ljs1=111&quot;</span>,<span class="string">&quot;ljs2=bbb&quot;</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">#gunicorn 配置 ssl</span></span><br><span class="line"><span class="comment">#keyfile = &#x27;/python/689890/privkey.pem&#x27;</span></span><br><span class="line"><span class="comment">#certfile = &#x27;/python/689890/fullchain.pem&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#gconf80.py 内容结束</span></span><br></pre></td></tr></table></div></figure>
+
+        <h3><span id="gunicorn-的-gevent-模式">
+          gunicorn 的 gevent 模式</span></h3>
+      <ul>
+<li><p>单进程直接运行 python http 服务时, 当有两个并发请求过来时, 进程只能先处理一个请求, 等第一个请求处理完成后, 才能处理第二个, 势必影响用户的体验。</p>
+</li>
+<li><p>那么单进程的时候, 如何能提高并发处理能力？</p>
+</li>
+<li><p>大多数情况下, 我们的服务中, 导致性能低下的原因是I&#x2F;O, 比如对数据库的读写, 发送 http 请求等等, 当进程进行I&#x2F;O的时候, 是不占用CPU时间的, 这个时候, CPU可以被腾出来处理其他请求。</p>
+</li>
+<li><p>gevent 就是完成这个工作的。幸运的是, 我们不需要自己实现这部分功能, gunicorn 实现了 gevent 模式的运行方式(-k 参数指定), 允许你的 python web 更高性能的处理业务，例如：</p>
+</li>
+</ul>
+<figure class="highlight shell"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">gunicorn \</span><br><span class="line">    -k gevent \</span><br><span class="line">    -w 2 \</span><br><span class="line">    -b 127.0.0.1:9889 \</span><br><span class="line">    run:app</span><br></pre></td></tr></table></div></figure>
+
+
+
+        <h2><span id="supervisor-项目目录结构">
+          supervisor 项目目录结构</span></h2>
+      <figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">/</span><br><span class="line">-- python</span><br><span class="line">---- flasktest.py</span><br><span class="line">---- supervisor_flaskapp.conf</span><br><span class="line">---- gconf80.py</span><br><span class="line">---- supervisor_conf</span><br><span class="line">------ flask80.conf</span><br><span class="line">---- templates</span><br><span class="line">------ index.html</span><br><span class="line"></span><br></pre></td></tr></table></div></figure>
+
+        <h3><span id="supervisor-管理进程">
+          supervisor 管理进程</span></h3>
+      <ul>
+<li>supervisor是一个进程管理系统，它通过fork&#x2F;exec的方式将这些被管理的进程当作它的子进程来启动，若该子进程异常中断，则父进程可以准确地获取子进程异常中断的信息。</li>
+<li>supervisor 可以通过 web 界面对进程进行启动、停止、重启操作</li>
+</ul>
+<blockquote>
+<p>比如 Nginx 服务的配置示例参考</p>
+</blockquote>
+<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[program:nginx]</span><br><span class="line">command = /usr/local/bin/nginx -g &#x27;daemon off;&#x27; -c /usr/local/etc/nginx/nginx.conf</span><br><span class="line">autostart = true</span><br><span class="line">startsecs = 5</span><br><span class="line">autorestart = true</span><br><span class="line">startretries = 3</span><br><span class="line">user = root</span><br></pre></td></tr></table></div></figure>
+
+        <h3><span id="安装-supervisor">
+          安装 supervisor</span></h3>
+      <figure class="highlight shell"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">pip install supervisor</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">生成默认配置文件，运行如下命令</span></span><br><span class="line">mkdir -p /etc/supervisor</span><br><span class="line">echo_supervisord_conf &gt; /etc/supervisor/supervisord.conf #生成默认配置文件</span><br></pre></td></tr></table></div></figure>
+
+<blockquote>
+<p>&#x2F;python&#x2F;supervisor_flaskapp.conf</p>
+</blockquote>
+<figure class="highlight shell"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">supervisor_flaskapp.conf 内容开始</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">这里 /python/supervisor_conf/*.conf 类似于 nginx 中配置文件的引用方式</span></span><br><span class="line"></span><br><span class="line">[include]</span><br><span class="line">files = /etc/supervisor/supervisord.conf /python/supervisor_conf/*.conf</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">你也可以在 /etc/supervisor/supervisord.conf 的底部，直接修改成如下：</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">[include]</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">files = /python/supervisor_conf/*.conf</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">web管理界面</span></span><br><span class="line">[inet_http_server]</span><br><span class="line">port = 0.0.0.0:8000</span><br><span class="line">username = admin</span><br><span class="line">password = admin</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">supervisor_flaskapp.conf 内容结束</span></span><br><span class="line"></span><br></pre></td></tr></table></div></figure>
+<blockquote>
+<p>&#x2F;python&#x2F;supervisor_conf&#x2F;flask80.conf</p>
+</blockquote>
+<figure class="highlight shell"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">flask80.conf 与 flask443.conf 不同之处</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">1、gunicorn 引入的参数配置文件不同 gconf443.py</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">2、[program:flask_app80]定义的程序名不同 flask_app443</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">flask80.conf 内容开始</span> </span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">定义应用名称flask_app（一个配置文件中可以配置多个程序）</span></span><br><span class="line">[program:flask_app80]</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">创建该项目用户</span></span><br><span class="line">user = root</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">应用目录 flasktest.py 所在的目录</span></span><br><span class="line">directory = /python</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">把gunicorn 的参数集中放入一个配置文件中(跟 nginx 启动一样，也是需要配置文件)</span></span><br><span class="line">command = /usr/local/bin/gunicorn -c /python/gconf80.py flasktest:app</span><br><span class="line">autostart = true #在supervisord启动的时候也自动启动</span><br><span class="line">autorestart = true #程序异常退出后自动重启</span><br><span class="line">startsecs = 1 #自动重启间隔时间(秒)</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">进程启动失败后，最大尝试的次数。当超过3次后，supervisor将把此进程的状态置为FAIL</span></span><br><span class="line">startretries = 3</span><br><span class="line">stopasgroup = true #确保关闭supervisord时停止所有相关子进程</span><br><span class="line">killasgroup = true #确保关闭supervisord时停止所有相关子进程</span><br><span class="line">stdout_logfile = /python/logs/supervisor_80_out.log</span><br><span class="line">stderr_logfile = /python/logs/supervisor_80_err.log</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">flask80.conf 内容结束</span></span><br><span class="line"></span><br></pre></td></tr></table></div></figure>
+
+
+        <h3><span id="启动-supervisord-进程">
+          启动 supervisord 进程</span></h3>
+      <figure class="highlight shell"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/usr/local/bin/supervisord -c /python/supervisor_flaskapp.conf</span><br></pre></td></tr></table></div></figure>
+<blockquote>
+<p>打开 supervisor 进程管理界面 ip:8000</p>
+</blockquote>
+
+        <h2><span id="gunicorn-与-supervisor-总结">
+          gunicorn 与 supervisor 总结</span></h2>
+      <blockquote>
+<p>gconf80.py 作为 gunicorn 的配置文件，进程<br>gunicorn -c &#x2F;python&#x2F;gconf80.py flasktest:app</p>
+</blockquote>
+<blockquote>
+<p>gunicorn 进程写在 supervisor 配置文件中，进程<br>supervisord -c &#x2F;python&#x2F;supervisor_flaskapp.conf</p>
+</blockquote>
+<blockquote>
+<p>所以 supervisord &lt; gunicorn 套娃</p>
+</blockquote>
+
+        <h2><span id="supervisor-远程管理进程">
+          supervisor 远程管理进程</span></h2>
+      <blockquote>
+<p><span class="exturl"><a class="exturl__link" target="_blank" rel="noopener" href="http://www.supervisord.org/api.html">http://www.supervisord.org/api.html</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span></p>
+</blockquote>
+
+        <h3><span id="项目目录结构">
+          项目目录结构</span></h3>
+      <figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">/</span><br><span class="line">-- python</span><br><span class="line">---- supervisor_monit</span><br><span class="line">------ monit.py</span><br><span class="line">------ gconf_monit.py</span><br><span class="line">---- templates</span><br><span class="line">------ monit.html</span><br><span class="line">---- asset</span><br><span class="line">------ css</span><br><span class="line">-------- css.css</span><br><span class="line"></span><br></pre></td></tr></table></div></figure>
+
+        <h3><span id="监控程序">
+          监控程序</span></h3>
+      <blockquote>
+<p>&#x2F;python&#x2F;supervisor_monit&#x2F;monit.py</p>
+</blockquote>
+<figure class="highlight py"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask, render_template, url_for, request, jsonify, redirect</span><br><span class="line"><span class="keyword">from</span> xmlrpc.client <span class="keyword">import</span> ServerProxy</span><br><span class="line"><span class="keyword">import</span> signal</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"></span><br><span class="line">app = Flask(__name__,</span><br><span class="line">    template_folder=<span class="string">&#x27;/python/supervisor_monit/templates&#x27;</span>,</span><br><span class="line">    static_folder=<span class="string">&#x27;/python/supervisor_monit/asset&#x27;</span>,</span><br><span class="line">    static_url_path=<span class="string">&quot;/&quot;</span>,</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&quot;/getenv&quot;</span></span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">index_getenv</span>():</span><br><span class="line">    <span class="keyword">return</span> os.getenv(<span class="string">&#x27;ljs2&#x27;</span>) <span class="comment"># gunicorn 配置文件中定义的变量</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 字典形式</span></span><br><span class="line">serverDict = &#123;</span><br><span class="line">    <span class="string">&quot;pyweb1&quot;</span>:&#123;</span><br><span class="line">        <span class="string">&quot;host&quot;</span>:<span class="string">&quot;80.210.236.20&quot;</span>,</span><br><span class="line">        <span class="string">&quot;port&quot;</span>:<span class="string">&quot;8000&quot;</span>,</span><br><span class="line">        <span class="string">&quot;user&quot;</span>:<span class="string">&quot;admin&quot;</span>,</span><br><span class="line">        <span class="string">&quot;passwd&quot;</span>:<span class="string">&quot;admin&quot;</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="string">&quot;pyweb2&quot;</span>:&#123;</span><br><span class="line">        <span class="string">&quot;host&quot;</span>:<span class="string">&quot;80.210.236.20&quot;</span>,</span><br><span class="line">        <span class="string">&quot;port&quot;</span>:<span class="string">&quot;8001&quot;</span>,</span><br><span class="line">        <span class="string">&quot;user&quot;</span>:<span class="string">&quot;admin&quot;</span>,</span><br><span class="line">        <span class="string">&quot;passwd&quot;</span>:<span class="string">&quot;admin&quot;</span>,</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">getUrlRpc</span>(<span class="params">name, sdict</span>):</span><br><span class="line">    r = sdict[name]</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;http://&quot;</span>+r[<span class="string">&quot;user&quot;</span>]+<span class="string">&quot;:&quot;</span>+r[<span class="string">&quot;passwd&quot;</span>]+<span class="string">&quot;@&quot;</span>+r[<span class="string">&quot;host&quot;</span>]+<span class="string">&quot;:&quot;</span>+r[<span class="string">&quot;port&quot;</span>]+<span class="string">&quot;/RPC2&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#定义一个函数,把它传递给前端</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">getAllInfo</span>(<span class="params">title</span>):</span><br><span class="line">    <span class="comment"># 自定义函数获取rpc地址</span></span><br><span class="line">    url = getUrlRpc(title, serverDict)</span><br><span class="line">    server = ServerProxy(url)</span><br><span class="line">    <span class="keyword">return</span> server.supervisor.getAllProcessInfo()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 为 getAllInfo 函数设置请求超时时长，超过自定义的时长，单位秒，则返回自定义内容</span></span><br><span class="line"><span class="comment"># 为了防止长时间获取不到 getAllProcessInfo 返回的信息，导致出错</span></span><br><span class="line"><span class="comment"># 使用 python 启动此监控程序时 会出错，所以只能用 gunicorn 启动监控</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">getAllInfoTimeOut</span>(<span class="params">n</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">handler</span>(<span class="params">signum, frame</span>):</span><br><span class="line">        <span class="keyword">raise</span> AssertionError</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        signal.signal(signal.SIGALRM, handler)</span><br><span class="line">        signal.alarm(<span class="number">10</span>) <span class="comment"># 设置超时时长，单位秒</span></span><br><span class="line">        <span class="keyword">return</span> getAllInfo(n)</span><br><span class="line">    <span class="keyword">except</span> AssertionError: <span class="comment"># 错误类似为 AssertionError 时，执行</span></span><br><span class="line">        <span class="keyword">return</span> []</span><br><span class="line">    <span class="keyword">except</span>: <span class="comment"># 当上面没有匹配的错误类似时，执行此条，放在最后</span></span><br><span class="line">        <span class="keyword">return</span> []</span><br><span class="line">    <span class="keyword">finally</span>: <span class="comment"># 此代码段不能删除，虽然对页面没有影响，但是后台日志会输出错误</span></span><br><span class="line">        signal.alarm(<span class="number">0</span>)</span><br><span class="line">        signal.signal(signal.SIGALRM, signal.SIG_DFL)</span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&quot;/&quot;</span></span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">index</span>():</span><br><span class="line">    <span class="keyword">return</span> render_template(<span class="string">&quot;monit.html&quot;</span>, envtest=os.getenv(<span class="string">&#x27;ljs2&#x27;</span>), sdict=serverDict, funAllInfo=getAllInfoTimeOut)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 重启 supervisor</span></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&quot;/restartSupervisor&quot;</span></span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">restartSupervisor</span>():</span><br><span class="line">    <span class="comment"># 自定义函数获取rpc地址</span></span><br><span class="line">    title = request.args[<span class="string">&#x27;title&#x27;</span>]</span><br><span class="line">    url = getUrlRpc(title,serverDict)</span><br><span class="line">    server = ServerProxy(url)</span><br><span class="line">    server.supervisor.restart()</span><br><span class="line">    <span class="keyword">return</span> redirect(url_for(<span class="string">&#x27;index&#x27;</span>,message=<span class="string">&quot;restartSupervisor_&quot;</span>+title))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 开始或停止某个进程</span></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&quot;/one.html&quot;</span></span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">index_one</span>():</span><br><span class="line">    para = request.args[<span class="string">&#x27;name&#x27;</span>]</span><br><span class="line">    method = request.args[<span class="string">&#x27;method&#x27;</span>]</span><br><span class="line">    title = request.args[<span class="string">&#x27;title&#x27;</span>]</span><br><span class="line">    <span class="comment"># url = &quot;http://admin:admin@80.210.236.20:5002/RPC2&quot;</span></span><br><span class="line">    url = getUrlRpc(title,serverDict)</span><br><span class="line">    server = ServerProxy(url)</span><br><span class="line">    calls = [</span><br><span class="line">        &#123;<span class="string">&#x27;methodName&#x27;</span>:method, <span class="string">&#x27;params&#x27;</span>: [para]&#125;,</span><br><span class="line">        </span><br><span class="line">      ]</span><br><span class="line"></span><br><span class="line">    server.system.multicall(calls)</span><br><span class="line">    <span class="keyword">return</span> redirect(url_for(<span class="string">&#x27;index&#x27;</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 重启全部进程</span></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&quot;/restartAll.html&quot;</span></span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">index_restartAll</span>():</span><br><span class="line">    title = request.args[<span class="string">&#x27;title&#x27;</span>]</span><br><span class="line">    <span class="comment"># url = &quot;http://admin:admin@80.210.236.20:5002/RPC2&quot;</span></span><br><span class="line">    url = getUrlRpc(title,serverDict)</span><br><span class="line">    server = ServerProxy(url)</span><br><span class="line">    calls = [ </span><br><span class="line">        &#123;<span class="string">&#x27;methodName&#x27;</span>:<span class="string">&#x27;supervisor.stopAllProcesses&#x27;</span>, <span class="string">&#x27;params&#x27;</span>: []&#125;,</span><br><span class="line">        &#123;<span class="string">&#x27;methodName&#x27;</span>:<span class="string">&#x27;supervisor.startAllProcesses&#x27;</span>, <span class="string">&#x27;params&#x27;</span>: []&#125;,</span><br><span class="line">        </span><br><span class="line">      ]</span><br><span class="line"></span><br><span class="line">    server.system.multicall(calls)</span><br><span class="line">    <span class="keyword">return</span> redirect(url_for(<span class="string">&#x27;index&#x27;</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 重启某个进程</span></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&quot;/restartOne.html&quot;</span></span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">index_restartOne</span>():</span><br><span class="line">    para = request.args[<span class="string">&#x27;name&#x27;</span>]</span><br><span class="line">    title = request.args[<span class="string">&#x27;title&#x27;</span>]</span><br><span class="line">    <span class="comment"># url = &quot;http://admin:admin@80.210.236.20:5002/RPC2&quot;</span></span><br><span class="line">    url = getUrlRpc(title,serverDict)</span><br><span class="line">    server = ServerProxy(url)</span><br><span class="line">    calls = [ </span><br><span class="line">        &#123;<span class="string">&#x27;methodName&#x27;</span>:<span class="string">&#x27;supervisor.stopProcess&#x27;</span>, <span class="string">&#x27;params&#x27;</span>: [para]&#125;,</span><br><span class="line">        &#123;<span class="string">&#x27;methodName&#x27;</span>:<span class="string">&#x27;supervisor.startProcess&#x27;</span>, <span class="string">&#x27;params&#x27;</span>: [para]&#125;,</span><br><span class="line">        </span><br><span class="line">      ]</span><br><span class="line"></span><br><span class="line">    server.system.multicall(calls)</span><br><span class="line">    <span class="keyword">return</span> redirect(url_for(<span class="string">&#x27;index&#x27;</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment">#以下命令，只有在使用 python this.py 才起作用</span></span><br><span class="line"><span class="keyword">if</span> __name__==<span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    app.run(debug=<span class="literal">True</span>,host=<span class="string">&#x27;0.0.0.0&#x27;</span>,port=<span class="number">5000</span>)</span><br><span class="line"></span><br></pre></td></tr></table></div></figure>
+
+        <h3><span id="监控程序的模板文件">
+          监控程序的模板文件</span></h3>
+      <blockquote>
+<p>&#x2F;python&#x2F;supervisor_monit&#x2F;templates&#x2F;monit.html</p>
+</blockquote>
+<figure class="highlight html"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">&quot;refresh&quot;</span> <span class="attr">content</span>=<span class="string">&quot;30;url=&#123;&#123; url_for(&#x27;index&#x27;) &#125;&#125;&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>serverList<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">&quot;stylesheet&quot;</span> <span class="attr">type</span>=<span class="string">&quot;text/css&quot;</span> <span class="attr">href</span>=<span class="string">&quot;&#123;&#123; url_for(&#x27;static&#x27;, filename=&#x27;css/css.css&#x27;) &#125;&#125;&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">&#123;&#123; envtest &#125;&#125;</span><br><span class="line"><span class="tag">&lt;<span class="name">h1</span>&gt;</span>supervisor列表 <span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">ul</span>&gt;</span></span><br><span class="line">&#123;% for sn in sdict %&#125;</span><br><span class="line">    <span class="tag">&lt;<span class="name">h3</span>&gt;</span>&#123;&#123; sn &#125;&#125;@&#123;&#123; sdict[sn][&quot;host&quot;] &#125;&#125;:&#123;&#123; sdict[sn][&quot;port&quot;] &#125;&#125;--<span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;&#123;&#123; url_for(&#x27;restartSupervisor&#x27;, title = sn) &#125;&#125;&quot;</span>&gt;</span>重启Supervisor<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">h3</span>&gt;</span></span><br><span class="line">    </span><br><span class="line">    &#123;% if funAllInfo(sn) == [] %&#125;</span><br><span class="line">    <span class="tag">&lt;<span class="name">li</span>&gt;</span>此服务器不通，请检查设置！<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    &#123;% else %&#125;</span><br><span class="line">    <span class="tag">&lt;<span class="name">li</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;&#123;&#123; url_for(&#x27;index_one&#x27;, method = &#x27;supervisor.stopAllProcesses&#x27;, name = &#x27;&#x27;, title = sn) &#125;&#125;&quot;</span>&gt;</span>停止所有进程<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;&#123;&#123; url_for(&#x27;index_one&#x27;, method = &#x27;supervisor.startAllProcesses&#x27;, name = &#x27;&#x27;, title = sn) &#125;&#125;&quot;</span>&gt;</span>启动所有进程<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;&#123;&#123; url_for(&#x27;index_restartAll&#x27;, title = sn) &#125;&#125;&quot;</span>&gt;</span>重启所有进程<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    &#123;% for snObj in funAllInfo(sn) %&#125;</span><br><span class="line">    <span class="tag">&lt;<span class="name">li</span>&gt;</span>&#123;&#123; snObj[&quot;name&quot;] &#125;&#125;--&#123;&#123; snObj[&quot;statename&quot;] &#125;&#125;--&#123;&#123; snObj[&quot;description&quot;] &#125;&#125;</span><br><span class="line">        <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;&#123;&#123; url_for(&#x27;index_one&#x27;, method = &#x27;supervisor.stopProcess&#x27;, name = snObj[&#x27;name&#x27;], title = sn) &#125;&#125;&quot;</span>&gt;</span>停止进程<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;&#123;&#123; url_for(&#x27;index_one&#x27;, method = &#x27;supervisor.startProcess&#x27;, name = snObj[&#x27;name&#x27;], title = sn) &#125;&#125;&quot;</span>&gt;</span>启动进程<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;&#123;&#123; url_for(&#x27;index_restartOne&#x27;, name = snObj[&#x27;name&#x27;], title = sn) &#125;&#125;&quot;</span>&gt;</span>重启进程<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    &#123;% endfor %&#125;</span><br><span class="line"></span><br><span class="line">    &#123;% endif %&#125;</span><br><span class="line">    <span class="tag">&lt;<span class="name">hr</span>/&gt;</span></span><br><span class="line">&#123;% endfor %&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br><span class="line"></span><br></pre></td></tr></table></div></figure>
+
+        <h3><span id="监控程序的配置文件">
+          监控程序的配置文件</span></h3>
+      <blockquote>
+<p>&#x2F;python&#x2F;supervisor_monit&#x2F;gconf_monit.py</p>
+</blockquote>
+<figure class="highlight py"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#gconf_monit.py</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> gevent <span class="keyword">import</span> monkey</span><br><span class="line">monkey.patch_all()</span><br><span class="line"><span class="keyword">import</span> multiprocessing</span><br><span class="line"></span><br><span class="line"><span class="comment"># 注意：True, False 必须首字母大写</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#debug = True # 调试模式运行</span></span><br><span class="line"><span class="comment"># gunicorn 守护进程，默认False(即不让其在后台运行，而是使用supervisor管理进程)</span></span><br><span class="line">daemon = <span class="literal">False</span></span><br><span class="line"><span class="comment"># True，表示代码更新时将被热载入（修改代码后不用手动重启进程）。</span></span><br><span class="line"><span class="comment">#如果是直接运行gunicorn命令，直接加参数 --reload 即可</span></span><br><span class="line">reload = <span class="literal">True</span></span><br><span class="line"><span class="comment">#绑定与Nginx通信的端口ipv4、ipv6</span></span><br><span class="line">bind = <span class="string">&#x27;0.0.0.0:5000&#x27;</span></span><br><span class="line"><span class="comment">#bind = &#x27;[::]:5000&#x27;</span></span><br><span class="line"><span class="comment">#workers = multiprocessing.cpu_count() # 根据计算的CPU数量设置进程数</span></span><br><span class="line">workers = <span class="number">1</span></span><br><span class="line">threads = <span class="number">1</span> <span class="comment">#指定每个进程开启的线程数</span></span><br><span class="line"><span class="comment">#默认为sync阻塞模式，最好选择gevent模式，需要安装gevent模块</span></span><br><span class="line"><span class="comment">#Flask+gevent高效部署（基于gevent模块实现并发）</span></span><br><span class="line"><span class="comment">#适用于io访问频繁的项目(比如对数据库的读写, 发送Http请求等等)，算法类型不适用</span></span><br><span class="line">worker_class = <span class="string">&#x27;gevent&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#设置环境变量(key=value)，将变量传递给flask</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string"># flask.py 中调用变量</span></span><br><span class="line"><span class="string">import os</span></span><br><span class="line"><span class="string">os.getenv(&#x27;ljs1&#x27;)</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line">raw_env=[<span class="string">&quot;ljs1=111&quot;</span>,<span class="string">&quot;ljs2=bbb&quot;</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">#日志级别，这个日志级别指的是错误日志的级别，而访问日志的级别无法设置</span></span><br><span class="line">loglevel = <span class="string">&#x27;info&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#设置gunicorn访问日志格式，错误日志无法设置</span></span><br><span class="line">access_log_format = <span class="string">&#x27;%(t)s %(p)s %(h)s &quot;%(r)s&quot; %(s)s %(L)s %(b)s %(f)s&quot; &quot;%(a)s&quot;&#x27;</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">其每个选项的含义如下：</span></span><br><span class="line"><span class="string">h  remote address</span></span><br><span class="line"><span class="string">l  &#x27;-&#x27;</span></span><br><span class="line"><span class="string">u  currently &#x27;-&#x27;, may be user name in future releases</span></span><br><span class="line"><span class="string">t  date of the request</span></span><br><span class="line"><span class="string">r  status line (e.g. ``GET / HTTP/1.1``)</span></span><br><span class="line"><span class="string">s  status</span></span><br><span class="line"><span class="string">b  response length or &#x27;-&#x27;</span></span><br><span class="line"><span class="string">f  referer</span></span><br><span class="line"><span class="string">a  user agent</span></span><br><span class="line"><span class="string">T  request time in seconds</span></span><br><span class="line"><span class="string">D  request time in microseconds</span></span><br><span class="line"><span class="string">L  request time in decimal seconds</span></span><br><span class="line"><span class="string">p  process ID</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line">accesslog = <span class="string">&quot;/python/logs/gunicorn_access_monit.log&quot;</span> <span class="comment">#访问日志文件</span></span><br><span class="line">errorlog  = <span class="string">&quot;/python/logs/gunicorn_error_monit.log&quot;</span> <span class="comment">#错误日志文件</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#gconf_monit.py 内容结束</span></span><br><span class="line"></span><br></pre></td></tr></table></div></figure>
+
+        <h3><span id="启动监控程序">
+          启动监控程序</span></h3>
+      <figure class="highlight shell"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">当配置文件 gconf_monit.py 中未指定 <span class="built_in">chdir</span> 时，</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">需要进入 monit.py 所在的目录，不然会出现错误提示</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">ModuleNotFoundError: No module named <span class="string">&#x27;monit&#x27;</span></span></span><br><span class="line">cd /python/supervisor_monit</span><br><span class="line">gunicorn -c /python/supervisor_monit/gconf_monit.py monit:app --preload</span><br></pre></td></tr></table></div></figure>
+<blockquote>
+<p>使用 ip:5000 查看监控</p>
+</blockquote>
+
+        <h2><span id="附件">
+          附件</span></h2>
+      <blockquote>
+<p>其它 supervisor 命令</p>
+</blockquote>
+<figure class="highlight shell"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">启动、停止、重启应用、查看状态</span></span><br><span class="line">supervisorctl start flask_app</span><br><span class="line">supervisorctl stop flask_app</span><br><span class="line">supervisorctl stop all #停止全部</span><br><span class="line">supervisorctl restart flask_app # 重启，注意这里不会重新加载配置文件</span><br><span class="line">supervisorctl status flask_app</span><br><span class="line">supervisorctl status all</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">重启主进程 supervisord，重新加载配置文件，重新启动正在运行的所有程序</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">supervisord 进程的 pid 不会更新</span></span><br><span class="line">supervisorctl reload</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">终止supervisord进程和被supervisord管理的子进程</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">如果gunicorn配置文件中daemon = False，则也会终止gunicorn</span></span><br><span class="line">supervisorctl shutdown</span><br><span class="line"></span><br><span class="line">supervisorctl reread &amp;&amp; supervisorctl update</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">预读取配置(会检测配置文件，找出配置有改动的程序，并列出程序名)</span></span><br><span class="line">[root@localhost ~]# supervisorctl reread</span><br><span class="line">flask_app: changed</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">更新进程组:根据预读取的配置文件，启动新程序或重启配置有改动的程序</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">配置没有改动的程序不会受影响</span></span><br><span class="line">[root@localhost ~]# supervisorctl update</span><br><span class="line">flask_app: stopped</span><br><span class="line">flask_app: updated process group</span><br><span class="line">[root@localhost ~]# </span><br><span class="line"></span><br></pre></td></tr></table></div></figure></div><footer class="post-footer"><div class="post-ending ending"><div class="ending__text">------ 本文结束，感谢您的阅读 ------</div></div><div class="post-copyright copyright"><div class="copyright-author"><span class="copyright-author__name">本文作者: </span><span class="copyright-author__value"><a href="http://8.210.236.200:4000">John Doe</a></span></div><div class="copyright-link"><span class="copyright-link__name">本文链接: </span><span class="copyright-link__value"><a href="http://8.210.236.200:4000/p/15af28d0.html">http://8.210.236.200:4000/p/15af28d0.html</a></span></div><div class="copyright-notice"><span class="copyright-notice__name">版权声明: </span><span class="copyright-notice__value">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en" rel="external nofollow" target="_blank">BY-NC-SA</a> 许可协议。转载请注明出处！</span></div></div><div class="post-tags"><span class="post-tags-item"><span class="post-tags-item__icon"><i class="fas fa-tag"></i></span><a class="post-tags-item__link" href="http://8.210.236.200:4000/tags/flask/">flask</a></span></div><nav class="post-paginator paginator"><div class="paginator-prev"><a class="paginator-prev__link" href="/p/f255ffad.html"><span class="paginator-prev__icon"><i class="fas fa-angle-left"></i></span><span class="paginator-prev__text">docker镜像与容器打包及上传到仓库</span></a></div><div class="paginator-next"><a class="paginator-next__link" href="/p/7f79bcde.html"><span class="paginator-prev__text">hexo配置研究</span><span class="paginator-next__icon"><i class="fas fa-angle-right"></i></span></a></div></nav></footer></div></div></div><div class="clearfix"></div></div></main><footer class="footer" id="footer"><div class="footer-inner"><div><span>Copyright © 2024</span><span class="footer__icon"><i class="fas fa-heart"></i></span><span>John Doe</span></div><div><span>由 <a href="http://hexo.io/" title="Hexo" target="_blank" rel="noopener">Hexo</a> 强力驱动</span><span> v7.1.1</span><span class="footer__devider">|</span><span>主题 - <a href="https://github.com/liuyib/hexo-theme-stun/" title="Stun" target="_blank" rel="noopener">Stun</a></span><span> v2.8.0</span></div></div></footer><div class="loading-bar" id="loading-bar"><div class="loading-bar__progress"></div></div><div class="back2top" id="back2top"><span class="back2top__icon"><i class="fas fa-rocket"></i></span></div></div><div class="search-mask"></div><div class="search-popup"><span class="search-close"></span><div class="search-input"><input placeholder="搜索文章（支持多关键词，请用空格分隔）"></div><div class="search-results"></div></div><script src="https://cdn.jsdelivr.net/npm/jquery@v3.4.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@1.5.2/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@1.5.2/velocity.ui.min.js"></script><script>function initSearch() {
+  var isXML = true;
+  var search_path = 'search.json';
+
+  if (!search_path) {
+    search_path = 'search.xml';
+  } else if (/json$/i.test(search_path)) {
+    isXML = false;
+  }
+
+  var path = '/' + search_path;
+  $.ajax({
+    url: path,
+    dataType: isXML ? 'xml' : 'json',
+    async: true,
+    success: function (res) {
+      var datas = isXML ? $('entry', res).map(function () {
+        // 将 XML 转为 JSON
+        return {
+          title: $('title', this).text(),
+          content: $('content', this).text(),
+          url: $('url', this).text()
+        };
+      }).get() : res;
+      var $input = $('.search-input input');
+      var $result = $('.search-results');
+      // 搜索对象（标题、内容）的权重，影响显示顺序
+      var WEIGHT = { title: 100, content: 1 };
+      var searchPost = function () {
+        var searchText = $input.val().toLowerCase().trim();
+        // 根据空白字符分隔关键字
+        var keywords = searchText.split(/[\s]+/);
+        // 搜索结果
+        var matchPosts = [];
+
+        // 有多个关键字时，将原文字整个保存下来
+        if (keywords.length > 1) {
+          keywords.push(searchText);
+        }
+        // 防止未输入字符时搜索
+        if (searchText.length > 0) {
+          datas.forEach(function (data) {
+            var isMatch  = false;
+            // 没有标题的文章使用预设的 i18n 变量代替
+            var title = (data.title && data.title.trim()) || '[ 文章无标题 ]';
+            var titleLower = title && title.toLowerCase();
+            // 删除 HTML 标签 和 所有空白字符
+            var content = data.content && data.content.replace(/<[^>]+>/g, '');
+            var contentLower = content && content.toLowerCase();
+            // 删除重复的 /
+            var postURL = data.url && decodeURI(data.url).replace(/\/{2,}/g, '/');
+            // 标题中匹配到的关键词
+            var titleHitSlice = [];
+            // 内容中匹配到的关键词
+            var contentHitSlice = [];
+
+            keywords.forEach(function (keyword) {
+              /**
+              * 获取匹配的关键词的索引
+              * @param {String} keyword 要匹配的关键字
+              * @param {String} text 原文字
+              * @param {Boolean} caseSensitive 是否区分大小写
+              * @param {Number} weight 匹配对象的权重。权重大的优先显示
+              * @return {Array}
+              */
+              function getIndexByword (word, text, caseSensitive, weight) {
+                if (!word || !text) {
+                  return [];
+                };
+
+                var startIndex = 0; // 每次匹配的开始索引
+                var index = -1;     // 匹配到的索引值
+                var result = [];    // 匹配结果
+
+                if (!caseSensitive) {
+                  word = word.toLowerCase();
+                  text = text.toLowerCase();
+                }
+
+                while((index = text.indexOf(word, startIndex)) !== -1) {
+                  var hasMatch = false;
+                  // 索引位置相同的关键词，保留长度较长的
+                  titleHitSlice.forEach(function (hit) {
+                    if (hit.index === index && hit.word.length < word.length) {
+                      hit.word = word;
+                      hasMatch = true;
+                    }
+                  });
+                  startIndex = index + word.length;
+                  !hasMatch && result.push({ index: index, word: word, weight: weight });
+                }
+                return result;
+              }
+              titleHitSlice = titleHitSlice.concat(getIndexByword(keyword, titleLower, false, WEIGHT.title));
+              contentHitSlice = contentHitSlice.concat(getIndexByword(keyword, contentLower, false, WEIGHT.content));
+            });
+
+            var hitTitle = titleHitSlice.length;
+            var hitContent = contentHitSlice.length;
+
+            if (hitTitle > 0 || hitContent > 0) {
+              isMatch = true;
+            }
+            if (isMatch) {
+              ;[titleHitSlice, contentHitSlice].forEach(function (hit) {
+                // 按照匹配文字的索引的递增顺序排序
+                hit.sort(function (left, right) {
+                  return left.index - right.index;
+                });
+              });
+              /**
+              * 给文本中匹配到的关键词添加标记，从而进行高亮显示
+              * @param {String} text 原文本
+              * @param {Array} hitSlice 匹配项的索引信息
+              * @param {Number} start 开始索引
+              * @param {Number} end 结束索引
+              * @return {String}
+              */
+              function highlightKeyword (text, hitSlice, start, end) {
+                if (!text || !hitSlice || !hitSlice.length) {
+                  return;
+                }
+
+                var result = '';
+                var startIndex = start;
+                var endIndex = end;
+                hitSlice.forEach(function (hit) {
+                  if (hit.index < startIndex) {
+                    return;
+                  }
+
+                  var hitWordEnd = hit.index + hit.word.length;
+                  result += text.slice(startIndex, hit.index);
+                  result += '<b>' + text.slice(hit.index, hitWordEnd) + '</b>';
+                  startIndex = hitWordEnd;
+                });
+                result += text.slice(startIndex, endIndex);
+                return result;
+              }
+
+              var postData = {};
+              // 文章总的搜索权重
+              var postWeight = titleHitSlice.length * WEIGHT.title + contentHitSlice.length * WEIGHT.content;
+              // 标记匹配关键词后的标题
+              var postTitle = highlightKeyword(title, titleHitSlice, 0, title.length) || title;
+              // 标记匹配关键词后的内容
+              var postContent;
+              // 显示内容的长度
+              var SHOW_WORD_LENGTH = 200;
+              // 命中关键词前的字符显示长度
+              var SHOW_WORD_FRONT_LENGTH = 20;
+              var SHOW_WORD_END_LENGTH = SHOW_WORD_LENGTH - SHOW_WORD_FRONT_LENGTH;
+
+              // 截取匹配的第一个字符，前后共 200 个字符来显示
+              if (contentHitSlice.length > 0) {
+                var firstIndex = contentHitSlice[0].index;
+                var start = firstIndex > SHOW_WORD_FRONT_LENGTH ? firstIndex - SHOW_WORD_FRONT_LENGTH : 0;
+                var end = firstIndex + SHOW_WORD_END_LENGTH;
+                postContent = highlightKeyword(content, contentHitSlice, start, end);
+              } else { // 未匹配到内容，直接截取前 200 个字符来显示
+                postContent = content.slice(0, SHOW_WORD_LENGTH);
+              }
+              postData.title = postTitle;
+              postData.content = postContent;
+              postData.url = postURL;
+              postData.weight = postWeight;
+              matchPosts.push(postData);
+            }
+          });
+        }
+
+        var resultInnerHtml = '';
+        if (matchPosts.length) {
+          // 按权重递增的顺序排序，使权重大的优先显示
+          matchPosts.sort(function (left, right) {
+            return right.weight - left.weight;
+          });
+          resultInnerHtml += '<ul>';
+          matchPosts.forEach(function (post) {
+            resultInnerHtml += '<li><a class="search-results-title" href="' + post.url + '">';
+            resultInnerHtml += post.title;
+            resultInnerHtml += '</a><div class="search-results-content">';
+            resultInnerHtml += post.content;
+            resultInnerHtml += '</div></li>';
+          });
+          resultInnerHtml += '</ul>';
+        } else {
+          resultInnerHtml += '<div class="search-results-none"><i class="far fa-meh"></i></div>';
+        }
+        $result.html(resultInnerHtml);
+      };
+      $input.on('input', searchPost);
+      $input.on('keyup', function (e) {
+        if (e.keyCode === Stun.utils.codeToKeyCode('Enter')) {
+          searchPost();
+        }
+      });
+    }
+  });
+}
+
+function closeSearch () {
+  $('body').css({ overflow: 'auto' });
+  $('.search-popup').css({ display: 'none' });
+  $('.search-mask').css({ display: 'none' });
+}
+
+window.addEventListener('DOMContentLoaded', function () {
+  Stun.utils.pjaxReloadLocalSearch = function () {
+    $('.header-nav-search').on('click', function (e) {
+      e.stopPropagation();
+      $('body').css('overflow', 'hidden');
+      $('.search-popup')
+        .velocity('stop')
+        .velocity('transition.expandIn', {
+          duration: 300,
+          complete: function () {
+            $('.search-popup input').focus();
+          }
+        });
+      $('.search-mask')
+        .velocity('stop')
+        .velocity('transition.fadeIn', {
+          duration: 300
+        });
+
+      initSearch();
+    });
+    $('.search-mask, .search-close').on('click', function () {
+      closeSearch();
+    });
+    $(document).on('keydown', function (e) {
+      // Escape <=> 27
+      if (e.keyCode === Stun.utils.codeToKeyCode('Escape')) {
+        closeSearch();
+      }
+    });
+  };
+
+  Stun.utils.pjaxReloadLocalSearch();
+}, false);
+
+function safeOpenUrl(url) {
+  var newTab = window.open();
+  newTab.opener = null;
+  newTab.location = url;
+}
+
+function extSearch(engine) {
+  var engines = {
+    google: 'https://www.google.com/search?q=',
+    bing: 'https://cn.bing.com/search?q=',
+    baidu: 'https://www.baidu.com/s?ie=UTF-8&wd=',
+  };
+  var host = window.location.host;
+  var query = $('.search-input input').val().toLowerCase().trim();
+  var uri = engines[engine] + query + ' site:' + host;
+
+  if (query) {
+    safeOpenUrl(uri);
+  } else {
+    Stun.utils.popAlert('warning', '请输入字符');
+  }
+}
+
+var assistSearchList = window.CONFIG.assistSearch;
+
+if (Array.isArray(assistSearchList)) {
+  assistSearchList.forEach(function (name) {
+    document.querySelector('.search-btns-item--' + name).addEventListener('click', function () {
+      extSearch(name);
+    }, false);
+  });
+}</script><script src="/js/utils.js?v=2.8.0"></script><script src="/js/stun-boot.js?v=2.8.0"></script><script src="/js/scroll.js?v=2.8.0"></script><script src="/js/header.js?v=2.8.0"></script><script type="application/json" src="/search.json"></script></body></html>

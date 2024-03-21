@@ -1,0 +1,401 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="format-detection" content="telephone=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><link rel="icon" href="/images/icons/favicon-16x16.png?v=2.8.0" type="image/png" sizes="16x16"><link rel="icon" href="/images/icons/favicon-32x32.png?v=2.8.0" type="image/png" sizes="32x32"><meta name="description" content="创建数据源服务器 创建密码文件 配置备份服务器 创建rsyncd.conf配置文件 备份服务器上启动rsync   备份测试 配置sersync 总结                        创建数据源服务器">
+<meta property="og:type" content="article">
+<meta property="og:title" content="rsync-sersync配置">
+<meta property="og:url" content="http://8.210.236.200:4000/p/c36c8db7.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="创建数据源服务器 创建密码文件 配置备份服务器 创建rsyncd.conf配置文件 备份服务器上启动rsync   备份测试 配置sersync 总结                        创建数据源服务器">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-01-15T08:41:00.000Z">
+<meta property="article:modified_time" content="2024-03-21T18:18:49.263Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="sync">
+<meta property="article:tag" content="rsync">
+<meta property="article:tag" content="sersync">
+<meta name="twitter:card" content="summary"><title>rsync-sersync配置 | Hexo</title><link ref="canonical" href="http://8.210.236.200:4000/p/c36c8db7.html"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.12.1/css/all.min.css" type="text/css"><link rel="stylesheet" href="/css/index.css?v=2.8.0"><link rel="stylesheet" href="css/custom.css"><script>var Stun = window.Stun || {};
+var CONFIG = {
+  root: '/',
+  algolia: undefined,
+  assistSearch: undefined,
+  fontIcon: {"prompt":{"success":"fas fa-check-circle","info":"fas fa-arrow-circle-right","warning":"fas fa-exclamation-circle","error":"fas fa-times-circle"},"copyBtn":"fas fa-copy"},
+  sidebar: undefined,
+  header: undefined,
+  postWidget: {"endText":true},
+  nightMode: {"enable":true},
+  back2top: {"enable":true},
+  codeblock: {"style":"default","highlight":"light","wordWrap":false},
+  reward: false,
+  fancybox: false,
+  zoomImage: {"gapAside":"20px"},
+  galleryWaterfall: undefined,
+  lazyload: false,
+  pjax: undefined,
+  externalLink: {"icon":{"enable":true,"name":"fas fa-external-link-alt"}},
+  shortcuts: undefined,
+  prompt: {"copyButton":"复制","copySuccess":"复制成功","copyError":"复制失败"},
+  sourcePath: {"js":"js","css":"css","images":"images"},
+};
+
+window.CONFIG = CONFIG;</script><meta name="generator" content="Hexo 7.1.1"></head><body><div class="container" id="container"><header class="header" id="header"><div class="header-inner header-inner--height header-inner--bgcolor"><nav class="header-nav header-nav--sticky"><div class="header-nav-inner"><div class="header-nav-menubtn"><i class="fas fa-bars"></i></div><div class="header-nav-menu"><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/"><span class="header-nav-menu-item__icon"><i class="fas fa-home"></i></span><span class="header-nav-menu-item__text">首页</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="javascript:;" onclick="return false;"><span class="header-nav-menu-item__icon"><i class="fas fa-file-alt"></i></span><span class="header-nav-menu-item__text">文章</span></a><div class="header-nav-submenu"><div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link" href="/categories/"><span class="header-nav-submenu-item__text">分类</span></a></div><div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link" href="/tags/"><span class="header-nav-submenu-item__text">标签</span></a></div><div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link" href="/archives/"><span class="header-nav-submenu-item__text">归档</span></a></div></div></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="javascript:;" onclick="return false;"><span class="header-nav-menu-item__icon"><i class="fas fa-code"></i></span><span class="header-nav-menu-item__text">语言</span></a><div class="header-nav-submenu"><div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link" href="/categories/python/"><span class="header-nav-submenu-item__text">python</span></a></div><div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link" href="/categories/node/"><span class="header-nav-submenu-item__text">node</span></a></div><div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link" href="/categories/php/"><span class="header-nav-submenu-item__text">php</span></a></div></div></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="javascript:;" onclick="return false;"><span class="header-nav-menu-item__icon"><i class="fas fa-tv"></i></span><span class="header-nav-menu-item__text">前端</span></a><div class="header-nav-submenu"><div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link" href="/categories/html/"><span class="header-nav-submenu-item__text">html</span></a></div><div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link" href="/categories/js/"><span class="header-nav-submenu-item__text">js</span></a></div></div></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="javascript:;" onclick="return false;"><span class="header-nav-menu-item__icon"><i class="fas fa-server"></i></span><span class="header-nav-menu-item__text">后端</span></a><div class="header-nav-submenu"><div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link" href="/categories/linux/"><span class="header-nav-submenu-item__text">linux</span></a></div><div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link" href="/categories/docker/"><span class="header-nav-submenu-item__text">docker</span></a></div><div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link" href="/categories/nginx/"><span class="header-nav-submenu-item__text">nginx</span></a></div></div></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="javascript:;" onclick="return false;"><span class="header-nav-menu-item__icon"><i class="fas fa-microchip"></i></span><span class="header-nav-menu-item__text">物联网</span></a><div class="header-nav-submenu"><div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link" href="/categories/c51/"><span class="header-nav-submenu-item__text">C51单片机</span></a></div><div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link" href="/categories/arduino/"><span class="header-nav-submenu-item__text">arduino</span></a></div><div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link" href="/categories/rpi/"><span class="header-nav-submenu-item__text">树霉派</span></a></div></div></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/categories/other/"><span class="header-nav-menu-item__icon"><i class="fas fa-align-justify"></i></span><span class="header-nav-menu-item__text">其它</span></a></div></div><div class="header-nav-search"><span class="header-nav-search__icon"><i class="fas fa-search"></i></span><span class="header-nav-search__text">搜索</span></div><div class="header-nav-mode"><div class="mode"><div class="mode-track"><span class="mode-track-moon"></span><span class="mode-track-sun"></span></div><div class="mode-thumb"></div></div></div></div></nav></div></header><main class="main" id="main"><div class="main-inner"><div class="content-wrap" id="content-wrap"><div class="content" id="content"><!-- Just used to judge whether it is an article page--><div id="is-post"></div><div class="post"><header class="post-header"><h1 class="post-title">rsync-sersync配置</h1><div class="post-meta"><span class="post-meta-item post-meta-item--createtime"><span class="post-meta-item__icon"><i class="far fa-calendar-plus"></i></span><span class="post-meta-item__info">发表于</span><span class="post-meta-item__value">2022-01-15</span></span><span class="post-meta-item post-meta-item--updatetime"><span class="post-meta-item__icon"><i class="far fa-calendar-check"></i></span><span class="post-meta-item__info">更新于</span><span class="post-meta-item__value">2024-03-22</span></span></div></header><div class="post-body"><!-- toc -->
+
+<ul>
+<li><a href="#%E5%88%9B%E5%BB%BA%E6%95%B0%E6%8D%AE%E6%BA%90%E6%9C%8D%E5%8A%A1%E5%99%A8">创建数据源服务器</a></li>
+<li><a href="#%E5%88%9B%E5%BB%BA%E5%AF%86%E7%A0%81%E6%96%87%E4%BB%B6">创建密码文件</a></li>
+<li><a href="#%E9%85%8D%E7%BD%AE%E5%A4%87%E4%BB%BD%E6%9C%8D%E5%8A%A1%E5%99%A8">配置备份服务器</a><ul>
+<li><a href="#%E5%88%9B%E5%BB%BArsyncdconf%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6">创建rsyncd.conf配置文件</a></li>
+<li><a href="#%E5%A4%87%E4%BB%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A%E5%90%AF%E5%8A%A8rsync">备份服务器上启动rsync</a></li>
+</ul>
+</li>
+<li><a href="#%E5%A4%87%E4%BB%BD%E6%B5%8B%E8%AF%95">备份测试</a></li>
+<li><a href="#%E9%85%8D%E7%BD%AEsersync">配置sersync</a></li>
+<li><a href="#%E6%80%BB%E7%BB%93">总结</a></li>
+</ul>
+<!-- tocstop -->
+
+
+        <h2><span id="创建数据源服务器">
+          创建数据源服务器</span></h2>
+      <span id="more"></span>
+<figure class="highlight shell"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -itd --name nginx-source -v /websource:/www -p 80:80 -p 443:443 -p 873:873 nginx</span><br></pre></td></tr></table></div></figure>
+<p>安装 rsync</p>
+<figure class="highlight shell"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker exec -it nginx-source bash</span><br><span class="line">apt install rsync -y</span><br></pre></td></tr></table></div></figure>
+
+
+        <h2><span id="创建密码文件">
+          创建密码文件</span></h2>
+      <blockquote>
+<p>只存在于源服务器上，文件只保存密码，并且只有一行，不要有用户名，像amdin:123456是不对的，只保存123456即可</p>
+</blockquote>
+<figure class="highlight shell"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;123456&quot; &gt; /etc/rsync.verify</span><br><span class="line">chmod 600 /etc/rsync.verify</span><br></pre></td></tr></table></div></figure>
+
+        <h2><span id="配置备份服务器">
+          配置备份服务器</span></h2>
+      <blockquote>
+<p>需要与源服务器同步的多个服务器都按如下这样配置</p>
+</blockquote>
+<p>创建备份端服务器</p>
+<figure class="highlight shell"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -itd --name nginx-back -v /webback:/wwwback -p 81:80 -p 444:443 -p 874:873 nginx</span><br></pre></td></tr></table></div></figure>
+
+<p>在备份服务器上安装</p>
+<figure class="highlight shell"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker exec -it nginx-back bash</span><br><span class="line">apt -y install rsync</span><br></pre></td></tr></table></div></figure>
+
+        <h3><span id="创建rsyncdconf配置文件">
+          创建rsyncd.conf配置文件</span></h3>
+      <blockquote>
+<p>rsyncd.conf配置文件在备份服务器上</p>
+</blockquote>
+<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">#设置运行rsync 进程的用户</span><br><span class="line">uid = root</span><br><span class="line">#运行进程的组</span><br><span class="line">gid = root</span><br><span class="line">#ip这里指本机ip，即备份服务器的ip，可以省略</span><br><span class="line">#address = 100.17.10.3</span><br><span class="line">#本机端口，这里是875服务器的端口，如888，870等等只要不被占用，防火墙开启就可以</span><br><span class="line">port = 873</span><br><span class="line">#如果&quot;use chroot&quot;指定为true，那么rsync在传输文件以前首先chroot到path参数所指定的目录下。这样做的原因是实现额外的安全防护，但是缺 点是需要以roots权限，并且不能备份指向外部的符号连接所指向的目录文件。默认情况下chroot值为true(或yes)。</span><br><span class="line">use chroot = yes</span><br><span class="line">#最大连接数</span><br><span class="line">max connections = 5</span><br><span class="line">#CentOS7中yum安装不需指定pid file 否则报错</span><br><span class="line">#pid file = /var/run/rsyncd.pid</span><br><span class="line">lock file=/var/run/rsyncd.lock</span><br><span class="line">#日志文件</span><br><span class="line">log file = /var/log/rsyncd.log</span><br><span class="line">#不同步的文件</span><br><span class="line">#exclude = lost+found/</span><br><span class="line">transfer logging = yes</span><br><span class="line">#超时时间</span><br><span class="line">timeout = 900</span><br><span class="line">#同步时跳过没有权限的目录</span><br><span class="line">ignore nonreadable = yes</span><br><span class="line">#传输时不压缩的文件</span><br><span class="line">dont compress = *.gz *.tgz *.zip *.z *.Z *.rpm *.deb *.bz2</span><br><span class="line"></span><br><span class="line">#规则模块，可以多个规则模块，不可以重名</span><br><span class="line">[wwwroot]</span><br><span class="line">#同步的路径提前在备份服务器中创建好</span><br><span class="line">path = /wwwback/</span><br><span class="line">#规则描述，随便写</span><br><span class="line">comment = rsync test</span><br><span class="line">#忽略错误</span><br><span class="line">ignore errors</span><br><span class="line">#是否可以pull 设置服务端文件读写权限</span><br><span class="line">read only = false</span><br><span class="line">#是否可以push</span><br><span class="line">#write only = false</span><br><span class="line">#不显示服务端资源列表</span><br><span class="line">list = false</span><br><span class="line">#下面配置同步时候的身份，注意该身份是在rsync里面定义的，并非是本机实际用户。</span><br><span class="line">#客户端获取文件的身份此用户并不是本机中确实存在的用户</span><br><span class="line">#该选项指定由空格或逗号分隔的用户名列表，只有这些用户才允许连接该模块</span><br><span class="line">auth users = admin ljs</span><br><span class="line">#用来认证客户端的秘钥文件 格式 USERNAME:PASSWORD</span><br><span class="line">#秘钥文件权限一定需要改为600，这里配置填写的是备份服务器的账户文件。</span><br><span class="line">secrets file = /etc/rsync.password</span><br><span class="line">#允许的主机访问 *代表所有</span><br><span class="line">hosts allow = *</span><br><span class="line">#创建rsyncd.conf配置文件 结束</span><br></pre></td></tr></table></div></figure>
+<p>原理：在备份服务器上使用配置文件 &#x2F;etc&#x2F;rsyncd.conf 来启动rsync，创建备份账户（像admin:123456的形式），最后把rsync以deamon方式运行（往下看有运行方法）</p>
+<blockquote>
+<p>自定义账户及密码，格式为user:password，每行一个<br>这个用户是虚拟用户，不是系统用户，只是用来验证同步操作是否合法</p>
+</blockquote>
+<figure class="highlight shell"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">新建并添加一行</span></span><br><span class="line">echo &quot;admin:123456&quot; &gt; /etc/rsync.password</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">再增加一行</span></span><br><span class="line">echo &quot;ljs:123456&quot; &gt;&gt; /etc/rsync.password</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">设置权限</span></span><br><span class="line">chmod 600 /etc/rsync.password</span><br></pre></td></tr></table></div></figure>
+
+        <h3><span id="备份服务器上启动rsync">
+          备份服务器上启动rsync</span></h3>
+      <figure class="highlight shell"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">加载备份服务器上的配置文件rsyncd.conf启动rsync服务</span></span><br><span class="line">rsync --daemon --config=/etc/rsyncd.conf</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">/etc/rsyncd.conf是缺省值，如果存在，则命令可以简写</span></span><br><span class="line">rsync --daemon</span><br></pre></td></tr></table></div></figure>
+
+        <h2><span id="备份测试">
+          备份测试</span></h2>
+      <blockquote>
+<p>备份命令（在源服务器上执行同步命令）<br>把源服务器上的文件复制到备份服务器上</p>
+</blockquote>
+<figure class="highlight shell"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">注意：/www/ 表示同步www目录下的文件和文件夹，/www表示把www文件夹也同步过去</span></span><br><span class="line">rsync -avz /www/ admin@100.17.10.3::wwwroot</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">--delete 表示当备份服务器上有，而源服务器上没有的文件，在同步时会被删除</span></span><br><span class="line">rsync -avz --delete /www/ admin@100.17.10.3::wwwroot</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">后面的 --password-file=/etc/rsync.verify 就是源服务器上的密码验证文件</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">此验证文件只存在源服务器上，记得开启600权限。</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">如果不加此参数项，则要求自行输入密码123456</span></span><br><span class="line">rsync -avz --delete /www/ admin@100.17.10.3::wwwroot --password-file=/etc/rsync.verify</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">不需要同步的文件和目录可以加上参数 --exclude</span></span><br><span class="line">rsync -avz /www/ --exclude=&quot;.svn&quot; --exclude=&quot;bbb&quot; admin@100.17.10.3::wwwroot</span><br><span class="line"></span><br><span class="line">rsync -vzrtopg --progress /www/ admin@100.17.10.3::wwwroot --password-file=/etc/rsync.verify</span><br></pre></td></tr></table></div></figure>
+<p>到这里linux的rsync同步就配置成功了，接下来再介绍一款网上比较推荐的一个软件，rsync搭配sersync一起使用。</p>
+
+        <h2><span id="配置sersync">
+          配置sersync</span></h2>
+      <blockquote>
+<p>在源服务器上进行sersync的配置</p>
+</blockquote>
+<p>1、上传sersync2.5.4_64bit_binary_stable_final.tar.gz到源服务器 &#x2F;usr&#x2F;local&#x2F; 目录下</p>
+<figure class="highlight shell"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">cd /usr/local</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">解压后在当前目录中会有一个 GNU-Linux-x86 文件夹</span></span><br><span class="line">tar xvf sersync2.5.4_64bit_binary_stable_final.tar.gz</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">文件夹名字改成sersync,里面有两个文件,一个是二进制文件sersync2 ,一个是配置文件confxml.xml</span></span><br><span class="line">mv GNU-Linux-x86 sersync</span><br></pre></td></tr></table></div></figure>
+<p>2、修改confxml.xml</p>
+<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">#修改sersync部分</span><br><span class="line">&lt;sersync&gt;</span><br><span class="line">    #本地同步目录 监控源服务器上的目录变化</span><br><span class="line">    &lt;localpath watch=&quot;/www/&quot;&gt;</span><br><span class="line">        #rsync模块名称,可以配置多个</span><br><span class="line">        &lt;remote ip=&quot;100.17.10.3&quot; name=&quot;wwwroot&quot;/&gt;</span><br><span class="line">        &lt;!--&lt;remote ip=&quot;100.17.10.3&quot; name=&quot;tongbu&quot;/&gt;--&gt;</span><br><span class="line">        &lt;!--&lt;remote ip=&quot;130.170.10.31&quot; name=&quot;py&quot;/&gt;--&gt;</span><br><span class="line">    &lt;/localpath&gt;</span><br><span class="line">    #修改rsync认证部分【rsync密码认证】</span><br><span class="line">    &lt;rsync&gt;</span><br><span class="line">        &lt;commonParams params=&quot;-artuz&quot;/&gt;</span><br><span class="line">        &lt;auth start=&quot;true&quot; users=&quot;admin&quot; passwordfile=&quot;/etc/rsync.verify&quot;/&gt;</span><br><span class="line">        &lt;userDefinedPort start=&quot;false&quot; port=&quot;874&quot;/&gt;&lt;!-- port=874 --&gt;</span><br><span class="line">        &lt;timeout start=&quot;false&quot; time=&quot;100&quot;/&gt;&lt;!-- timeout=100 --&gt;</span><br><span class="line">        &lt;ssh start=&quot;false&quot;/&gt;</span><br><span class="line">    &lt;/rsync&gt;</span><br><span class="line">&lt;/sersync&gt;</span><br></pre></td></tr></table></div></figure>
+<p>3、配置sersync开启sersync守护进程同步数据（运行如下命令）</p>
+<figure class="highlight shell"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">/usr/local/sersync/sersync2 -d -r -o /usr/local/sersync/confxml.xml</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">-o 指定/usr/local/sersync/confxml.xml作为配置文件</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">-r 在实时监控前作一次整体同步</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">-d 以守护进程方式在后台运行</span></span><br></pre></td></tr></table></div></figure>
+<p>4、测试<br>在源服务器上（watch&#x3D;”&#x2F;www&#x2F;“）目录下添加文件 看备份服务器上有没有变化<br>5、sersync 参数项详解</p>
+<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">/usr/local/sersync/sersync2 -help</span><br><span class="line">set the system param</span><br><span class="line">execute：echo 50000000 &gt; /proc/sys/fs/inotify/max_user_watches</span><br><span class="line">execute：echo 327679 &gt; /proc/sys/fs/inotify/max_queued_events</span><br><span class="line">parse the command param</span><br><span class="line">_______________________________________________________</span><br><span class="line">参数-d:启用守护进程模式</span><br><span class="line">参数-r:在监控前，将监控目录与远程主机用rsync命令推送一遍</span><br><span class="line">c参数-n: 指定开启守护线程的数量，默认为10个</span><br><span class="line">参数-o:指定配置文件，默认使用confxml.xml文件</span><br><span class="line">参数-m:单独启用其他模块，使用 -m refreshCDN 开启刷新CDN模块</span><br><span class="line">参数-m:单独启用其他模块，使用 -m socket 开启socket模块</span><br><span class="line">参数-m:单独启用其他模块，使用 -m http 开启http模块</span><br><span class="line">不加-m参数，则默认执行同步程序</span><br><span class="line"></span><br><span class="line">#例如：</span><br><span class="line">./sersync2 -n 8 -o abc.xml -r -d</span><br><span class="line">#表示，设置线程池工作线程为8个，指定abc.xml作为配置文件，在实时监控前作一次整体同步，以守护进程方式在后台运行。</span><br></pre></td></tr></table></div></figure>
+
+
+        <h2><span id="总结">
+          总结</span></h2>
+      <blockquote>
+<p>1、源服务器上安装 sersync和rsync，其中rsync不需要配置文件&#x2F;etc&#x2F;rsyncd.conf，不需要后台运行，不需要用户名密码表文件&#x2F;etc&#x2F;rsync.password。sersync只需要配置文件confxml.xml和rsync密码验证文件&#x2F;etc&#x2F;rsync.verify</p>
+</blockquote>
+<blockquote>
+<p>2、备份服务器上只安装rsync，只需要配置文件rsyncd.conf和用户名密码表&#x2F;etc&#x2F;rsync.password</p>
+</blockquote>
+</div><footer class="post-footer"><div class="post-ending ending"><div class="ending__text">------ 本文结束，感谢您的阅读 ------</div></div><div class="post-copyright copyright"><div class="copyright-author"><span class="copyright-author__name">本文作者: </span><span class="copyright-author__value"><a href="http://8.210.236.200:4000">John Doe</a></span></div><div class="copyright-link"><span class="copyright-link__name">本文链接: </span><span class="copyright-link__value"><a href="http://8.210.236.200:4000/p/c36c8db7.html">http://8.210.236.200:4000/p/c36c8db7.html</a></span></div><div class="copyright-notice"><span class="copyright-notice__name">版权声明: </span><span class="copyright-notice__value">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en" rel="external nofollow" target="_blank">BY-NC-SA</a> 许可协议。转载请注明出处！</span></div></div><div class="post-tags"><span class="post-tags-item"><span class="post-tags-item__icon"><i class="fas fa-tag"></i></span><a class="post-tags-item__link" href="http://8.210.236.200:4000/tags/sync/">sync</a></span><span class="post-tags-item"><span class="post-tags-item__icon"><i class="fas fa-tag"></i></span><a class="post-tags-item__link" href="http://8.210.236.200:4000/tags/rsync/">rsync</a></span><span class="post-tags-item"><span class="post-tags-item__icon"><i class="fas fa-tag"></i></span><a class="post-tags-item__link" href="http://8.210.236.200:4000/tags/sersync/">sersync</a></span></div><nav class="post-paginator paginator"><div class="paginator-prev"><a class="paginator-prev__link" href="/p/3362da68.html"><span class="paginator-prev__icon"><i class="fas fa-angle-left"></i></span><span class="paginator-prev__text">linux配置-ssh</span></a></div><div class="paginator-next"><a class="paginator-next__link" href="/p/40df1f5.html"><span class="paginator-prev__text">python 备份文件到百度网盘的方法</span><span class="paginator-next__icon"><i class="fas fa-angle-right"></i></span></a></div></nav></footer></div></div></div><div class="clearfix"></div></div></main><footer class="footer" id="footer"><div class="footer-inner"><div><span>Copyright © 2024</span><span class="footer__icon"><i class="fas fa-heart"></i></span><span>John Doe</span></div><div><span>由 <a href="http://hexo.io/" title="Hexo" target="_blank" rel="noopener">Hexo</a> 强力驱动</span><span> v7.1.1</span><span class="footer__devider">|</span><span>主题 - <a href="https://github.com/liuyib/hexo-theme-stun/" title="Stun" target="_blank" rel="noopener">Stun</a></span><span> v2.8.0</span></div></div></footer><div class="loading-bar" id="loading-bar"><div class="loading-bar__progress"></div></div><div class="back2top" id="back2top"><span class="back2top__icon"><i class="fas fa-rocket"></i></span></div></div><div class="search-mask"></div><div class="search-popup"><span class="search-close"></span><div class="search-input"><input placeholder="搜索文章（支持多关键词，请用空格分隔）"></div><div class="search-results"></div></div><script src="https://cdn.jsdelivr.net/npm/jquery@v3.4.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@1.5.2/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@1.5.2/velocity.ui.min.js"></script><script>function initSearch() {
+  var isXML = true;
+  var search_path = 'search.json';
+
+  if (!search_path) {
+    search_path = 'search.xml';
+  } else if (/json$/i.test(search_path)) {
+    isXML = false;
+  }
+
+  var path = '/' + search_path;
+  $.ajax({
+    url: path,
+    dataType: isXML ? 'xml' : 'json',
+    async: true,
+    success: function (res) {
+      var datas = isXML ? $('entry', res).map(function () {
+        // 将 XML 转为 JSON
+        return {
+          title: $('title', this).text(),
+          content: $('content', this).text(),
+          url: $('url', this).text()
+        };
+      }).get() : res;
+      var $input = $('.search-input input');
+      var $result = $('.search-results');
+      // 搜索对象（标题、内容）的权重，影响显示顺序
+      var WEIGHT = { title: 100, content: 1 };
+      var searchPost = function () {
+        var searchText = $input.val().toLowerCase().trim();
+        // 根据空白字符分隔关键字
+        var keywords = searchText.split(/[\s]+/);
+        // 搜索结果
+        var matchPosts = [];
+
+        // 有多个关键字时，将原文字整个保存下来
+        if (keywords.length > 1) {
+          keywords.push(searchText);
+        }
+        // 防止未输入字符时搜索
+        if (searchText.length > 0) {
+          datas.forEach(function (data) {
+            var isMatch  = false;
+            // 没有标题的文章使用预设的 i18n 变量代替
+            var title = (data.title && data.title.trim()) || '[ 文章无标题 ]';
+            var titleLower = title && title.toLowerCase();
+            // 删除 HTML 标签 和 所有空白字符
+            var content = data.content && data.content.replace(/<[^>]+>/g, '');
+            var contentLower = content && content.toLowerCase();
+            // 删除重复的 /
+            var postURL = data.url && decodeURI(data.url).replace(/\/{2,}/g, '/');
+            // 标题中匹配到的关键词
+            var titleHitSlice = [];
+            // 内容中匹配到的关键词
+            var contentHitSlice = [];
+
+            keywords.forEach(function (keyword) {
+              /**
+              * 获取匹配的关键词的索引
+              * @param {String} keyword 要匹配的关键字
+              * @param {String} text 原文字
+              * @param {Boolean} caseSensitive 是否区分大小写
+              * @param {Number} weight 匹配对象的权重。权重大的优先显示
+              * @return {Array}
+              */
+              function getIndexByword (word, text, caseSensitive, weight) {
+                if (!word || !text) {
+                  return [];
+                };
+
+                var startIndex = 0; // 每次匹配的开始索引
+                var index = -1;     // 匹配到的索引值
+                var result = [];    // 匹配结果
+
+                if (!caseSensitive) {
+                  word = word.toLowerCase();
+                  text = text.toLowerCase();
+                }
+
+                while((index = text.indexOf(word, startIndex)) !== -1) {
+                  var hasMatch = false;
+                  // 索引位置相同的关键词，保留长度较长的
+                  titleHitSlice.forEach(function (hit) {
+                    if (hit.index === index && hit.word.length < word.length) {
+                      hit.word = word;
+                      hasMatch = true;
+                    }
+                  });
+                  startIndex = index + word.length;
+                  !hasMatch && result.push({ index: index, word: word, weight: weight });
+                }
+                return result;
+              }
+              titleHitSlice = titleHitSlice.concat(getIndexByword(keyword, titleLower, false, WEIGHT.title));
+              contentHitSlice = contentHitSlice.concat(getIndexByword(keyword, contentLower, false, WEIGHT.content));
+            });
+
+            var hitTitle = titleHitSlice.length;
+            var hitContent = contentHitSlice.length;
+
+            if (hitTitle > 0 || hitContent > 0) {
+              isMatch = true;
+            }
+            if (isMatch) {
+              ;[titleHitSlice, contentHitSlice].forEach(function (hit) {
+                // 按照匹配文字的索引的递增顺序排序
+                hit.sort(function (left, right) {
+                  return left.index - right.index;
+                });
+              });
+              /**
+              * 给文本中匹配到的关键词添加标记，从而进行高亮显示
+              * @param {String} text 原文本
+              * @param {Array} hitSlice 匹配项的索引信息
+              * @param {Number} start 开始索引
+              * @param {Number} end 结束索引
+              * @return {String}
+              */
+              function highlightKeyword (text, hitSlice, start, end) {
+                if (!text || !hitSlice || !hitSlice.length) {
+                  return;
+                }
+
+                var result = '';
+                var startIndex = start;
+                var endIndex = end;
+                hitSlice.forEach(function (hit) {
+                  if (hit.index < startIndex) {
+                    return;
+                  }
+
+                  var hitWordEnd = hit.index + hit.word.length;
+                  result += text.slice(startIndex, hit.index);
+                  result += '<b>' + text.slice(hit.index, hitWordEnd) + '</b>';
+                  startIndex = hitWordEnd;
+                });
+                result += text.slice(startIndex, endIndex);
+                return result;
+              }
+
+              var postData = {};
+              // 文章总的搜索权重
+              var postWeight = titleHitSlice.length * WEIGHT.title + contentHitSlice.length * WEIGHT.content;
+              // 标记匹配关键词后的标题
+              var postTitle = highlightKeyword(title, titleHitSlice, 0, title.length) || title;
+              // 标记匹配关键词后的内容
+              var postContent;
+              // 显示内容的长度
+              var SHOW_WORD_LENGTH = 200;
+              // 命中关键词前的字符显示长度
+              var SHOW_WORD_FRONT_LENGTH = 20;
+              var SHOW_WORD_END_LENGTH = SHOW_WORD_LENGTH - SHOW_WORD_FRONT_LENGTH;
+
+              // 截取匹配的第一个字符，前后共 200 个字符来显示
+              if (contentHitSlice.length > 0) {
+                var firstIndex = contentHitSlice[0].index;
+                var start = firstIndex > SHOW_WORD_FRONT_LENGTH ? firstIndex - SHOW_WORD_FRONT_LENGTH : 0;
+                var end = firstIndex + SHOW_WORD_END_LENGTH;
+                postContent = highlightKeyword(content, contentHitSlice, start, end);
+              } else { // 未匹配到内容，直接截取前 200 个字符来显示
+                postContent = content.slice(0, SHOW_WORD_LENGTH);
+              }
+              postData.title = postTitle;
+              postData.content = postContent;
+              postData.url = postURL;
+              postData.weight = postWeight;
+              matchPosts.push(postData);
+            }
+          });
+        }
+
+        var resultInnerHtml = '';
+        if (matchPosts.length) {
+          // 按权重递增的顺序排序，使权重大的优先显示
+          matchPosts.sort(function (left, right) {
+            return right.weight - left.weight;
+          });
+          resultInnerHtml += '<ul>';
+          matchPosts.forEach(function (post) {
+            resultInnerHtml += '<li><a class="search-results-title" href="' + post.url + '">';
+            resultInnerHtml += post.title;
+            resultInnerHtml += '</a><div class="search-results-content">';
+            resultInnerHtml += post.content;
+            resultInnerHtml += '</div></li>';
+          });
+          resultInnerHtml += '</ul>';
+        } else {
+          resultInnerHtml += '<div class="search-results-none"><i class="far fa-meh"></i></div>';
+        }
+        $result.html(resultInnerHtml);
+      };
+      $input.on('input', searchPost);
+      $input.on('keyup', function (e) {
+        if (e.keyCode === Stun.utils.codeToKeyCode('Enter')) {
+          searchPost();
+        }
+      });
+    }
+  });
+}
+
+function closeSearch () {
+  $('body').css({ overflow: 'auto' });
+  $('.search-popup').css({ display: 'none' });
+  $('.search-mask').css({ display: 'none' });
+}
+
+window.addEventListener('DOMContentLoaded', function () {
+  Stun.utils.pjaxReloadLocalSearch = function () {
+    $('.header-nav-search').on('click', function (e) {
+      e.stopPropagation();
+      $('body').css('overflow', 'hidden');
+      $('.search-popup')
+        .velocity('stop')
+        .velocity('transition.expandIn', {
+          duration: 300,
+          complete: function () {
+            $('.search-popup input').focus();
+          }
+        });
+      $('.search-mask')
+        .velocity('stop')
+        .velocity('transition.fadeIn', {
+          duration: 300
+        });
+
+      initSearch();
+    });
+    $('.search-mask, .search-close').on('click', function () {
+      closeSearch();
+    });
+    $(document).on('keydown', function (e) {
+      // Escape <=> 27
+      if (e.keyCode === Stun.utils.codeToKeyCode('Escape')) {
+        closeSearch();
+      }
+    });
+  };
+
+  Stun.utils.pjaxReloadLocalSearch();
+}, false);
+
+function safeOpenUrl(url) {
+  var newTab = window.open();
+  newTab.opener = null;
+  newTab.location = url;
+}
+
+function extSearch(engine) {
+  var engines = {
+    google: 'https://www.google.com/search?q=',
+    bing: 'https://cn.bing.com/search?q=',
+    baidu: 'https://www.baidu.com/s?ie=UTF-8&wd=',
+  };
+  var host = window.location.host;
+  var query = $('.search-input input').val().toLowerCase().trim();
+  var uri = engines[engine] + query + ' site:' + host;
+
+  if (query) {
+    safeOpenUrl(uri);
+  } else {
+    Stun.utils.popAlert('warning', '请输入字符');
+  }
+}
+
+var assistSearchList = window.CONFIG.assistSearch;
+
+if (Array.isArray(assistSearchList)) {
+  assistSearchList.forEach(function (name) {
+    document.querySelector('.search-btns-item--' + name).addEventListener('click', function () {
+      extSearch(name);
+    }, false);
+  });
+}</script><script src="/js/utils.js?v=2.8.0"></script><script src="/js/stun-boot.js?v=2.8.0"></script><script src="/js/scroll.js?v=2.8.0"></script><script src="/js/header.js?v=2.8.0"></script><script type="application/json" src="/search.json"></script></body></html>
