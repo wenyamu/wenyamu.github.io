@@ -1,0 +1,394 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="format-detection" content="telephone=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><link rel="icon" href="/images/icons/favicon-16x16.png?v=2.8.0" type="image/png" sizes="16x16"><link rel="icon" href="/images/icons/favicon-32x32.png?v=2.8.0" type="image/png" sizes="32x32"><meta name="description" content="docker容器中进行证书申请(最简单的方式)       1、创建 acme.sh 环境 docker 守护进程 12345docker run --rm  -itd  \  -v &quot;$(pwd)&#x2F;out&quot;:&#x2F;acme.sh  \  --net&#x3D;host \  --name&#x3D;acme.sh \  neilpang&#x2F;acme.sh dae">
+<meta property="og:type" content="article">
+<meta property="og:title" content="acme.sh 申请 ssl 域名证书">
+<meta property="og:url" content="http://8.210.236.200:4000/p/cce1856a.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="docker容器中进行证书申请(最简单的方式)       1、创建 acme.sh 环境 docker 守护进程 12345docker run --rm  -itd  \  -v &quot;$(pwd)&#x2F;out&quot;:&#x2F;acme.sh  \  --net&#x3D;host \  --name&#x3D;acme.sh \  neilpang&#x2F;acme.sh dae">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-03-22T14:36:00.000Z">
+<meta property="article:modified_time" content="2024-03-24T16:46:48.544Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="ssl">
+<meta property="article:tag" content="https">
+<meta name="twitter:card" content="summary"><title>acme.sh 申请 ssl 域名证书 | Hexo</title><link ref="canonical" href="http://8.210.236.200:4000/p/cce1856a.html"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.12.1/css/all.min.css" type="text/css"><link rel="stylesheet" href="/css/index.css?v=2.8.0"><link rel="stylesheet" href="css/custom.css"><script>var Stun = window.Stun || {};
+var CONFIG = {
+  root: '/',
+  algolia: undefined,
+  assistSearch: undefined,
+  fontIcon: {"prompt":{"success":"fas fa-check-circle","info":"fas fa-arrow-circle-right","warning":"fas fa-exclamation-circle","error":"fas fa-times-circle"},"copyBtn":"fas fa-copy"},
+  sidebar: undefined,
+  header: undefined,
+  postWidget: {"endText":true},
+  nightMode: {"enable":true},
+  back2top: {"enable":true},
+  codeblock: {"style":"default","highlight":"light","wordWrap":false},
+  reward: false,
+  fancybox: false,
+  zoomImage: {"gapAside":"20px"},
+  galleryWaterfall: undefined,
+  lazyload: false,
+  pjax: undefined,
+  externalLink: {"icon":{"enable":true,"name":"fas fa-external-link-alt"}},
+  shortcuts: undefined,
+  prompt: {"copyButton":"复制","copySuccess":"复制成功","copyError":"复制失败"},
+  sourcePath: {"js":"js","css":"css","images":"images"},
+};
+
+window.CONFIG = CONFIG;</script><meta name="generator" content="Hexo 7.1.1"></head><body><div class="container" id="container"><header class="header" id="header"><div class="header-inner header-inner--height header-inner--bgcolor"><nav class="header-nav header-nav--sticky"><div class="header-nav-inner"><div class="header-nav-menubtn"><i class="fas fa-bars"></i></div><div class="header-nav-menu"><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/"><span class="header-nav-menu-item__icon"><i class="fas fa-home"></i></span><span class="header-nav-menu-item__text">首页</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="javascript:;" onclick="return false;"><span class="header-nav-menu-item__icon"><i class="fas fa-file-alt"></i></span><span class="header-nav-menu-item__text">文章</span></a><div class="header-nav-submenu"><div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link" href="/categories/"><span class="header-nav-submenu-item__text">分类</span></a></div><div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link" href="/tags/"><span class="header-nav-submenu-item__text">标签</span></a></div><div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link" href="/archives/"><span class="header-nav-submenu-item__text">归档</span></a></div></div></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="javascript:;" onclick="return false;"><span class="header-nav-menu-item__icon"><i class="fas fa-code"></i></span><span class="header-nav-menu-item__text">语言</span></a><div class="header-nav-submenu"><div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link" href="/categories/python/"><span class="header-nav-submenu-item__text">python</span></a></div><div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link" href="/categories/node/"><span class="header-nav-submenu-item__text">node</span></a></div><div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link" href="/categories/php/"><span class="header-nav-submenu-item__text">php</span></a></div></div></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="javascript:;" onclick="return false;"><span class="header-nav-menu-item__icon"><i class="fas fa-tv"></i></span><span class="header-nav-menu-item__text">前端</span></a><div class="header-nav-submenu"><div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link" href="/categories/html/"><span class="header-nav-submenu-item__text">html</span></a></div><div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link" href="/categories/js/"><span class="header-nav-submenu-item__text">js</span></a></div></div></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="javascript:;" onclick="return false;"><span class="header-nav-menu-item__icon"><i class="fas fa-server"></i></span><span class="header-nav-menu-item__text">后端</span></a><div class="header-nav-submenu"><div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link" href="/categories/linux/"><span class="header-nav-submenu-item__text">linux</span></a></div><div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link" href="/categories/docker/"><span class="header-nav-submenu-item__text">docker</span></a></div><div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link" href="/categories/nginx/"><span class="header-nav-submenu-item__text">nginx</span></a></div></div></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="javascript:;" onclick="return false;"><span class="header-nav-menu-item__icon"><i class="fas fa-microchip"></i></span><span class="header-nav-menu-item__text">物联网</span></a><div class="header-nav-submenu"><div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link" href="/categories/c51/"><span class="header-nav-submenu-item__text">C51单片机</span></a></div><div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link" href="/categories/arduino/"><span class="header-nav-submenu-item__text">arduino</span></a></div><div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link" href="/categories/rpi/"><span class="header-nav-submenu-item__text">树霉派</span></a></div></div></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/categories/other/"><span class="header-nav-menu-item__icon"><i class="fas fa-align-justify"></i></span><span class="header-nav-menu-item__text">其它</span></a></div></div><div class="header-nav-search"><span class="header-nav-search__icon"><i class="fas fa-search"></i></span><span class="header-nav-search__text">搜索</span></div><div class="header-nav-mode"><div class="mode"><div class="mode-track"><span class="mode-track-moon"></span><span class="mode-track-sun"></span></div><div class="mode-thumb"></div></div></div></div></nav></div></header><main class="main" id="main"><div class="main-inner"><div class="content-wrap" id="content-wrap"><div class="content" id="content"><!-- Just used to judge whether it is an article page--><div id="is-post"></div><div class="post"><header class="post-header"><h1 class="post-title">acme.sh 申请 ssl 域名证书</h1><div class="post-meta"><span class="post-meta-item post-meta-item--createtime"><span class="post-meta-item__icon"><i class="far fa-calendar-plus"></i></span><span class="post-meta-item__info">发表于</span><span class="post-meta-item__value">2024-03-22</span></span><span class="post-meta-item post-meta-item--updatetime"><span class="post-meta-item__icon"><i class="far fa-calendar-check"></i></span><span class="post-meta-item__info">更新于</span><span class="post-meta-item__value">2024-03-25</span></span></div></header><div class="post-body">
+        <h2><span id="docker容器中进行证书申请最简单的方式">
+          docker容器中进行证书申请(最简单的方式)</span></h2>
+      <p>1、创建 acme.sh 环境 docker 守护进程</p>
+<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">docker run --<span class="built_in">rm</span>  -itd  \</span><br><span class="line">  -v <span class="string">&quot;<span class="subst">$(pwd)</span>/out&quot;</span>:/acme.sh  \</span><br><span class="line">  --net=host \</span><br><span class="line">  --name=acme.sh \</span><br><span class="line">  neilpang/acme.sh daemon</span><br></pre></td></tr></table></div></figure>
+<p>2、绑定一个邮箱，不然会提示无法生成证书<br><code>docker exec acme.sh --register-account -m abc@qq.com</code></p>
+<p>3、申请example.com 一级域名证书 和 <span class="exturl"><a class="exturl__link" target="_blank" rel="noopener" href="http://www.example.com/">www.example.com</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span> 二级域名证书。<br>注意： <code>--httpport 80</code> 可选参数（缺省值80）如果 80 端口被占用，可以使用此参数另外指定一个端口。</p>
+<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="built_in">exec</span> acme.sh --issue -d example.com -d www.example.com --standalone --httpport 80</span><br></pre></td></tr></table></div></figure>
+
+        <h2><span id="在宿主机中进行证书申请">
+          在宿主机中进行证书申请</span></h2>
+      
+        <h3><span id="安装acmesh">
+          安装acme.sh</span></h3>
+      <p>因为acme.sh 默认是使用 zerossl 颁布证书，需要绑定邮箱。<br>如果切换成使用 letsencrypt 颁布证书就不需要绑定邮箱。<br>绑定邮箱后，申请的证书记录可以在web页面 <span class="exturl"><a class="exturl__link" target="_blank" rel="noopener" href="https://app.zerossl.com/certificates/issued">https://app.zerossl.com/certificates/issued</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span> 查看</p>
+<p>1、使用curl安装<br><code>curl https://get.acme.sh | sh -s email=abc@qq.com</code></p>
+<p>2、使用 git 安装</p>
+<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/acmesh-official/acme.sh.git</span><br><span class="line"><span class="built_in">cd</span> ./acme.sh</span><br><span class="line">./acme.sh --install -m abc@qq.com</span><br></pre></td></tr></table></div></figure>
+
+        <h3><span id="颁发证书">
+          颁发证书</span></h3>
+      <p>#绑定一个邮箱，不然会提示无法生成证书（如果安装时已经绑定，此步略过）<br><code>~/.acme.sh/acme.sh --register-account -m abc@qq.com</code></p>
+<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">~/.acme.sh/acme.sh --issue \</span><br><span class="line">  -d abc.im \</span><br><span class="line">  -d www.abc.im \</span><br><span class="line">  -w /www1/web/abc.im \</span><br><span class="line">  --keylength ec-256</span><br></pre></td></tr></table></div></figure>
+<p><code>-w /www1/web/abc.im</code> #网站Web文件的根目录<br>#在web站点的根目录中会生成一个文件，<code>/www1/web/abc.im/.well-known/acme-challenge/XF8XvWKA9ha_92na_jlc</code>。程序会通过http:&#x2F;&#x2F;或https:&#x2F;&#x2F;访问这个文件，以此来验证这个域名是不是属于你，所以这个文件必须能在网络上访问。</p>
+<p><code>--keylength ec-256</code> #缺省项，ECC算法可选值还有 ec-384, ECC 比 RSA 更好。</p>
+<p>#运行成功之后会生成一个以域名开头的文件夹 <code>~/.acme.sh/abc.im_ecc</code> 其中放置着ssl各种证书。</p>
+<p><code>abc.im_ecc</code>目录中生成的证书文件类型<br>cert-file <code>abc.im.cer</code><br>fullchain-file <code>fullchain.cer</code><br>ca-file <code>ca.cer</code><br>key-file <code>abc.im.key</code></p>
+
+        <h3><span id="转换证书文件的格式并复制到指定位置">
+          转换证书文件的格式并复制到指定位置</span></h3>
+      <p>#nginx 配置 ssl 只需要 <code>--fullchain-file</code> 和 <code>--key-file</code><br>#存放转换后的证书目录 &#x2F;www1&#x2F;ssl&#x2F;abc.im&#x2F; 要事先存在</p>
+<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">~/.acme.sh/acme.sh \</span><br><span class="line">--install-cert \</span><br><span class="line">-d abc.im \</span><br><span class="line">--key-file /www1/ssl/abc.im/key.pem \</span><br><span class="line">--fullchain-file /www1/ssl/abc.im/fullchain.pem \</span><br><span class="line">--cert-file /www1/ssl/abc.im/cert.pem \</span><br><span class="line">--ca-file  /www1/ssl/abc.im/ca.pem \</span><br><span class="line">--reloadcmd <span class="string">&quot;service nginx force-reload&quot;</span></span><br></pre></td></tr></table></div></figure>
+<p>#命令解释<br><code>-d abc.im</code>  表示转换 abc.im 域名的证书，会在<code>~/.acme.sh/</code>目录下匹配存放此域名证书的文件夹<code>abc.im_ecc</code>。<br><code>--reloadcmd &quot;service nginx force-reload&quot;</code> 可选，表示复制成功后，执行的命令，这里强制nginx载入配置文件</p>
+<p>#ca.pem&#x2F;chain.pem 其实是 fullchain.pem 文件中最后两个 CERTIFICATE（fullchain.pem 文件有三个 CERTIFICATE，第一个是 cert.pem）。<br>#cert.pem + ca.pem&#x2F;chain.pem &#x3D; fullchain.pem<br>#chain.pem &#x3D; ca.pem<br>#ca_bundle.crt 是 ca.pem 中第1个 CERTIFICATE<br>#cert 是 certificate 的简称</p>
+
+        <h4><span id="apache-用以下命令即可">
+          apache 用以下命令即可</span></h4>
+      <p>#apache 配置 ssl 需要3个文件 <code>--fullchain-file</code>, <code>--key-file</code>, <code>--cert-file</code></p>
+<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">~/.acme.sh/acme.sh \</span><br><span class="line">--install-cert \</span><br><span class="line">-d example.com \</span><br><span class="line">--cert-file     /www1/ssl/abc.im/cert.pem  \</span><br><span class="line">--key-file      /www1/ssl/abc.im/key.pem  \</span><br><span class="line">--fullchain-file /www1/ssl/abc.im/fullchain.pem \</span><br><span class="line">--reloadcmd     <span class="string">&quot;service apache2 force-reload&quot;</span></span><br></pre></td></tr></table></div></figure>
+
+
+        <h3><span id="通过阿里云自动生成泛域名证书">
+          通过阿里云自动生成泛域名证书</span></h3>
+      <p>#先申请ak，推荐aliyun（最安全的做法是创建ram子用户，给此用户仅添加“管理阿里云解析dns权限”）<br><span class="exturl"><a class="exturl__link" target="_blank" rel="noopener" href="https://ak-console.aliyun.com/#/accesskey">https://ak-console.aliyun.com/#/accesskey</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span><br><span class="exturl"><a class="exturl__link" target="_blank" rel="noopener" href="https://ram.console.aliyun.com/manage/ak">https://ram.console.aliyun.com/manage/ak</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span></p>
+<p>#配置环境变量，供后续执行的程序使用<br>#export 可新增，修改或删除环境变量</p>
+<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export Ali_Key=&quot;LTdAaI5tSEiqfdf1oWtmsjGcKvtP&quot;</span><br><span class="line">export Ali_Secret=&quot;gabUA2yq4aemlaogaj75AklujbX0xXT0ehIb9j&quot;</span><br></pre></td></tr></table></div></figure>
+<p>#执行生成通配符域名证书</p>
+<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">~/.acme.sh/acme.sh --issue \</span><br><span class="line">  --dns dns_ali \</span><br><span class="line">  -d abc.im \</span><br><span class="line">  -d <span class="string">&#x27;*.abc.im&#x27;</span></span><br></pre></td></tr></table></div></figure>
+<p>#证书生成成功之后，还需要执行以下命令复制证书文件（覆盖之前的文件）</p>
+<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">~/.acme.sh/acme.sh \</span><br><span class="line">  --install-cert \</span><br><span class="line">  -d abc.im \</span><br><span class="line">  --key-file /www1/ssl/abc.im/key.pem \</span><br><span class="line">  --fullchain-file /www1/ssl/abc.im/fullchain.pem \</span><br><span class="line">  --cert-file /www1/ssl/abc.im/cert.pem \</span><br><span class="line">  --ca-file  /www1/ssl/abc.im/ca.pem</span><br></pre></td></tr></table></div></figure>
+
+<p>#证书生成成功之后，<code>Ali_Key/Ali_Secret</code> 会自动保存在 <code>~/.acme.sh/account.conf</code> 文件中</p>
+
+        <h2><span id="acmesh-其它命令和问题的解决">
+          acme.sh 其它命令和问题的解决</span></h2>
+      <p>#撤销证书（通过acme.sh 申请的证书，只能通过 certbot 撤销）<br>#只是在 <span class="exturl"><a class="exturl__link" target="_blank" rel="noopener" href="https://app.zerossl.com/certificates/issued">https://app.zerossl.com/certificates/issued</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span> 中删除记录，证书文件还可以使用</p>
+<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">certbot revoke \</span><br><span class="line">  --server https://acme.zerossl.com/v2/DV90 \</span><br><span class="line">  --cert-path /www1/ssl/abc.im/cert.pem \</span><br><span class="line">  --key-path /www1/ssl/abc.im/key.pem</span><br></pre></td></tr></table></div></figure>
+
+<p>#查看所有证书生成列表</p>
+<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">~/.acme.sh/acme.sh --list</span><br></pre></td></tr></table></div></figure>
+<p>#强制重新生成指定证书</p>
+<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">~/.acme.sh/acme.sh --renew --force -d abc.im -d www.abc.im</span><br></pre></td></tr></table></div></figure>
+<p>#强制重新生成所有证书</p>
+<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">~/.acme.sh/acme.sh --renew-all --force</span><br></pre></td></tr></table></div></figure>
+<p>#删除域名更新</p>
+<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">~/.acme.sh/acme.sh --remove -d www.abc.com</span><br></pre></td></tr></table></div></figure>
+<p>#查看帮助</p>
+<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">~/.acme.sh/acme.sh -h</span><br></pre></td></tr></table></div></figure>
+<p>#查看域名配置</p>
+<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">~/.acme.sh/acme.sh --info --domain example.com</span><br></pre></td></tr></table></div></figure>
+<p>#切换默认证书申请服务器 zerossl 或 letsencrypt<br>#默认使用 ZeroSSL，以下示例切换 Let’s Encrypt</p>
+<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">~/.acme.sh/acme.sh --set-default-ca --server letsencrypt</span><br></pre></td></tr></table></div></figure>
+<p>返回信息：<br>Changed default CA to: <span class="exturl"><a class="exturl__link" target="_blank" rel="noopener" href="https://acme-v02.api.letsencrypt.org/directory">https://acme-v02.api.letsencrypt.org/directory</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span></p>
+<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">~/.acme.sh/acme.sh --set-default-ca --server zerossl</span><br></pre></td></tr></table></div></figure>
+<p>返回信息：<br>Changed default CA to: <span class="exturl"><a class="exturl__link" target="_blank" rel="noopener" href="https://acme.zerossl.com/v2/DV90">https://acme.zerossl.com/v2/DV90</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span></p>
+<p>#当申请证书时一直出现以下信息，你可以切换成 letsencrypt 再试：<br>Polling order status: <span class="exturl"><a class="exturl__link" target="_blank" rel="noopener" href="https://acme.zerossl.com/v2/DV90/order/52-Nc9ToRHmLUee2qL0g4A">https://acme.zerossl.com/v2/DV90/order/52-Nc9ToRHmLUee2qL0g4A</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span><br>Order status is processing, lets sleep and retry.<br>Retry after: 15</p>
+
+        <h2><span id="cron-定时任务">
+          cron 定时任务</span></h2>
+      <p>#安装 crontab 用于定期执行更新命令<br>#给debian系统添加crontab定时任务<br><code>apt update &amp;&amp; apt install -y cron</code></p>
+<p>创建定时任务如下：<br>编辑定时任务<br><code>crontab -e</code><br>添加如下任务，每天0点10分检查证书<br><code>10 0 * * * &quot;/root/.acme.sh&quot;/acme.sh --cron --home &quot;/root/.acme.sh&quot; &gt; /dev/null</code></p>
+<p>任务会根据 <code>/root/.acme.sh/abc.im_ecc/abc.im.conf</code> 文件中的 <code>Le_NextRenewTime=&#39;1691283600&#39;</code> 时间进行更新证书</p>
+<p>#crontab 命令<br><code>crontab -u</code> #设定某个用户的cron服务，一般root用户在执行这个命令的时候需要此参数<br><code>crontab -l</code> #列出某个用户cron服务的详细内容<br><code>crontab -r</code> #删除某个用户的cron服务<br><code>crontab -e</code> #编辑某个用户的cron服务</p>
+<p>启动 <code>/etc/init.d/cron start</code><br>关闭 <code>/etc/init.d/cron stop</code><br>重启 <code>/etc/init.d/cron restart</code><br>状态 <code>/etc/init.d/cron status</code></p>
+</div><footer class="post-footer"><div class="post-ending ending"><div class="ending__text">------ 本文结束，感谢您的阅读 ------</div></div><div class="post-copyright copyright"><div class="copyright-author"><span class="copyright-author__name">本文作者: </span><span class="copyright-author__value"><a href="http://8.210.236.200:4000">John Doe</a></span></div><div class="copyright-link"><span class="copyright-link__name">本文链接: </span><span class="copyright-link__value"><a href="http://8.210.236.200:4000/p/cce1856a.html">http://8.210.236.200:4000/p/cce1856a.html</a></span></div><div class="copyright-notice"><span class="copyright-notice__name">版权声明: </span><span class="copyright-notice__value">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en" rel="external nofollow" target="_blank">BY-NC-SA</a> 许可协议。转载请注明出处！</span></div></div><div class="post-tags"><span class="post-tags-item"><span class="post-tags-item__icon"><i class="fas fa-tag"></i></span><a class="post-tags-item__link" href="http://8.210.236.200:4000/tags/ssl/">ssl</a></span><span class="post-tags-item"><span class="post-tags-item__icon"><i class="fas fa-tag"></i></span><a class="post-tags-item__link" href="http://8.210.236.200:4000/tags/https/">https</a></span></div><nav class="post-paginator paginator"><div class="paginator-prev"><a class="paginator-prev__link" href="/p/b9078a91.html"><span class="paginator-prev__icon"><i class="fas fa-angle-left"></i></span><span class="paginator-prev__text">docker容器目录映射研究</span></a></div><div class="paginator-next"><a class="paginator-next__link" href="/p/afd1f77c.html"><span class="paginator-prev__text">Portainer Server 管理本机和远程主机的docker容器</span><span class="paginator-next__icon"><i class="fas fa-angle-right"></i></span></a></div></nav></footer></div></div></div><div class="clearfix"></div></div></main><footer class="footer" id="footer"><div class="footer-inner"><div><span>Copyright © 2024</span><span class="footer__icon"><i class="fas fa-heart"></i></span><span>John Doe</span></div><div><span>由 <a href="http://hexo.io/" title="Hexo" target="_blank" rel="noopener">Hexo</a> 强力驱动</span><span> v7.1.1</span><span class="footer__devider">|</span><span>主题 - <a href="https://github.com/liuyib/hexo-theme-stun/" title="Stun" target="_blank" rel="noopener">Stun</a></span><span> v2.8.0</span></div></div></footer><div class="loading-bar" id="loading-bar"><div class="loading-bar__progress"></div></div><div class="back2top" id="back2top"><span class="back2top__icon"><i class="fas fa-rocket"></i></span></div></div><div class="search-mask"></div><div class="search-popup"><span class="search-close"></span><div class="search-input"><input placeholder="搜索文章（支持多关键词，请用空格分隔）"></div><div class="search-results"></div></div><script src="https://cdn.jsdelivr.net/npm/jquery@v3.4.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@1.5.2/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@1.5.2/velocity.ui.min.js"></script><script>function initSearch() {
+  var isXML = true;
+  var search_path = 'search.json';
+
+  if (!search_path) {
+    search_path = 'search.xml';
+  } else if (/json$/i.test(search_path)) {
+    isXML = false;
+  }
+
+  var path = '/' + search_path;
+  $.ajax({
+    url: path,
+    dataType: isXML ? 'xml' : 'json',
+    async: true,
+    success: function (res) {
+      var datas = isXML ? $('entry', res).map(function () {
+        // 将 XML 转为 JSON
+        return {
+          title: $('title', this).text(),
+          content: $('content', this).text(),
+          url: $('url', this).text()
+        };
+      }).get() : res;
+      var $input = $('.search-input input');
+      var $result = $('.search-results');
+      // 搜索对象（标题、内容）的权重，影响显示顺序
+      var WEIGHT = { title: 100, content: 1 };
+      var searchPost = function () {
+        var searchText = $input.val().toLowerCase().trim();
+        // 根据空白字符分隔关键字
+        var keywords = searchText.split(/[\s]+/);
+        // 搜索结果
+        var matchPosts = [];
+
+        // 有多个关键字时，将原文字整个保存下来
+        if (keywords.length > 1) {
+          keywords.push(searchText);
+        }
+        // 防止未输入字符时搜索
+        if (searchText.length > 0) {
+          datas.forEach(function (data) {
+            var isMatch  = false;
+            // 没有标题的文章使用预设的 i18n 变量代替
+            var title = (data.title && data.title.trim()) || '[ 文章无标题 ]';
+            var titleLower = title && title.toLowerCase();
+            // 删除 HTML 标签 和 所有空白字符
+            var content = data.content && data.content.replace(/<[^>]+>/g, '');
+            var contentLower = content && content.toLowerCase();
+            // 删除重复的 /
+            var postURL = data.url && decodeURI(data.url).replace(/\/{2,}/g, '/');
+            // 标题中匹配到的关键词
+            var titleHitSlice = [];
+            // 内容中匹配到的关键词
+            var contentHitSlice = [];
+
+            keywords.forEach(function (keyword) {
+              /**
+              * 获取匹配的关键词的索引
+              * @param {String} keyword 要匹配的关键字
+              * @param {String} text 原文字
+              * @param {Boolean} caseSensitive 是否区分大小写
+              * @param {Number} weight 匹配对象的权重。权重大的优先显示
+              * @return {Array}
+              */
+              function getIndexByword (word, text, caseSensitive, weight) {
+                if (!word || !text) {
+                  return [];
+                };
+
+                var startIndex = 0; // 每次匹配的开始索引
+                var index = -1;     // 匹配到的索引值
+                var result = [];    // 匹配结果
+
+                if (!caseSensitive) {
+                  word = word.toLowerCase();
+                  text = text.toLowerCase();
+                }
+
+                while((index = text.indexOf(word, startIndex)) !== -1) {
+                  var hasMatch = false;
+                  // 索引位置相同的关键词，保留长度较长的
+                  titleHitSlice.forEach(function (hit) {
+                    if (hit.index === index && hit.word.length < word.length) {
+                      hit.word = word;
+                      hasMatch = true;
+                    }
+                  });
+                  startIndex = index + word.length;
+                  !hasMatch && result.push({ index: index, word: word, weight: weight });
+                }
+                return result;
+              }
+              titleHitSlice = titleHitSlice.concat(getIndexByword(keyword, titleLower, false, WEIGHT.title));
+              contentHitSlice = contentHitSlice.concat(getIndexByword(keyword, contentLower, false, WEIGHT.content));
+            });
+
+            var hitTitle = titleHitSlice.length;
+            var hitContent = contentHitSlice.length;
+
+            if (hitTitle > 0 || hitContent > 0) {
+              isMatch = true;
+            }
+            if (isMatch) {
+              ;[titleHitSlice, contentHitSlice].forEach(function (hit) {
+                // 按照匹配文字的索引的递增顺序排序
+                hit.sort(function (left, right) {
+                  return left.index - right.index;
+                });
+              });
+              /**
+              * 给文本中匹配到的关键词添加标记，从而进行高亮显示
+              * @param {String} text 原文本
+              * @param {Array} hitSlice 匹配项的索引信息
+              * @param {Number} start 开始索引
+              * @param {Number} end 结束索引
+              * @return {String}
+              */
+              function highlightKeyword (text, hitSlice, start, end) {
+                if (!text || !hitSlice || !hitSlice.length) {
+                  return;
+                }
+
+                var result = '';
+                var startIndex = start;
+                var endIndex = end;
+                hitSlice.forEach(function (hit) {
+                  if (hit.index < startIndex) {
+                    return;
+                  }
+
+                  var hitWordEnd = hit.index + hit.word.length;
+                  result += text.slice(startIndex, hit.index);
+                  result += '<b>' + text.slice(hit.index, hitWordEnd) + '</b>';
+                  startIndex = hitWordEnd;
+                });
+                result += text.slice(startIndex, endIndex);
+                return result;
+              }
+
+              var postData = {};
+              // 文章总的搜索权重
+              var postWeight = titleHitSlice.length * WEIGHT.title + contentHitSlice.length * WEIGHT.content;
+              // 标记匹配关键词后的标题
+              var postTitle = highlightKeyword(title, titleHitSlice, 0, title.length) || title;
+              // 标记匹配关键词后的内容
+              var postContent;
+              // 显示内容的长度
+              var SHOW_WORD_LENGTH = 200;
+              // 命中关键词前的字符显示长度
+              var SHOW_WORD_FRONT_LENGTH = 20;
+              var SHOW_WORD_END_LENGTH = SHOW_WORD_LENGTH - SHOW_WORD_FRONT_LENGTH;
+
+              // 截取匹配的第一个字符，前后共 200 个字符来显示
+              if (contentHitSlice.length > 0) {
+                var firstIndex = contentHitSlice[0].index;
+                var start = firstIndex > SHOW_WORD_FRONT_LENGTH ? firstIndex - SHOW_WORD_FRONT_LENGTH : 0;
+                var end = firstIndex + SHOW_WORD_END_LENGTH;
+                postContent = highlightKeyword(content, contentHitSlice, start, end);
+              } else { // 未匹配到内容，直接截取前 200 个字符来显示
+                postContent = content.slice(0, SHOW_WORD_LENGTH);
+              }
+              postData.title = postTitle;
+              postData.content = postContent;
+              postData.url = postURL;
+              postData.weight = postWeight;
+              matchPosts.push(postData);
+            }
+          });
+        }
+
+        var resultInnerHtml = '';
+        if (matchPosts.length) {
+          // 按权重递增的顺序排序，使权重大的优先显示
+          matchPosts.sort(function (left, right) {
+            return right.weight - left.weight;
+          });
+          resultInnerHtml += '<ul>';
+          matchPosts.forEach(function (post) {
+            resultInnerHtml += '<li><a class="search-results-title" href="' + post.url + '">';
+            resultInnerHtml += post.title;
+            resultInnerHtml += '</a><div class="search-results-content">';
+            resultInnerHtml += post.content;
+            resultInnerHtml += '</div></li>';
+          });
+          resultInnerHtml += '</ul>';
+        } else {
+          resultInnerHtml += '<div class="search-results-none"><i class="far fa-meh"></i></div>';
+        }
+        $result.html(resultInnerHtml);
+      };
+      $input.on('input', searchPost);
+      $input.on('keyup', function (e) {
+        if (e.keyCode === Stun.utils.codeToKeyCode('Enter')) {
+          searchPost();
+        }
+      });
+    }
+  });
+}
+
+function closeSearch () {
+  $('body').css({ overflow: 'auto' });
+  $('.search-popup').css({ display: 'none' });
+  $('.search-mask').css({ display: 'none' });
+}
+
+window.addEventListener('DOMContentLoaded', function () {
+  Stun.utils.pjaxReloadLocalSearch = function () {
+    $('.header-nav-search').on('click', function (e) {
+      e.stopPropagation();
+      $('body').css('overflow', 'hidden');
+      $('.search-popup')
+        .velocity('stop')
+        .velocity('transition.expandIn', {
+          duration: 300,
+          complete: function () {
+            $('.search-popup input').focus();
+          }
+        });
+      $('.search-mask')
+        .velocity('stop')
+        .velocity('transition.fadeIn', {
+          duration: 300
+        });
+
+      initSearch();
+    });
+    $('.search-mask, .search-close').on('click', function () {
+      closeSearch();
+    });
+    $(document).on('keydown', function (e) {
+      // Escape <=> 27
+      if (e.keyCode === Stun.utils.codeToKeyCode('Escape')) {
+        closeSearch();
+      }
+    });
+  };
+
+  Stun.utils.pjaxReloadLocalSearch();
+}, false);
+
+function safeOpenUrl(url) {
+  var newTab = window.open();
+  newTab.opener = null;
+  newTab.location = url;
+}
+
+function extSearch(engine) {
+  var engines = {
+    google: 'https://www.google.com/search?q=',
+    bing: 'https://cn.bing.com/search?q=',
+    baidu: 'https://www.baidu.com/s?ie=UTF-8&wd=',
+  };
+  var host = window.location.host;
+  var query = $('.search-input input').val().toLowerCase().trim();
+  var uri = engines[engine] + query + ' site:' + host;
+
+  if (query) {
+    safeOpenUrl(uri);
+  } else {
+    Stun.utils.popAlert('warning', '请输入字符');
+  }
+}
+
+var assistSearchList = window.CONFIG.assistSearch;
+
+if (Array.isArray(assistSearchList)) {
+  assistSearchList.forEach(function (name) {
+    document.querySelector('.search-btns-item--' + name).addEventListener('click', function () {
+      extSearch(name);
+    }, false);
+  });
+}</script><script src="/js/utils.js?v=2.8.0"></script><script src="/js/stun-boot.js?v=2.8.0"></script><script src="/js/scroll.js?v=2.8.0"></script><script src="/js/header.js?v=2.8.0"></script><script type="application/json" src="/search.json"></script></body></html>
