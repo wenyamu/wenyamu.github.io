@@ -1406,9 +1406,6 @@ kbd {
 .post-meta-item__value {
   margin: 0 2px;
 }
-.post-meta-item--createtime {
-  color: var(--color-gray-700);
-}
 .post-meta-item--updatetime {
   color: #49b1f5;
 }
