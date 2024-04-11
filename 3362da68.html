@@ -24,9 +24,9 @@ var CONFIG = {
   reward: true,
   fancybox: true,
   zoomImage: undefined,
-  galleryWaterfall: {"colWidth":"200px","gapX":"10px"},
+  galleryWaterfall: undefined,
   lazyload: false,
-  pjax: {"avoidBanner":true},
+  pjax: {"avoidBanner":false},
   externalLink: {"icon":{"enable":true,"name":"fas fa-external-link-alt"}},
   shortcuts: undefined,
   prompt: {"copyButton":"复制","copySuccess":"复制成功","copyError":"复制失败"},
@@ -81,7 +81,7 @@ window.CONFIG = CONFIG;</script><meta name="generator" content="Hexo 6.3.0"></he
         <h2><span id="总结">
           总结</span></h2>
       <p>1、在客户端A主机上创建密钥对，把公钥复制到ssh服务器B主机上，实现A免密登陆B。<br>2、为了安全建议不要使用root用户，可以试试A、B两个服务器都使用普通用户。</p>
-</div><footer class="post-footer"><div class="post-tags"><span class="post-tags-item"><span class="post-tags-item__icon"><i class="fas fa-tag"></i></span><a class="post-tags-item__link" href="http://8.210.236.200:4000/tags/ssh/">ssh</a></span></div><div class="post-reward reward"><div class="reward-button">请我喝杯咖啡~</div><div class="reward-qrcode"><span class="reward-qrcode-alipay"><img class="reward-qrcode-alipay__img" src="/images/reward/ali.jpg"><div class="reward-qrcode-alipay__text">支付宝打赏</div></span><span class="reward-qrcode-wechat"><img class="reward-qrcode-wechat__img" src="/images/reward/wx.jpg"><div class="reward-qrcode-wechat__text">微信打赏</div></span></div></div><nav class="post-paginator paginator"><div class="paginator-prev"><a class="paginator-prev__link" href="/ff5f9e62.html"><span class="paginator-prev__icon"><i class="fas fa-angle-left"></i></span><span class="paginator-prev__text">vsftpd的搭建和使用-虚拟多用户配置</span></a></div><div class="paginator-next"><a class="paginator-next__link" href="/c36c8db7.html"><span class="paginator-prev__text">rsync-sersync配置</span><span class="paginator-next__icon"><i class="fas fa-angle-right"></i></span></a></div></nav></footer></div></div></div><div class="clearfix"></div></div></main><footer class="footer" id="footer"><div class="footer-inner"><div><span>Copyright © 2024</span><span class="footer__icon"><i class="fas fa-star"></i></span><span>689.im</span></div></div></footer><div class="loading-bar" id="loading-bar"><div class="loading-bar__progress"></div></div></div><div class="search-mask"></div><div class="search-popup"><span class="search-close"></span><div class="search-input"><input placeholder="搜索文章（支持多关键词，请用空格分隔）"></div><div class="search-results"></div></div><script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script><script src="https://cdn.bootcdn.net/ajax/libs/velocity/1.5.2/velocity.min.js"></script><script src="https://cdn.bootcdn.net/ajax/libs/velocity/1.5.2/velocity.ui.min.js"></script><script src="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js"></script><script>function initSearch() {
+</div><footer class="post-footer"><div class="post-tags"><span class="post-tags-item"><span class="post-tags-item__icon"><i class="fas fa-tag"></i></span><a class="post-tags-item__link" href="http://8.210.236.200:4000/tags/ssh/">ssh</a></span></div><div class="post-reward reward"><div class="reward-button">请我喝杯咖啡~</div><div class="reward-qrcode"><span class="reward-qrcode-alipay"><img class="reward-qrcode-alipay__img" src="/images/reward/ali.jpg"><div class="reward-qrcode-alipay__text">支付宝打赏</div></span><span class="reward-qrcode-wechat"><img class="reward-qrcode-wechat__img" src="/images/reward/wx.jpg"><div class="reward-qrcode-wechat__text">微信打赏</div></span></div></div><nav class="post-paginator paginator"><div class="paginator-prev"><a class="paginator-prev__link" href="/ff5f9e62.html"><span class="paginator-prev__icon"><i class="fas fa-angle-left"></i></span><span class="paginator-prev__text">vsftpd的搭建和使用-虚拟多用户配置</span></a></div><div class="paginator-next"><a class="paginator-next__link" href="/c36c8db7.html"><span class="paginator-prev__text">rsync-sersync配置</span><span class="paginator-next__icon"><i class="fas fa-angle-right"></i></span></a></div></nav></footer></div></div></div><div class="clearfix"></div></div></main><footer class="footer" id="footer"><div class="footer-inner"><div><span>Copyright © 2024</span><span class="footer__icon"><i class="fas fa-star"></i></span><span>689.im</span></div></div></footer><div class="loading-bar" id="loading-bar"><div class="loading-bar__progress"></div></div></div><div class="search-mask"></div><div class="search-popup"><span class="search-close"></span><div class="search-input"><input placeholder="搜索文章（支持多关键词，请用空格分隔）"></div><div class="search-results"></div></div><script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script><script src="https://cdn.bootcdn.net/ajax/libs/velocity/1.5.2/velocity.min.js"></script><script src="https://cdn.bootcdn.net/ajax/libs/velocity/1.5.2/velocity.ui.min.js"></script><script src="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script><script>function initSearch() {
   var isXML = true;
   var search_path = 'search.json';
 
@@ -420,16 +420,4 @@ if (Array.isArray(assistSearchList)) {
       }
     }
   }, false);
-}, false);</script><div id="pjax-reload"><script src="https://cdn.bootcdn.net/ajax/libs/quicklink/2.3.0/quicklink.umd.min.js"></script><script>function initQuicklink() {
-  quicklink({
-    timeout: '10000',
-    priority: true,
-    ignores: [uri => uri.includes('#'), uri => uri === 'http://8.210.236.200:4000/3362da68.html', /\/api\/?/,uri => uri.includes('.xml'),uri => uri.includes('.zip'),(uri, el) => el.hasAttribute('nofollow'),(uri, el) => el.hasAttribute('noprefetch')]
-  });
-}
-
-if (true || false) {
-  initQuicklink();
-} else {
-  window.addEventListener('DOMContentLoaded', initQuicklink, false);
-}</script></div><script src="/js/utils.js?v=2.8.0"></script><script src="/js/stun-boot.js?v=2.8.0"></script><script src="/js/scroll.js?v=2.8.0"></script><script src="/js/header.js?v=2.8.0"></script><script type="application/json" src="/search.json"></script></body></html>
+}, false);</script><div id="pjax-reload"></div><script src="/js/utils.js?v=2.8.0"></script><script src="/js/stun-boot.js?v=2.8.0"></script><script src="/js/scroll.js?v=2.8.0"></script><script src="/js/header.js?v=2.8.0"></script><script type="application/json" src="/search.json"></script></body></html>
