@@ -15,14 +15,14 @@ var CONFIG = {
   postWidget: undefined,
   nightMode: {"enable":true},
   back2top: undefined,
-  codeblock: {"style":"default","highlight":"light","wordWrap":false},
+  codeblock: {"style":"carbon","highlight":"dark","wordWrap":true},
   reward: false,
   fancybox: true,
   zoomImage: undefined,
   galleryWaterfall: {"colWidth":"200px","gapX":"10px"},
   lazyload: false,
-  pjax: {"avoidBanner":false},
-  externalLink: undefined,
+  pjax: {"avoidBanner":true},
+  externalLink: {"icon":{"enable":true,"name":"fas fa-external-link-alt"}},
   shortcuts: undefined,
   prompt: {"copyButton":"复制","copySuccess":"复制成功","copyError":"复制失败"},
   sourcePath: {"js":"js","css":"css","images":"images"},
@@ -367,4 +367,16 @@ if (Array.isArray(assistSearchList)) {
       }
     }
   }, false);
-}, false);</script><div id="pjax-reload"></div><script src="/js/utils.js?v=2.8.0"></script><script src="/js/stun-boot.js?v=2.8.0"></script><script src="/js/scroll.js?v=2.8.0"></script><script src="/js/header.js?v=2.8.0"></script><script type="application/json" src="/search.json"></script></body></html>
+}, false);</script><div id="pjax-reload"><script src="https://cdn.bootcdn.net/ajax/libs/quicklink/2.3.0/quicklink.umd.min.js"></script><script>function initQuicklink() {
+  quicklink({
+    timeout: '10000',
+    priority: true,
+    ignores: [uri => uri.includes('#'), uri => uri === 'http://8.210.236.200:4000/archives/2024/02/', /\/api\/?/,uri => uri.includes('.xml'),uri => uri.includes('.zip'),(uri, el) => el.hasAttribute('nofollow'),(uri, el) => el.hasAttribute('noprefetch')]
+  });
+}
+
+if (true || false) {
+  initQuicklink();
+} else {
+  window.addEventListener('DOMContentLoaded', initQuicklink, false);
+}</script></div><script src="/js/utils.js?v=2.8.0"></script><script src="/js/stun-boot.js?v=2.8.0"></script><script src="/js/scroll.js?v=2.8.0"></script><script src="/js/header.js?v=2.8.0"></script><script type="application/json" src="/search.json"></script></body></html>

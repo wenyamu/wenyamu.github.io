@@ -19,14 +19,14 @@ var CONFIG = {
   postWidget: undefined,
   nightMode: {"enable":true},
   back2top: undefined,
-  codeblock: {"style":"default","highlight":"light","wordWrap":false},
+  codeblock: {"style":"carbon","highlight":"dark","wordWrap":true},
   reward: true,
   fancybox: true,
   zoomImage: undefined,
   galleryWaterfall: {"colWidth":"200px","gapX":"10px"},
   lazyload: false,
-  pjax: {"avoidBanner":false},
-  externalLink: undefined,
+  pjax: {"avoidBanner":true},
+  externalLink: {"icon":{"enable":true,"name":"fas fa-external-link-alt"}},
   shortcuts: undefined,
   prompt: {"copyButton":"复制","copySuccess":"复制成功","copyError":"复制失败"},
   sourcePath: {"js":"js","css":"css","images":"images"},
@@ -39,7 +39,7 @@ window.CONFIG = CONFIG;</script><meta name="generator" content="Hexo 6.3.0"></he
         <h3><span id="快速使用">
           快速使用</span></h3>
       <figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-cli -g <span class="comment"># 全局安装模块</span></span><br><span class="line">hexo init /hexo <span class="comment"># 新建并初始化项目目录</span></span><br><span class="line"><span class="built_in">cd</span> /hexo</span><br><span class="line">npm install</span><br><span class="line">hexo server <span class="comment"># 简写：hexo s</span></span><br></pre></td></tr></table></div></figure>
-<p>然后就可以通过 <a target="_blank" rel="noopener" href="http://ip:4000/">http://ip:4000</a> 打开你的hexo博客了</p>
+<p>然后就可以通过 <span class="exturl"><a class="exturl__link" target="_blank" rel="noopener" href="http://ip:4000/">http://ip:4000</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span> 打开你的hexo博客了</p>
 <!-- more -->
 
 <blockquote>
@@ -62,7 +62,7 @@ window.CONFIG = CONFIG;</script><meta name="generator" content="Hexo 6.3.0"></he
         <h2><span id="hexo-内容管理后台">
           hexo 内容管理后台</span></h2>
       <figure class="highlight shell"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-admin</span><br></pre></td></tr></table></div></figure>
-<p>然后就可以通过 <a target="_blank" rel="noopener" href="http://ip:4000/admin">http://ip:4000/admin</a> 打开你的hexo博客后台了</p>
+<p>然后就可以通过 <span class="exturl"><a class="exturl__link" target="_blank" rel="noopener" href="http://ip:4000/admin">http://ip:4000/admin</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span> 打开你的hexo博客后台了</p>
 
         <h2><span id="使用-hexo-admin-后台执行-deploy">
           使用 hexo-admin 后台执行 deploy</span></h2>
@@ -71,7 +71,7 @@ window.CONFIG = CONFIG;</script><meta name="generator" content="Hexo 6.3.0"></he
 <p>修改 &#x2F;hexo&#x2F;_config.yml 文件，添加以下内容</p>
 <figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># hexo-admin 使用用户:ljs 和密码:ljsljs 登录</span><br><span class="line">admin:</span><br><span class="line">  #username: ljs</span><br><span class="line">  #password_hash: $2a$10$/CFpA2l/UkaHwCPfGus1JuLhZt4vJu1LDTppN39dEgayA0a0Yleqy</span><br><span class="line">  #secret: fdasf789$$%@%@$#</span><br><span class="line">  deployCommand: &#x27;./hexo_deploy.sh&#x27;</span><br></pre></td></tr></table></div></figure>
 <blockquote>
-<p>以上完成后，在 <a target="_blank" rel="noopener" href="http://ip:4000/admin/#/deploy">http://ip:4000/admin/#/deploy</a> 页面下 点击 deploy 按钮，就可以运行 hexo_deploy.sh</p>
+<p>以上完成后，在 <span class="exturl"><a class="exturl__link" target="_blank" rel="noopener" href="http://ip:4000/admin/#/deploy">http://ip:4000/admin/#/deploy</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span> 页面下 点击 deploy 按钮，就可以运行 hexo_deploy.sh</p>
 </blockquote>
 
         <h2><span id="自动生成目录">
@@ -86,8 +86,8 @@ window.CONFIG = CONFIG;</script><meta name="generator" content="Hexo 6.3.0"></he
           生成永久链接地址</span></h2>
       <p>原理是为 *.md 添加一个标签 abbrlink: 123456</p>
 <p>在文章（*.md）修改时（包括文件名和文章内容），插件生成的 abbrlink 值前后都是一样的，相当于生成了一个固定的唯一的url永久地址。</p>
-<p>插件 <a target="_blank" rel="noopener" href="https://github.com/rozbo/hexo-abbrlink">hexo-abbrlink</a> 生成字母和数字组合</p>
-<p>插件 <a target="_blank" rel="noopener" href="https://github.com/rozbo/hexo-abbrlink2">hexo-abbrlink2</a> 生成递增的数字</p>
+<p>插件 <span class="exturl"><a class="exturl__link" target="_blank" rel="noopener" href="https://github.com/rozbo/hexo-abbrlink">hexo-abbrlink</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span> 生成字母和数字组合</p>
+<p>插件 <span class="exturl"><a class="exturl__link" target="_blank" rel="noopener" href="https://github.com/rozbo/hexo-abbrlink2">hexo-abbrlink2</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span> 生成递增的数字</p>
 <figure class="highlight shell"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">安装插件</span></span><br><span class="line">npm install hexo-abbrlink</span><br><span class="line">npm install hexo-abbrlink2</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">修改 /hexo/_config.yml文件</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">不带 .html 后缀</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">permalink: posts/:abbrlink/</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">带 .html 后缀</span></span><br><span class="line">permalink: posts/:abbrlink.html</span><br><span class="line">abbrlink:</span><br><span class="line"><span class="meta prompt_">  #</span><span class="language-bash">hexo-abbrlink 设置</span></span><br><span class="line">  alg: crc32   #算法： crc16(default) and crc32(推荐)</span><br><span class="line">  rep: hex     #进制： dec(default) and hex(推荐)</span><br><span class="line"><span class="meta prompt_">  #</span><span class="language-bash">hexo-abbrlink2 设置</span></span><br><span class="line"><span class="meta prompt_">  #</span><span class="language-bash">start: 1000 <span class="comment"># the first id, default 0</span></span></span><br></pre></td></tr></table></div></figure>
 
 
@@ -116,7 +116,7 @@ window.CONFIG = CONFIG;</script><meta name="generator" content="Hexo 6.3.0"></he
           安装pwa插件</span></h2>
       <p>在 &#x2F;hexo 下安装pwa插件：</p>
 <figure class="highlight shell"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-pwa</span><br></pre></td></tr></table></div></figure>
-<p>配置插件<br><a target="_blank" rel="noopener" href="https://theme-stun.github.io/docs/zh-CN/advanced/third-part.html#pwa">https://theme-stun.github.io/docs/zh-CN/advanced/third-part.html#pwa</a><br><a target="_blank" rel="noopener" href="https://github.com/lavas-project/hexo-pwa">https://github.com/lavas-project/hexo-pwa</a></p>
+<p>配置插件<br><span class="exturl"><a class="exturl__link" target="_blank" rel="noopener" href="https://theme-stun.github.io/docs/zh-CN/advanced/third-part.html#pwa">https://theme-stun.github.io/docs/zh-CN/advanced/third-part.html#pwa</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span><br><span class="exturl"><a class="exturl__link" target="_blank" rel="noopener" href="https://github.com/lavas-project/hexo-pwa">https://github.com/lavas-project/hexo-pwa</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span></p>
 
         <h2><span id="安装-hexo-deploy-部署插件">
           安装 hexo deploy 部署插件</span></h2>
@@ -489,4 +489,16 @@ if (Array.isArray(assistSearchList)) {
       }
     }
   }, false);
-}, false);</script><div id="pjax-reload"></div><script src="/js/utils.js?v=2.8.0"></script><script src="/js/stun-boot.js?v=2.8.0"></script><script src="/js/scroll.js?v=2.8.0"></script><script src="/js/header.js?v=2.8.0"></script><script type="application/json" src="/search.json"></script></body></html>
+}, false);</script><div id="pjax-reload"><script src="https://cdn.bootcdn.net/ajax/libs/quicklink/2.3.0/quicklink.umd.min.js"></script><script>function initQuicklink() {
+  quicklink({
+    timeout: '10000',
+    priority: true,
+    ignores: [uri => uri.includes('#'), uri => uri === 'http://8.210.236.200:4000/7f79bcde.html', /\/api\/?/,uri => uri.includes('.xml'),uri => uri.includes('.zip'),(uri, el) => el.hasAttribute('nofollow'),(uri, el) => el.hasAttribute('noprefetch')]
+  });
+}
+
+if (true || false) {
+  initQuicklink();
+} else {
+  window.addEventListener('DOMContentLoaded', initQuicklink, false);
+}</script></div><script src="/js/utils.js?v=2.8.0"></script><script src="/js/stun-boot.js?v=2.8.0"></script><script src="/js/scroll.js?v=2.8.0"></script><script src="/js/header.js?v=2.8.0"></script><script type="application/json" src="/search.json"></script></body></html>
