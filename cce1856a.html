@@ -28,7 +28,7 @@ var CONFIG = {
   galleryWaterfall: undefined,
   lazyload: false,
   pjax: undefined,
-  externalLink: {"icon":{"enable":true,"name":"fas fa-external-link-alt"}},
+  externalLink: undefined,
   shortcuts: undefined,
   prompt: {"copyButton":"复制","copySuccess":"复制成功","copyError":"复制失败"},
   sourcePath: {"js":"js","css":"css","images":"images"},
@@ -49,7 +49,7 @@ window.CONFIG = CONFIG;</script><meta name="generator" content="Hexo 6.3.0"></he
           绑定一个邮箱，不然会提示无法生成证书</span></h2>
       <p>#acme.sh 默认是使用 zerossl 颁布证书，需要绑定邮箱。</p>
 <p>#如果切换成使用 letsencrypt 颁布证书就不需要绑定邮箱。</p>
-<p>#绑定邮箱后，申请的证书记录可以在web页面 <span class="exturl"><a class="exturl__link" target="_blank" rel="noopener" href="https://app.zerossl.com/certificates/issued">https://app.zerossl.com/certificates/issued</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span> 查看</p>
+<p>#绑定邮箱后，申请的证书记录可以在web页面 <a target="_blank" rel="noopener" href="https://app.zerossl.com/certificates/issued">https://app.zerossl.com/certificates/issued</a> 查看</p>
 <figure class="highlight sh"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="built_in">exec</span> tacme acme.sh --register-account -m abc@qq.com</span><br></pre></td></tr></table></div></figure>
 
 
@@ -59,14 +59,14 @@ window.CONFIG = CONFIG;</script><meta name="generator" content="Hexo 6.3.0"></he
         <h3><span id="方式1-standalone-模式">
           方式1 <code>--standalone</code> 模式</span></h3>
       <p>#如果80端口被占用，在 <code>--standalone</code> 模式下要指定另外的端口 <code>--httpport 81</code></p>
-<p>#这里申请的是 一级域名 abc.com 和 二级域名 <span class="exturl"><a class="exturl__link" target="_blank" rel="noopener" href="http://www.abc.com/">www.abc.com</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span> 的多域名证书。</p>
-<p>#如果你在nginx中配置了 <span class="exturl"><a class="exturl__link" target="_blank" rel="noopener" href="https://abc.com/">https://abc.com</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span> 跳转到 <span class="exturl"><a class="exturl__link" target="_blank" rel="noopener" href="https://www.abc.com/">https://www.abc.com</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span> 则 二级域名 <span class="exturl"><a class="exturl__link" target="_blank" rel="noopener" href="http://www.abc.com/">www.abc.com</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span> 不能缺少。</p>
+<p>#这里申请的是 一级域名 abc.com 和 二级域名 <a target="_blank" rel="noopener" href="http://www.abc.com/">www.abc.com</a> 的多域名证书。</p>
+<p>#如果你在nginx中配置了 <a target="_blank" rel="noopener" href="https://abc.com/">https://abc.com</a> 跳转到 <a target="_blank" rel="noopener" href="https://www.abc.com/">https://www.abc.com</a> 则 二级域名 <a target="_blank" rel="noopener" href="http://www.abc.com/">www.abc.com</a> 不能缺少。</p>
 <figure class="highlight sh"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="built_in">exec</span> tacme acme.sh --issue \</span><br><span class="line">-d abc.com \</span><br><span class="line">-d www.abc.com \</span><br><span class="line">--standalone \</span><br><span class="line">--httpport 81</span><br></pre></td></tr></table></div></figure>
 
 
         <h3><span id="方式2-w-etcnginxhtmlabcim-指定容器web页路径">
           方式2 <code>-w /etc/nginx/html/abc.im</code> 指定容器web页路径</span></h3>
-      <p>#如果出现超时<code>Timeout</code>或者<code>404</code>找不到<span class="exturl"><a class="exturl__link" target="_blank" rel="noopener" href="https://www.abc.im/.well-known/acme-challenge/xxxxxx">https://www.abc.im/.well-known/acme-challenge/xxxxxx</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span> 文件</p>
+      <p>#如果出现超时<code>Timeout</code>或者<code>404</code>找不到<a target="_blank" rel="noopener" href="https://www.abc.im/.well-known/acme-challenge/xxxxxx">https://www.abc.im/.well-known/acme-challenge/xxxxxx</a> 文件</p>
 <p>#这种情况一般出现在，你的nginx环境已经搭建好,nginx配置文件也已经配置好。如果只是acme.sh单容器，使用<code>--standalone</code> 模式就可以成功</p>
 <p>#需要你指定 <code>-w /etc/nginx/html/abc.im</code> 容器web路径</p>
 <figure class="highlight sh"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="built_in">exec</span> tacme acme.sh --issue \</span><br><span class="line">  -d abc.im \</span><br><span class="line">  -d www.abc.im \</span><br><span class="line">  -w /etc/nginx/html/abc.im \</span><br><span class="line">  --keylength ec-256</span><br></pre></td></tr></table></div></figure>
@@ -80,7 +80,7 @@ window.CONFIG = CONFIG;</script><meta name="generator" content="Hexo 6.3.0"></he
         <h3><span id="方式3-生成泛域名证书">
           方式3 生成泛域名证书</span></h3>
       <blockquote>
-<p>先申请ak，推荐aliyun（最安全的做法是创建ram子用户，给此用户仅添加“管理阿里云解析dns权限”）<br><span class="exturl"><a class="exturl__link" target="_blank" rel="noopener" href="https://ak-console.aliyun.com/#/accesskey">https://ak-console.aliyun.com/#/accesskey</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span><br><span class="exturl"><a class="exturl__link" target="_blank" rel="noopener" href="https://ram.console.aliyun.com/manage/ak">https://ram.console.aliyun.com/manage/ak</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span></p>
+<p>先申请ak，推荐aliyun（最安全的做法是创建ram子用户，给此用户仅添加“管理阿里云解析dns权限”）<br><a target="_blank" rel="noopener" href="https://ak-console.aliyun.com/#/accesskey">https://ak-console.aliyun.com/#/accesskey</a><br><a target="_blank" rel="noopener" href="https://ram.console.aliyun.com/manage/ak">https://ram.console.aliyun.com/manage/ak</a></p>
 </blockquote>
 <blockquote>
 <p>配置环境变量，供后续执行的程序使用</p>
@@ -115,7 +115,7 @@ window.CONFIG = CONFIG;</script><meta name="generator" content="Hexo 6.3.0"></he
 
         <h2><span id="acmesh-其它命令">
           acme.sh 其它命令</span></h2>
-      <p>#撤销证书（通过acme.sh 申请的证书，只能通过 certbot 撤销）<br>#只是在 <span class="exturl"><a class="exturl__link" target="_blank" rel="noopener" href="https://app.zerossl.com/certificates/issued">https://app.zerossl.com/certificates/issued</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span> 中删除记录，证书文件还可以使用</p>
+      <p>#撤销证书（通过acme.sh 申请的证书，只能通过 certbot 撤销）<br>#只是在 <a target="_blank" rel="noopener" href="https://app.zerossl.com/certificates/issued">https://app.zerossl.com/certificates/issued</a> 中删除记录，证书文件还可以使用</p>
 <figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">certbot revoke \</span><br><span class="line">  --server https://acme.zerossl.com/v2/DV90 \</span><br><span class="line">  --cert-path /www1/ssl/abc.im/cert.pem \</span><br><span class="line">  --key-path /www1/ssl/abc.im/key.pem</span><br></pre></td></tr></table></div></figure>
 
 <p>#查看所有证书生成列表</p>
