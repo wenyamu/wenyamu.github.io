@@ -6,7 +6,7 @@
 <meta property="og:description" content="使用 flask 搭建 python web 应用 Flask是一个使用 Python 编写的轻量级 Web 应用框架，类似于Laravel是使用 PHP 编写的 Web 应用框架。   gunicorn 作为 flask 的 http 服务器 gunicorn 类似于 nginx, 它是专用于 python 的 http 服务器   supervisor 管理进程 supervisor 把进程">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-01-07T19:56:00.000Z">
-<meta property="article:modified_time" content="2024-03-24T14:56:20.932Z">
+<meta property="article:modified_time" content="2024-04-11T21:41:59.767Z">
 <meta property="article:author" content="689.im">
 <meta property="article:tag" content="flask">
 <meta property="article:tag" content="supervisor">
@@ -17,13 +17,13 @@ var CONFIG = {
   algolia: undefined,
   assistSearch: undefined,
   fontIcon: {"prompt":{"success":"fas fa-check-circle","info":"fas fa-arrow-circle-right","warning":"fas fa-exclamation-circle","error":"fas fa-times-circle"},"copyBtn":"fas fa-copy"},
-  sidebar: undefined,
+  sidebar: {"offsetTop":"20px","tocMaxDepth":6},
   header: undefined,
   postWidget: undefined,
   nightMode: {"enable":true},
   back2top: undefined,
   codeblock: {"style":"carbon","highlight":"dark","wordWrap":true},
-  reward: true,
+  reward: false,
   fancybox: true,
   zoomImage: undefined,
   galleryWaterfall: undefined,
@@ -50,39 +50,6 @@ window.CONFIG = CONFIG;</script><meta name="generator" content="Hexo 6.3.0"></he
 </li>
 </ul>
 <span id="more"></span>
-
-<!-- toc -->
-
-<ul>
-<li><a href="#%E5%88%9B%E5%BB%BA-python-%E7%8E%AF%E5%A2%83">创建 python 环境</a></li>
-<li><a href="#flask-%E9%A1%B9%E7%9B%AE%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84">flask 项目目录结构</a><ul>
-<li><a href="#%E5%90%AF%E5%8A%A8-flask-%E5%BA%94%E7%94%A8">启动 flask 应用</a></li>
-</ul>
-</li>
-<li><a href="#gunicorn-%E5%90%AF%E5%8A%A8-flask-%E5%BA%94%E7%94%A8">gunicorn 启动 flask 应用</a><ul>
-<li><a href="#gconf80py-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6">gconf80.py 配置文件</a></li>
-<li><a href="#gunicorn-%E7%9A%84-gevent-%E6%A8%A1%E5%BC%8F">gunicorn 的 gevent 模式</a></li>
-</ul>
-</li>
-<li><a href="#supervisor-%E9%A1%B9%E7%9B%AE%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84">supervisor 项目目录结构</a><ul>
-<li><a href="#%E5%90%84%E6%96%87%E4%BB%B6%E7%9A%84%E5%8A%9F%E8%83%BD%E8%AF%B4%E6%98%8E">各文件的功能说明</a></li>
-<li><a href="#supervisor-%E7%AE%A1%E7%90%86%E8%BF%9B%E7%A8%8B">supervisor 管理进程</a></li>
-<li><a href="#%E5%AE%89%E8%A3%85-supervisor">安装 supervisor</a></li>
-<li><a href="#%E5%90%AF%E5%8A%A8-supervisord-%E8%BF%9B%E7%A8%8B">启动 supervisord 进程</a></li>
-</ul>
-</li>
-<li><a href="#gunicorn-%E4%B8%8E-supervisor-%E6%80%BB%E7%BB%93">gunicorn 与 supervisor 总结</a></li>
-<li><a href="#supervisor-%E8%BF%9C%E7%A8%8B%E7%AE%A1%E7%90%86%E8%BF%9B%E7%A8%8B">supervisor 远程管理进程</a><ul>
-<li><a href="#%E9%A1%B9%E7%9B%AE%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84">项目目录结构</a></li>
-<li><a href="#%E7%9B%91%E6%8E%A7%E7%A8%8B%E5%BA%8F">监控程序</a></li>
-<li><a href="#%E7%9B%91%E6%8E%A7%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%A8%A1%E6%9D%BF%E6%96%87%E4%BB%B6">监控程序的模板文件</a></li>
-<li><a href="#%E7%9B%91%E6%8E%A7%E7%A8%8B%E5%BA%8F%E7%9A%84%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6">监控程序的配置文件</a></li>
-<li><a href="#%E5%90%AF%E5%8A%A8%E7%9B%91%E6%8E%A7%E7%A8%8B%E5%BA%8F">启动监控程序</a></li>
-</ul>
-</li>
-<li><a href="#%E9%99%84%E4%BB%B6">附件</a></li>
-</ul>
-<!-- tocstop -->
 
 
         <h2><span id="创建-python-环境">
@@ -275,7 +242,26 @@ window.CONFIG = CONFIG;</script><meta name="generator" content="Hexo 6.3.0"></he
       <blockquote>
 <p>其它 supervisor 命令</p>
 </blockquote>
-<figure class="highlight shell"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">启动、停止、重启应用、查看状态</span></span><br><span class="line">supervisorctl start flask_app</span><br><span class="line">supervisorctl stop flask_app</span><br><span class="line">supervisorctl stop all #停止全部</span><br><span class="line">supervisorctl restart flask_app # 重启，注意这里不会重新加载配置文件</span><br><span class="line">supervisorctl status flask_app</span><br><span class="line">supervisorctl status all</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">重启主进程 supervisord，重新加载配置文件，重新启动正在运行的所有程序</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">supervisord 进程的 pid 不会更新</span></span><br><span class="line">supervisorctl reload</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">终止supervisord进程和被supervisord管理的子进程</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">如果gunicorn配置文件中daemon = False，则也会终止gunicorn</span></span><br><span class="line">supervisorctl shutdown</span><br><span class="line"></span><br><span class="line">supervisorctl reread &amp;&amp; supervisorctl update</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">预读取配置(会检测配置文件，找出配置有改动的程序，并列出程序名)</span></span><br><span class="line">[root@localhost ~]# supervisorctl reread</span><br><span class="line">flask_app: changed</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">更新进程组:根据预读取的配置文件，启动新程序或重启配置有改动的程序</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">配置没有改动的程序不会受影响</span></span><br><span class="line">[root@localhost ~]# supervisorctl update</span><br><span class="line">flask_app: stopped</span><br><span class="line">flask_app: updated process group</span><br><span class="line">[root@localhost ~]# </span><br><span class="line"></span><br></pre></td></tr></table></div></figure></div><footer class="post-footer"><div class="post-tags"><span class="post-tags-item"><span class="post-tags-item__icon"><i class="fas fa-tag"></i></span><a class="post-tags-item__link" href="http://8.210.236.200:4000/tags/flask/">flask</a></span><span class="post-tags-item"><span class="post-tags-item__icon"><i class="fas fa-tag"></i></span><a class="post-tags-item__link" href="http://8.210.236.200:4000/tags/supervisor/">supervisor</a></span><span class="post-tags-item"><span class="post-tags-item__icon"><i class="fas fa-tag"></i></span><a class="post-tags-item__link" href="http://8.210.236.200:4000/tags/gunicorn/">gunicorn</a></span></div><div class="post-reward reward"><div class="reward-button">请我喝杯咖啡~</div><div class="reward-qrcode"><span class="reward-qrcode-alipay"><img class="reward-qrcode-alipay__img" src="/images/reward/ali.jpg"><div class="reward-qrcode-alipay__text">支付宝打赏</div></span><span class="reward-qrcode-wechat"><img class="reward-qrcode-wechat__img" src="/images/reward/wx.jpg"><div class="reward-qrcode-wechat__text">微信打赏</div></span></div></div><nav class="post-paginator paginator"><div class="paginator-prev"><a class="paginator-prev__link" href="/7f79bcde.html"><span class="paginator-prev__icon"><i class="fas fa-angle-left"></i></span><span class="paginator-prev__text">hexo配置研究</span></a></div></nav></footer></div></div></div><div class="clearfix"></div></div></main><footer class="footer" id="footer"><div class="footer-inner"><div><span>Copyright © 2024</span><span class="footer__icon"><i class="fas fa-star"></i></span><span>689.im</span></div></div></footer><div class="loading-bar" id="loading-bar"><div class="loading-bar__progress"></div></div></div><div class="search-mask"></div><div class="search-popup"><span class="search-close"></span><div class="search-input"><input placeholder="搜索文章（支持多关键词，请用空格分隔）"></div><div class="search-results"></div></div><script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script><script src="https://cdn.bootcdn.net/ajax/libs/velocity/1.5.2/velocity.min.js"></script><script src="https://cdn.bootcdn.net/ajax/libs/velocity/1.5.2/velocity.ui.min.js"></script><script src="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script><script>function initSearch() {
+<figure class="highlight shell"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">启动、停止、重启应用、查看状态</span></span><br><span class="line">supervisorctl start flask_app</span><br><span class="line">supervisorctl stop flask_app</span><br><span class="line">supervisorctl stop all #停止全部</span><br><span class="line">supervisorctl restart flask_app # 重启，注意这里不会重新加载配置文件</span><br><span class="line">supervisorctl status flask_app</span><br><span class="line">supervisorctl status all</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">重启主进程 supervisord，重新加载配置文件，重新启动正在运行的所有程序</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">supervisord 进程的 pid 不会更新</span></span><br><span class="line">supervisorctl reload</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">终止supervisord进程和被supervisord管理的子进程</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">如果gunicorn配置文件中daemon = False，则也会终止gunicorn</span></span><br><span class="line">supervisorctl shutdown</span><br><span class="line"></span><br><span class="line">supervisorctl reread &amp;&amp; supervisorctl update</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">预读取配置(会检测配置文件，找出配置有改动的程序，并列出程序名)</span></span><br><span class="line">[root@localhost ~]# supervisorctl reread</span><br><span class="line">flask_app: changed</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">更新进程组:根据预读取的配置文件，启动新程序或重启配置有改动的程序</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">配置没有改动的程序不会受影响</span></span><br><span class="line">[root@localhost ~]# supervisorctl update</span><br><span class="line">flask_app: stopped</span><br><span class="line">flask_app: updated process group</span><br><span class="line">[root@localhost ~]# </span><br><span class="line"></span><br></pre></td></tr></table></div></figure></div><footer class="post-footer"><div class="post-tags"><span class="post-tags-item"><span class="post-tags-item__icon"><i class="fas fa-tag"></i></span><a class="post-tags-item__link" href="http://8.210.236.200:4000/tags/flask/">flask</a></span><span class="post-tags-item"><span class="post-tags-item__icon"><i class="fas fa-tag"></i></span><a class="post-tags-item__link" href="http://8.210.236.200:4000/tags/supervisor/">supervisor</a></span><span class="post-tags-item"><span class="post-tags-item__icon"><i class="fas fa-tag"></i></span><a class="post-tags-item__link" href="http://8.210.236.200:4000/tags/gunicorn/">gunicorn</a></span></div><nav class="post-paginator paginator"><div class="paginator-prev"><a class="paginator-prev__link" href="/7f79bcde.html"><span class="paginator-prev__icon"><i class="fas fa-angle-left"></i></span><span class="paginator-prev__text">hexo配置研究</span></a></div></nav></footer></div></div></div><div class="sidebar-wrap" id="sidebar-wrap"><aside class="sidebar" id="sidebar"><div class="sidebar-nav"><span class="sidebar-nav-toc current">文章目录</span><span class="sidebar-nav-ov">站点概览</span></div><section class="sidebar-toc"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">
+          创建 python 环境</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">2.</span> <span class="toc-text">
+          flask 项目目录结构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">2.1.</span> <span class="toc-text">
+          启动 flask 应用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">3.</span> <span class="toc-text">
+          gunicorn 启动 flask 应用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">3.1.</span> <span class="toc-text">
+          gconf80.py 配置文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">3.2.</span> <span class="toc-text">
+          gunicorn 的 gevent 模式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">4.</span> <span class="toc-text">
+          supervisor 项目目录结构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">4.1.</span> <span class="toc-text">
+          各文件的功能说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">4.2.</span> <span class="toc-text">
+          supervisor 管理进程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">4.3.</span> <span class="toc-text">
+          安装 supervisor</span></a></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">4.4.</span> <span class="toc-text">
+          启动 supervisord 进程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">5.</span> <span class="toc-text">
+          gunicorn 与 supervisor 总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">6.</span> <span class="toc-text">
+          supervisor 远程管理进程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">6.1.</span> <span class="toc-text">
+          项目目录结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">6.2.</span> <span class="toc-text">
+          监控程序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">6.3.</span> <span class="toc-text">
+          监控程序的模板文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">6.4.</span> <span class="toc-text">
+          监控程序的配置文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">6.5.</span> <span class="toc-text">
+          启动监控程序</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">7.</span> <span class="toc-text">
+          附件</span></a></li></ol></section><!-- ov = overview--><section class="sidebar-ov hide"><div class="sidebar-ov-author"><div class="sidebar-ov-author__avatar"><img class="sidebar-ov-author__avatar_img" src="/images/icons/stun-logo.svg" alt="avatar"></div><p class="sidebar-ov-author__text">还没想好叫什么</p></div></section><div class="sidebar-reading"><div class="sidebar-reading-info"><span class="sidebar-reading-info__text">你已阅读了 </span><span class="sidebar-reading-info__num">0</span><span class="sidebar-reading-info__perc">%</span></div><div class="sidebar-reading-line"></div></div></aside></div><div class="clearfix"></div></div></main><footer class="footer" id="footer"><div class="footer-inner"><div><span>Copyright © 2024</span><span class="footer__icon"><i class="fas fa-star"></i></span><span>689.im</span></div></div></footer><div class="loading-bar" id="loading-bar"><div class="loading-bar__progress"></div></div></div><div class="search-mask"></div><div class="search-popup"><span class="search-close"></span><div class="search-input"><input placeholder="搜索文章（支持多关键词，请用空格分隔）"></div><div class="search-results"></div></div><script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script><script src="https://cdn.bootcdn.net/ajax/libs/velocity/1.5.2/velocity.min.js"></script><script src="https://cdn.bootcdn.net/ajax/libs/velocity/1.5.2/velocity.ui.min.js"></script><script src="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script><script>function initSearch() {
   var isXML = true;
   var search_path = 'search.json';
 
@@ -614,4 +600,4 @@ if (Array.isArray(assistSearchList)) {
       }
     }
   }, false);
-}, false);</script><div id="pjax-reload"></div><script src="/js/utils.js?v=2.8.0"></script><script src="/js/stun-boot.js?v=2.8.0"></script><script src="/js/scroll.js?v=2.8.0"></script><script src="/js/header.js?v=2.8.0"></script><script type="application/json" src="/search.json"></script></body></html>
+}, false);</script><div id="pjax-reload"></div><script src="/js/utils.js?v=2.8.0"></script><script src="/js/stun-boot.js?v=2.8.0"></script><script src="/js/scroll.js?v=2.8.0"></script><script src="/js/header.js?v=2.8.0"></script><script src="/js/sidebar.js?v=2.8.0"></script><script type="application/json" src="/search.json"></script></body></html>
