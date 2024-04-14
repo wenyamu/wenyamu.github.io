@@ -14,12 +14,12 @@ var CONFIG = {
   algolia: undefined,
   assistSearch: undefined,
   fontIcon: {"prompt":{"success":"fas fa-check-circle","info":"fas fa-arrow-circle-right","warning":"fas fa-exclamation-circle","error":"fas fa-times-circle"},"copyBtn":"fas fa-copy"},
-  sidebar: {"offsetTop":"20px","tocMaxDepth":6},
+  sidebar: undefined,
   header: undefined,
   postWidget: undefined,
   nightMode: {"enable":true},
   back2top: undefined,
-  codeblock: {"style":"carbon","highlight":"dark","wordWrap":true},
+  codeblock: {"style":"carbon","highlight":"light","wordWrap":true},
   reward: true,
   fancybox: true,
   zoomImage: undefined,
@@ -38,8 +38,7 @@ window.CONFIG = CONFIG;</script><meta name="generator" content="Hexo 6.3.0"></he
       <blockquote>
 <p>感谢小伙伴请我喝咖啡</p>
 </blockquote>
-<div class="table-container"><table class="table-plugin"><thead><tr><th>时间</th><th>赞助人</th><th>平台</th><th>金额</th><th>留言</th></tr></thead><tbody><tr style="text-align: center;"><td>2024-6-10</td><td>一个好人</td><td>微信</td><td>9.9</td><td>支持一下~</td></tr><tr style="text-align: center;"><td>2024-6-16</td><td>连接你我</td><td>支付宝</td><td>11</td><td>前来支持，继续加油！</td></tr><tr style="text-align: center;"><td>2024-7-16</td><td>博格华纳</td><td>paypal</td><td>111</td><td>前来支持，继续加油！</td></tr></tbody></table></div></div><div class="reward"><div class="reward-button">请我喝杯咖啡~</div><div class="reward-qrcode"><span class="reward-qrcode-alipay"><img class="reward-qrcode-alipay__img" src="/images/reward/ali.jpg"><div class="reward-qrcode-alipay__text">支付宝打赏</div></span><span class="reward-qrcode-wechat"><img class="reward-qrcode-wechat__img" src="/images/reward/wx.jpg"><div class="reward-qrcode-wechat__text">微信打赏</div></span></div></div></div></div><div class="sidebar-wrap" id="sidebar-wrap"><aside class="sidebar" id="sidebar"><section class="sidebar-toc hide"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">
-          打赏列表</span></a></li></ol></section><!-- ov = overview--><section class="sidebar-ov"><div class="sidebar-ov-author"><div class="sidebar-ov-author__avatar"><img class="sidebar-ov-author__avatar_img" src="/images/icons/stun-logo.svg" alt="avatar"></div><p class="sidebar-ov-author__text">还没想好叫什么</p></div></section></aside></div><div class="clearfix"></div></div></main><footer class="footer" id="footer"><div class="footer-inner"><div><span>Copyright © 2024</span><span class="footer__icon"><i class="fas fa-star"></i></span><span>689.im</span></div></div></footer><div class="loading-bar" id="loading-bar"><div class="loading-bar__progress"></div></div></div><div class="search-mask"></div><div class="search-popup"><span class="search-close"></span><div class="search-input"><input placeholder="搜索文章（支持多关键词，请用空格分隔）"></div><div class="search-results"></div></div><script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script><script src="https://cdn.bootcdn.net/ajax/libs/velocity/1.5.2/velocity.min.js"></script><script src="https://cdn.bootcdn.net/ajax/libs/velocity/1.5.2/velocity.ui.min.js"></script><script src="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script><script>function initSearch() {
+<div class="table-container"><table class="table-plugin"><thead><tr><th>时间</th><th>赞助人</th><th>平台</th><th>金额</th><th>留言</th></tr></thead><tbody><tr style="text-align: center;"><td>2024-6-10</td><td>一个好人</td><td>微信</td><td>9.9</td><td>支持一下~</td></tr><tr style="text-align: center;"><td>2024-6-16</td><td>连接你我</td><td>支付宝</td><td>11</td><td>前来支持，继续加油！</td></tr><tr style="text-align: center;"><td>2024-7-16</td><td>博格华纳</td><td>paypal</td><td>111</td><td>前来支持，继续加油！</td></tr></tbody></table></div></div><div class="reward"><div class="reward-button">请我喝杯咖啡~</div><div class="reward-qrcode"><span class="reward-qrcode-alipay"><img class="reward-qrcode-alipay__img" src="/images/reward/ali.jpg"><div class="reward-qrcode-alipay__text">支付宝打赏</div></span><span class="reward-qrcode-wechat"><img class="reward-qrcode-wechat__img" src="/images/reward/wx.jpg"><div class="reward-qrcode-wechat__text">微信打赏</div></span></div></div></div></div><div class="clearfix"></div></div></main><footer class="footer" id="footer"><div class="footer-inner"><div><span>Copyright © 2024</span><span class="footer__icon"><i class="fas fa-star"></i></span><span>689.im</span></div></div></footer><div class="loading-bar" id="loading-bar"><div class="loading-bar__progress"></div></div></div><div class="search-mask"></div><div class="search-popup"><span class="search-close"></span><div class="search-input"><input placeholder="搜索文章（支持多关键词，请用空格分隔）"></div><div class="search-results"></div></div><script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script><script src="https://cdn.bootcdn.net/ajax/libs/velocity/1.5.2/velocity.min.js"></script><script src="https://cdn.bootcdn.net/ajax/libs/velocity/1.5.2/velocity.ui.min.js"></script><script src="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script><script>function initSearch() {
   var isXML = true;
   var search_path = 'search.json';
 
@@ -378,4 +377,4 @@ if (Array.isArray(assistSearchList)) {
       }
     }
   }, false);
-}, false);</script><div id="pjax-reload"></div><script src="/js/utils.js?v=2.8.0"></script><script src="/js/stun-boot.js?v=2.8.0"></script><script src="/js/scroll.js?v=2.8.0"></script><script src="/js/header.js?v=2.8.0"></script><script src="/js/sidebar.js?v=2.8.0"></script><script type="application/json" src="/search.json"></script></body></html>
+}, false);</script><div id="pjax-reload"></div><script src="/js/utils.js?v=2.8.0"></script><script src="/js/stun-boot.js?v=2.8.0"></script><script src="/js/scroll.js?v=2.8.0"></script><script src="/js/header.js?v=2.8.0"></script><script type="application/json" src="/search.json"></script></body></html>
