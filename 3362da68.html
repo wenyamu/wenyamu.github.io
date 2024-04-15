@@ -9,7 +9,7 @@
 <meta property="article:modified_time" content="2024-04-09T07:39:30.372Z">
 <meta property="article:author" content="689.im">
 <meta property="article:tag" content="ssh">
-<meta name="twitter:card" content="summary"><title>linux配置-ssh | Hexo</title><link ref="canonical" href="http://8.210.236.200:4000/3362da68.html"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/5.12.1/css/all.min.css" type="text/css"><link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" type="text/css"><link rel="stylesheet" href="/css/index.css?v=2.8.0"><link rel="stylesheet" href="css/custom.css"><script>var Stun = window.Stun || {};
+<meta name="twitter:card" content="summary"><title>linux配置-ssh | Hexo</title><link ref="canonical" href="http://8.210.236.200:4000/3362da68.html"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/5.12.1/css/all.min.css" type="text/css"><link rel="stylesheet" href="/css/index.css?v=2.8.0"><link rel="stylesheet" href="css/custom.css"><script>var Stun = window.Stun || {};
 var CONFIG = {
   root: '/',
   algolia: undefined,
@@ -22,11 +22,11 @@ var CONFIG = {
   back2top: undefined,
   codeblock: {"style":"carbon","highlight":"light","wordWrap":true},
   reward: false,
-  fancybox: true,
+  fancybox: false,
   zoomImage: undefined,
   galleryWaterfall: undefined,
   lazyload: false,
-  pjax: {"avoidBanner":false},
+  pjax: {"avoidBanner":true},
   externalLink: {"icon":{"enable":true,"name":"fas fa-external-link-alt"}},
   shortcuts: undefined,
   prompt: {"copyButton":"复制","copySuccess":"复制成功","copyError":"复制失败"},
@@ -81,7 +81,7 @@ window.CONFIG = CONFIG;</script><meta name="generator" content="Hexo 6.3.0"></he
         <h2><span id="总结">
           总结</span></h2>
       <p>1、在客户端A主机上创建密钥对，把公钥复制到ssh服务器B主机上，实现A免密登陆B。<br>2、为了安全建议不要使用root用户，可以试试A、B两个服务器都使用普通用户。</p>
-</div><footer class="post-footer"><div class="post-tags"><span class="post-tags-item"><span class="post-tags-item__icon"><i class="fas fa-tag"></i></span><a class="post-tags-item__link" href="http://8.210.236.200:4000/tags/ssh/">ssh</a></span></div><nav class="post-paginator paginator"><div class="paginator-prev"><a class="paginator-prev__link" href="/ff5f9e62.html"><span class="paginator-prev__icon"><i class="fas fa-angle-left"></i></span><span class="paginator-prev__text">vsftpd的搭建和使用-虚拟多用户配置</span></a></div><div class="paginator-next"><a class="paginator-next__link" href="/c36c8db7.html"><span class="paginator-prev__text">rsync-sersync配置</span><span class="paginator-next__icon"><i class="fas fa-angle-right"></i></span></a></div></nav></footer></div></div></div><div class="clearfix"></div></div></main><footer class="footer" id="footer"><div class="footer-inner"><div><span>Copyright © 2024</span><span class="footer__icon"><i class="fas fa-star"></i></span><span>689.im</span></div></div></footer><div class="loading-bar" id="loading-bar"><div class="loading-bar__progress"></div></div></div><div class="search-mask"></div><div class="search-popup"><span class="search-close"></span><div class="search-input"><input placeholder="搜索文章（支持多关键词，请用空格分隔）"></div><div class="search-results"></div></div><script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script><script src="https://cdn.bootcdn.net/ajax/libs/velocity/1.5.2/velocity.min.js"></script><script src="https://cdn.bootcdn.net/ajax/libs/velocity/1.5.2/velocity.ui.min.js"></script><script src="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script><script>function initSearch() {
+</div><footer class="post-footer"><div class="post-tags"><span class="post-tags-item"><span class="post-tags-item__icon"><i class="fas fa-tag"></i></span><a class="post-tags-item__link" href="http://8.210.236.200:4000/tags/ssh/">ssh</a></span></div><nav class="post-paginator paginator"><div class="paginator-prev"><a class="paginator-prev__link" href="/ff5f9e62.html"><span class="paginator-prev__icon"><i class="fas fa-angle-left"></i></span><span class="paginator-prev__text">vsftpd的搭建和使用-虚拟多用户配置</span></a></div><div class="paginator-next"><a class="paginator-next__link" href="/c36c8db7.html"><span class="paginator-prev__text">rsync-sersync配置</span><span class="paginator-next__icon"><i class="fas fa-angle-right"></i></span></a></div></nav></footer></div></div></div><div class="clearfix"></div></div></main><footer class="footer" id="footer"><div class="footer-inner"><div><span>Copyright © 2024</span><span class="footer__icon"><i class="fas fa-star"></i></span><span>689.im</span></div></div></footer><div class="loading-bar" id="loading-bar"><div class="loading-bar__progress"></div></div></div><div class="search-mask"></div><div class="search-popup"><span class="search-close"></span><div class="search-input"><input placeholder="搜索文章（支持多关键词，请用空格分隔）"></div><div class="search-results"></div></div><script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script><script src="https://cdn.bootcdn.net/ajax/libs/velocity/1.5.2/velocity.min.js"></script><script src="https://cdn.bootcdn.net/ajax/libs/velocity/1.5.2/velocity.ui.min.js"></script><script>function initSearch() {
   var isXML = true;
   var search_path = 'search.json';
 

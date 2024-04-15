@@ -6,11 +6,11 @@
 <meta property="og:description" content="单独以 docker 守护进程运行 acme.sh 程序       123456docker run --rm -itd \  -v &quot;$(pwd)&#x2F;out&quot;:&#x2F;acme.sh \  -v &quot;$(pwd)&#x2F;ssl&quot;:&#x2F;ssl \  --net&#x3D;host \  --name&#x3D;tacme \  neilpang&#x2F;acme.sh daemo">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2024-03-22T14:36:00.000Z">
-<meta property="article:modified_time" content="2024-04-06T16:01:02.263Z">
+<meta property="article:modified_time" content="2024-04-14T22:10:10.498Z">
 <meta property="article:author" content="689.im">
 <meta property="article:tag" content="ssl">
 <meta property="article:tag" content="https">
-<meta name="twitter:card" content="summary"><title>acme.sh 申请 ssl 域名证书 | Hexo</title><link ref="canonical" href="http://8.210.236.200:4000/cce1856a.html"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/5.12.1/css/all.min.css" type="text/css"><link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" type="text/css"><link rel="stylesheet" href="/css/index.css?v=2.8.0"><link rel="stylesheet" href="css/custom.css"><script>var Stun = window.Stun || {};
+<meta name="twitter:card" content="summary"><title>acme.sh 申请 ssl 域名证书 | Hexo</title><link ref="canonical" href="http://8.210.236.200:4000/cce1856a.html"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/5.12.1/css/all.min.css" type="text/css"><link rel="stylesheet" href="/css/index.css?v=2.8.0"><link rel="stylesheet" href="css/custom.css"><script>var Stun = window.Stun || {};
 var CONFIG = {
   root: '/',
   algolia: undefined,
@@ -23,11 +23,11 @@ var CONFIG = {
   back2top: undefined,
   codeblock: {"style":"carbon","highlight":"light","wordWrap":true},
   reward: false,
-  fancybox: true,
+  fancybox: false,
   zoomImage: undefined,
   galleryWaterfall: undefined,
   lazyload: false,
-  pjax: {"avoidBanner":false},
+  pjax: {"avoidBanner":true},
   externalLink: {"icon":{"enable":true,"name":"fas fa-external-link-alt"}},
   shortcuts: undefined,
   prompt: {"copyButton":"复制","copySuccess":"复制成功","copyError":"复制失败"},
@@ -59,14 +59,14 @@ window.CONFIG = CONFIG;</script><meta name="generator" content="Hexo 6.3.0"></he
         <h3><span id="方式1-standalone-模式">
           方式1 <code>--standalone</code> 模式</span></h3>
       <p>#如果80端口被占用，在 <code>--standalone</code> 模式下要指定另外的端口 <code>--httpport 81</code></p>
-<p>#这里申请的是 一级域名 abc.com 和 二级域名 <span class="exturl"><a class="exturl__link" target="_blank" rel="noopener" href="http://www.abc.com/">www.abc.com</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span> 的多域名证书。</p>
-<p>#如果你在nginx中配置了 <span class="exturl"><a class="exturl__link" target="_blank" rel="noopener" href="https://abc.com/">https://abc.com</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span> 跳转到 <span class="exturl"><a class="exturl__link" target="_blank" rel="noopener" href="https://www.abc.com/">https://www.abc.com</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span> 则 二级域名 <span class="exturl"><a class="exturl__link" target="_blank" rel="noopener" href="http://www.abc.com/">www.abc.com</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span> 不能缺少。</p>
+<p>#这里申请的是 一级域名 <code>abc.com</code> 和 二级域名 <code>www.abc.com</code> 的多域名证书。</p>
+<p>#如果你在nginx中配置了 <code>https://abc.com</code> 跳转到 <code>https://www.abc.com</code> 则 二级域名 <code>www.abc.com</code> 不能缺少。</p>
 <figure class="highlight sh"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="built_in">exec</span> tacme acme.sh --issue \</span><br><span class="line">-d abc.com \</span><br><span class="line">-d www.abc.com \</span><br><span class="line">--standalone \</span><br><span class="line">--httpport 81</span><br></pre></td></tr></table></div></figure>
 
 
         <h3><span id="方式2-w-etcnginxhtmlabcim-指定容器web页路径">
           方式2 <code>-w /etc/nginx/html/abc.im</code> 指定容器web页路径</span></h3>
-      <p>#如果出现超时<code>Timeout</code>或者<code>404</code>找不到<span class="exturl"><a class="exturl__link" target="_blank" rel="noopener" href="https://www.abc.im/.well-known/acme-challenge/xxxxxx">https://www.abc.im/.well-known/acme-challenge/xxxxxx</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span> 文件</p>
+      <p>#如果出现超时<code>Timeout</code>或者<code>404</code>找不到<code>https://www.abc.im/.well-known/acme-challenge/xxxxxx</code> 文件</p>
 <p>#这种情况一般出现在，你的nginx环境已经搭建好,nginx配置文件也已经配置好。如果只是acme.sh单容器，使用<code>--standalone</code> 模式就可以成功</p>
 <p>#需要你指定 <code>-w /etc/nginx/html/abc.im</code> 容器web路径</p>
 <figure class="highlight sh"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="built_in">exec</span> tacme acme.sh --issue \</span><br><span class="line">  -d abc.im \</span><br><span class="line">  -d www.abc.im \</span><br><span class="line">  -w /etc/nginx/html/abc.im \</span><br><span class="line">  --keylength ec-256</span><br></pre></td></tr></table></div></figure>
@@ -129,7 +129,7 @@ window.CONFIG = CONFIG;</script><meta name="generator" content="Hexo 6.3.0"></he
 <p>#查看帮助</p>
 <figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">acme.sh -h</span><br></pre></td></tr></table></div></figure>
 <p>#查看域名配置</p>
-<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">acme.sh --info --domain example.com</span><br></pre></td></tr></table></div></figure></div><footer class="post-footer"><div class="post-tags"><span class="post-tags-item"><span class="post-tags-item__icon"><i class="fas fa-tag"></i></span><a class="post-tags-item__link" href="http://8.210.236.200:4000/tags/ssl/">ssl</a></span><span class="post-tags-item"><span class="post-tags-item__icon"><i class="fas fa-tag"></i></span><a class="post-tags-item__link" href="http://8.210.236.200:4000/tags/https/">https</a></span></div><nav class="post-paginator paginator"><div class="paginator-prev"><a class="paginator-prev__link" href="/b9078a91.html"><span class="paginator-prev__icon"><i class="fas fa-angle-left"></i></span><span class="paginator-prev__text">docker容器目录映射研究</span></a></div><div class="paginator-next"><a class="paginator-next__link" href="/afd1f77c.html"><span class="paginator-prev__text">Portainer Server 管理本机和远程主机的docker容器</span><span class="paginator-next__icon"><i class="fas fa-angle-right"></i></span></a></div></nav></footer></div></div></div><div class="clearfix"></div></div></main><footer class="footer" id="footer"><div class="footer-inner"><div><span>Copyright © 2024</span><span class="footer__icon"><i class="fas fa-star"></i></span><span>689.im</span></div></div></footer><div class="loading-bar" id="loading-bar"><div class="loading-bar__progress"></div></div></div><div class="search-mask"></div><div class="search-popup"><span class="search-close"></span><div class="search-input"><input placeholder="搜索文章（支持多关键词，请用空格分隔）"></div><div class="search-results"></div></div><script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script><script src="https://cdn.bootcdn.net/ajax/libs/velocity/1.5.2/velocity.min.js"></script><script src="https://cdn.bootcdn.net/ajax/libs/velocity/1.5.2/velocity.ui.min.js"></script><script src="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script><script>function initSearch() {
+<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">acme.sh --info --domain example.com</span><br></pre></td></tr></table></div></figure></div><footer class="post-footer"><div class="post-tags"><span class="post-tags-item"><span class="post-tags-item__icon"><i class="fas fa-tag"></i></span><a class="post-tags-item__link" href="http://8.210.236.200:4000/tags/ssl/">ssl</a></span><span class="post-tags-item"><span class="post-tags-item__icon"><i class="fas fa-tag"></i></span><a class="post-tags-item__link" href="http://8.210.236.200:4000/tags/https/">https</a></span></div><nav class="post-paginator paginator"><div class="paginator-prev"><a class="paginator-prev__link" href="/b9078a91.html"><span class="paginator-prev__icon"><i class="fas fa-angle-left"></i></span><span class="paginator-prev__text">docker容器目录映射研究</span></a></div><div class="paginator-next"><a class="paginator-next__link" href="/afd1f77c.html"><span class="paginator-prev__text">Portainer Server 管理本机和远程主机的docker容器</span><span class="paginator-next__icon"><i class="fas fa-angle-right"></i></span></a></div></nav></footer></div></div></div><div class="clearfix"></div></div></main><footer class="footer" id="footer"><div class="footer-inner"><div><span>Copyright © 2024</span><span class="footer__icon"><i class="fas fa-star"></i></span><span>689.im</span></div></div></footer><div class="loading-bar" id="loading-bar"><div class="loading-bar__progress"></div></div></div><div class="search-mask"></div><div class="search-popup"><span class="search-close"></span><div class="search-input"><input placeholder="搜索文章（支持多关键词，请用空格分隔）"></div><div class="search-results"></div></div><script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script><script src="https://cdn.bootcdn.net/ajax/libs/velocity/1.5.2/velocity.min.js"></script><script src="https://cdn.bootcdn.net/ajax/libs/velocity/1.5.2/velocity.ui.min.js"></script><script>function initSearch() {
   var isXML = true;
   var search_path = 'search.json';
 
