@@ -1,3 +1,18 @@
+/*!
+ * 自定义样式，路径在 stun.yml 中设置
+ * # 允许用户覆盖CSS
+ * # 注意：文件名或者目录名前不能带下划线"_", 像 css/_aaa.css 或者 css/_xxx/aaa.css 都不行
+ * css_custom: css/custom.css
+ */
+
+/* 页面底部自定义文字的颜色 */
+.daydayup{
+    color:green;
+}
+
+/* 以下是 hexo stun 主题默认样式文件, 在其基础上进行修改
+ * 这个文件会覆盖 stun 主题的样式文件.
+ */
 html {
   line-height: 1.15; /* 1 */
   -webkit-text-size-adjust: 100%; /* 2 */
@@ -864,14 +879,16 @@ kbd {
 .header-nav-submenu.hide--force {
   display: none !important;
 }
+/* 修改二级菜单居中为左对齐
 .header-nav-submenu-item {
   margin: 0;
   padding: 0;
   width: 100%;
   font-size: 18px;
   line-height: 1;
-  text-align: center;
+  text-align: left;
 }
+*/
 .header-nav-mode {
   display: -webkit-box;
   display: -moz-box;
@@ -1317,7 +1334,9 @@ kbd {
   padding: 1rem 2rem;
   background-color: var(--color-card);
 }
+/* 隐藏 "阅读更多" 按钮 添加 display: none; */
 .post-readmore {
+  display: none;
   margin-top: 1.5rem;
   text-align: center;
 }
@@ -1435,7 +1454,9 @@ kbd {
 .post-reward {
   margin-bottom: 1rem;
 }
+/* 隐藏文章底部的 上一页，下一页的链接提示 display: none;*/
 .post-paginator {
+  display: none;
   border-top: 1px solid var(--color-gray-250);
   padding-top: 1rem;
 }
