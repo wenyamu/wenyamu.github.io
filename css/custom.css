@@ -8,3 +8,48 @@
 .daydayup{
     color:green;
 }
+
+/* 隐藏 "阅读更多" 按钮 */
+.post-readmore {
+  display: none;
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+/* 修改 "阅读更多" 按钮的样式 */
+.post-readmore__link {
+  display: inline-block;
+  border-radius: 5px;
+  padding: 0 0.6em;
+  color: var(--color-gray-200);
+  background-color: red;/*#73c8ff*/
+  -webkit-transition: background-color 0.2s ease;
+  -moz-transition: background-color 0.2s ease;
+  -o-transition: background-color 0.2s ease;
+  -ms-transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+}
+.post-readmore__link:hover {
+  color: var(--color-gray-200);
+  background-color: blue;/*#49b1f5*/
+}
+
+
+/* 修改二级菜单左对齐
+.header-nav-submenu-item {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  font-size: 18px;
+  line-height: 1;
+  text-align: left;
+}
+*/
+
+/* 隐藏文章底部的 上一页，下一页的链接提示 */
+.post-paginator {
+  display: none;
+  border-top: 1px solid var(--color-gray-250);
+  padding-top: 1rem;
+}
