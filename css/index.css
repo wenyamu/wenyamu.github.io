@@ -5,10 +5,16 @@
  * css_custom: css/custom.css
  */
 
+/* 
+ * 以下为自定义的 html 并指定样式
+ */
+
 /* 页面底部自定义文字的颜色 */
 .daydayup{
     color:green;
+    display: none;
 }
+
 
 /* 以下是 hexo stun 主题默认样式文件, 在其基础上进行修改
  * 这个文件会覆盖 stun 主题的样式文件.
@@ -658,15 +664,7 @@ kbd {
   -ms-flex: 0 0 auto;
   flex: 0 0 auto;
 }
-.footer {
-  -webkit-box-flex: 1;
-  -moz-box-flex: 1;
-  -o-box-flex: 1;
-  box-flex: 1;
-  -webkit-flex: 0 0 auto;
-  -ms-flex: 0 0 auto;
-  flex: 0 0 auto;
-}
+
 .main {
   width: 100%;
   -webkit-box-flex: 1;
@@ -958,7 +956,20 @@ kbd {
   font-weight: 400;
   color: #f5f6f7;
 }
+/* 隐藏底部 添加 display: none; */
+.footer {
+  display: none;
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  -o-box-flex: 1;
+  box-flex: 1;
+  -webkit-flex: 0 0 auto;
+  -ms-flex: 0 0 auto;
+  flex: 0 0 auto;
+}
+/* 设置底部的高度 添加 height: 50px !important; */
 .footer-inner {
+  height: 50px !important;
   position: relative;
   padding: 1rem;
   font-size: 16px;
