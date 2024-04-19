@@ -1885,10 +1885,11 @@ kbd {
   color: var(--color-gray-400);
   border-top: 1px dashed var(--color-gray-300);
 }
+/* 修改: 返回顶部按钮的位置 right: 0; bottom: 5vh 为 right: 40vh; bottom: 10vh */
 .back2top {
   position: fixed;
-  right: 0;
-  bottom: 5vh;
+  right: 40vh;
+  bottom: 10vh;
   -webkit-transition: -webkit-transform 0.2s ease;
   -moz-transition: -moz-transform 0.2s ease;
   -o-transition: -o-transform 0.2s ease;
@@ -1908,13 +1909,16 @@ kbd {
   -ms-transform: translateX(-100%);
   transform: translateX(-100%);
 }
+/* 修改: 让返回顶部按钮直接隐藏(隐藏动画失效) display: none; */
 .back2top--hide {
+  display: none;
   -webkit-transform: translateX(100%);
   -moz-transform: translateX(100%);
   -o-transform: translateX(100%);
   -ms-transform: translateX(100%);
   transform: translateX(100%);
 }
+/* 修改: 此样式中的角度 -45deg(逆时针45度) 会覆盖 stun.yml 中的 `back2top` 角度设置 */
 .back2top__icon {
   display: block;
   font-size: 1.2rem;
