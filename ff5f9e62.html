@@ -1,14 +1,14 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="format-detection" content="telephone=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><link rel="icon" href="/images/favicon.ico?v=2.8.0" type="image/png" sizes="16x16"><link rel="icon" href="/images/favicon.ico?v=2.8.0" type="image/png" sizes="32x32"><meta name="description" content="安装ftp服务 安装 vsftpd 安装虚拟用户数据库 启动FTP服务 设置FTP服务开机自启动   增加一个系统用户 配置vsftp主配置文件 配置虚拟用户访问vsftpd服务 创建虚拟用户的根目录 配置虚拟用户各自的配置文件 生成虚拟用户数据库 配置vsftpd验证文件 重启服务 总结 附件(sh执行文件)    vsftpd的搭建和使用-虚拟多用户配置  服务器环境centos 7.6">
 <meta property="og:type" content="article">
 <meta property="og:title" content="vsftpd的搭建和使用-虚拟多用户配置">
-<meta property="og:url" content="http://8.210.236.200:4000/ff5f9e62.html">
+<meta property="og:url" content="https://www.689.im/ff5f9e62.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="安装ftp服务 安装 vsftpd 安装虚拟用户数据库 启动FTP服务 设置FTP服务开机自启动   增加一个系统用户 配置vsftp主配置文件 配置虚拟用户访问vsftpd服务 创建虚拟用户的根目录 配置虚拟用户各自的配置文件 生成虚拟用户数据库 配置vsftpd验证文件 重启服务 总结 附件(sh执行文件)    vsftpd的搭建和使用-虚拟多用户配置  服务器环境centos 7.6">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-01-16T08:07:51.000Z">
 <meta property="article:modified_time" content="2024-03-21T18:18:49.263Z">
 <meta property="article:author" content="689.im">
-<meta name="twitter:card" content="summary"><title>vsftpd的搭建和使用-虚拟多用户配置 | Hexo</title><link ref="canonical" href="http://8.210.236.200:4000/ff5f9e62.html"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/5.12.1/css/all.min.css" type="text/css"><link rel="stylesheet" href="/css/index.css?v=2.8.0"><link rel="stylesheet" href="css/index.css"><script>var Stun = window.Stun || {};
+<meta name="twitter:card" content="summary"><title>vsftpd的搭建和使用-虚拟多用户配置 | Hexo</title><link ref="canonical" href="https://www.689.im/ff5f9e62.html"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/5.12.1/css/all.min.css" type="text/css"><link rel="stylesheet" href="/css/index.css?v=2.8.0"><link rel="stylesheet" href="css/index.css"><script>var Stun = window.Stun || {};
 var CONFIG = {
   root: '/',
   algolia: undefined,
