@@ -1,0 +1,10 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /.git/
+Disallow: /css/
+Disallow: /images/
+Disallow: /js/
+Disallow: /errpage/
+Disallow: /page/
+Sitemap: https://www.689.im/sitemap.xml
+Sitemap: https://www.689.im/sitemap.html
