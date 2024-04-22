@@ -1,18 +1,7 @@
 /*!
- * 自定义样式，路径在 stun.yml 中设置
- * # 允许用户覆盖CSS
- * # 注意：文件名或者目录名前不能带下划线"_", 像 css/_index.css 或者 css/_xxx/index.css 都不行
- * css_custom: css/index.css
+ * 修改后的样式
+ * 此样式文件是直接把 public/css/index.css 拿过来, 修改后放在 hexo/source/css/index.css 直接覆盖原样式
  */
-
-/* 
- * 以下是为新添加的 html 设置样式
- */
-
-/* 页面底部自定义文字的颜色 */
-.daydayup{
-    color:green;
-}
 
 /* ####################### 分隔线 ####################### */
 
@@ -1378,13 +1367,13 @@ kbd {
   text-align: center;
 }
 
-/*文章内容页(帖子)标题样式 */
+/*研究:文章内容页(帖子)标题样式 */
 .post-title {
   margin: 0;
   color: var(--color-gray-950);
   cursor: auto;
 }
-/*首页文章标题样式 */
+/*研究:首页文章标题样式 */
 .post-title__link {
   position: relative;
   color: var(--color-gray-800);
