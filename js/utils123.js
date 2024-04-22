@@ -48,7 +48,7 @@ Stun.utils = Stun.$u = {
       var remaining = wait - (now - previous)
       context = this
       args = arguments
-      if (remaining <= 0 || remaining > wait) {
+      if (remaining <= 0 || remaining> wait) {
         if (timeout) {
           clearTimeout(timeout)
           timeout = null
@@ -609,3 +609,4 @@ Stun.utils = Stun.$u = {
     $.when.apply(null, imgDefereds).then(callback)
   }
 }
+</=>
