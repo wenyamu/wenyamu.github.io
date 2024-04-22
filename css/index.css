@@ -1377,11 +1377,14 @@ kbd {
   font-size: 1em;
   text-align: center;
 }
+
+/*文章内容页(帖子)标题样式 */
 .post-title {
   margin: 0;
   color: var(--color-gray-950);
   cursor: auto;
 }
+/*首页文章标题样式 */
 .post-title__link {
   position: relative;
   color: var(--color-gray-800);
