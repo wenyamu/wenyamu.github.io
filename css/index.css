@@ -15,6 +15,13 @@ html {
   line-height: 1.15; /* 1 */
   -webkit-text-size-adjust: 100%; /* 2 */
 }
+
+/* 修改: 新添加的样式, 去掉ul li前面的圆黑点 */
+ul {
+  list-style-type: none;/* 去掉圆黑点 */
+  /*list-style-image: url("/images/favicon.ico"); 用图片代替圆黑点*/
+}
+
 body {
   margin: 0;
 }
@@ -1196,6 +1203,7 @@ kbd {
 .tagcloud-item a:hover {
   color: #fc6423 !important;
 }
+
 .category-list-item::before {
   color: #49b1f5;
 }
@@ -1203,7 +1211,7 @@ kbd {
   color: #fc6423;
 }
 .category-list-link {
-  font-size: 1em;
+  font-size: 1.12em; /* 修改: 原值 1em */
   color: #49b1f5;
   -webkit-transition: color 0.2s ease;
   -moz-transition: color 0.2s ease;
@@ -1215,8 +1223,8 @@ kbd {
   color: #fc6423;
 }
 .category-list-count {
-  margin-left: 0.3em;
-  font-size: 13px;
+  margin-left: 0.5em; /* 修改: 原值 0.3em */
+  font-size: 15px; /* 修改: 原值 13px */
   color: var(--color-gray-600);
 }
 .category-list-count::before {
