@@ -6,7 +6,7 @@
 <meta property="og:description" content="安装 Portainer Server       首先，创建数据卷, 或者在 docker run 命令中通过 -v portainer_data:&#x2F;data 创建卷&#x2F;var&#x2F;lib&#x2F;docker&#x2F;volumes&#x2F;portainer_data&#x2F;_data 1docker volume create portainer_data">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2024-03-21T16:39:00.000Z">
-<meta property="article:modified_time" content="2024-04-20T18:21:56.835Z">
+<meta property="article:modified_time" content="2024-05-30T07:41:39.749Z">
 <meta property="article:author" content="689">
 <meta property="article:tag" content="docker">
 <meta property="article:tag" content="portainer">
@@ -53,7 +53,7 @@ window.CONFIG = CONFIG;</script></head><body><div class="container" id="containe
 
 <figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">docker run -d \</span><br><span class="line">  -p 8000:8000 \</span><br><span class="line">  -p 9443:9443 \</span><br><span class="line">  --name portainer \</span><br><span class="line">  --restart=always \</span><br><span class="line">  -v /var/run/docker.sock:/var/run/docker.sock \</span><br><span class="line">  -v portainer_data:/data \</span><br><span class="line">  portainer/portainer-ce:2.20.1</span><br></pre></td></tr></table></div></figure>
 <blockquote>
-<p>默认情况下，Portainer 是通过 <code>https(9443)</code> 访问，如果你想使用 <code>http(9000)</code> 访问，则加入 <code>-v 9000:9000</code></p>
+<p>默认情况下，Portainer 是通过 <code>https(9443)</code> 访问，如果你想使用 <code>http(9000)</code> 访问，则加入 <code>-p 9000:9000</code></p>
 </blockquote>
 <p>通过 <span class="exturl"><a class="exturl__link" target="_blank" rel="noopener" href="https://0.0.0.0:9443/">https://0.0.0.0:9443</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span> 访问，第一次需要设置密码。</p>
 
@@ -73,33 +73,37 @@ window.CONFIG = CONFIG;</script></head><body><div class="container" id="containe
 <figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">docker run -d \</span><br><span class="line">  -p 9001:9001 \</span><br><span class="line">  --name portainer_agent \</span><br><span class="line">  --restart=always \</span><br><span class="line">  -v /var/run/docker.sock:/var/run/docker.sock \</span><br><span class="line">  -v /var/lib/docker/volumes:/var/lib/docker/volumes \</span><br><span class="line">  portainer/agent:2.20.1</span><br></pre></td></tr></table></div></figure>
 <p>这样你就会在 portainer 页面的 <code>Home</code> 页的右侧看到多出来一个远程的主机，点击进去就可以管理其中的docker 容器了。</p>
 
-        <h2><span id="重新生成-portainer-登陆密码">
-          重新生成 Portainer 登陆密码</span></h2>
-      <p>portainer 密码忘记怎么办？</p>
+        <h2><span id="忘记密码重新生成-portainer-登陆密码">
+          忘记密码？重新生成 Portainer 登陆密码</span></h2>
+      <blockquote>
+<p>运行此命令，下面有步骤详细说明</p>
+</blockquote>
+<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">docker stop portainer &amp;&amp; \</span><br><span class="line">docker run --rm \</span><br><span class="line">-v $(dirname `find /var/lib/docker/volumes -name portainer.key`):/data \</span><br><span class="line">portainer/helper-reset-password &amp;&amp; \</span><br><span class="line">docker start portainer</span><br></pre></td></tr></table></div></figure>
+
 <blockquote>
-<p>先把portainer 容器停止，必须停止</p>
+<p>1、先把portainer 容器停止，必须停止</p>
 </blockquote>
 <figure class="highlight sh"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker stop portainer</span><br></pre></td></tr></table></div></figure>
 <blockquote>
-<p>找到portainer.key文件所在的目录</p>
+<p>2、找到 <code>portainer.key</code> 文件所在的目录</p>
 </blockquote>
-<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">find / -name portainer.key</span><br></pre></td></tr></table></div></figure>
-<blockquote>
-<p>如何你知道大概的位置，也可以指定在一个范围查找</p>
-</blockquote>
-<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">find /var/lib/docker/volumes -name portainer.key</span><br><span class="line">root@iZj6c:~# find /var/lib/docker/volumes -name portainer.key</span><br><span class="line">/var/lib/docker/volumes/portainer_data/_data/portainer.key</span><br><span class="line"></span><br></pre></td></tr></table></div></figure>
+<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">find /var/lib/docker/volumes -name portainer.key</span><br><span class="line">#返回</span><br><span class="line">#/var/lib/docker/volumes/portainer_data/_data/portainer.key</span><br></pre></td></tr></table></div></figure>
 
 <blockquote>
-<p>执行命令重新生成admin账户密码</p>
+<p>3、执行命令重新生成admin账户密码</p>
 </blockquote>
 <figure class="highlight sh"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#/var/lib/docker/volumes/portainer_data/_data 为portainer.key所在的目录</span></span><br><span class="line">docker run --<span class="built_in">rm</span> \</span><br><span class="line">-v /var/lib/docker/volumes/portainer_data/_data:/data \</span><br><span class="line">portainer/helper-reset-password</span><br></pre></td></tr></table></div></figure>
 
 <blockquote>
 <p>返回内容</p>
 </blockquote>
-<figure class="highlight sh"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">root@iZj6c:~<span class="comment"># docker run --rm -v /var/lib/docker/volumes/portainer_data/_data:/data portainer/helper-reset-password</span></span><br><span class="line">&#123;<span class="string">&quot;level&quot;</span>:<span class="string">&quot;info&quot;</span>,<span class="string">&quot;filename&quot;</span>:<span class="string">&quot;portainer.db&quot;</span>,<span class="string">&quot;time&quot;</span>:<span class="string">&quot;2024-03-28T06:20:51Z&quot;</span>,<span class="string">&quot;message&quot;</span>:<span class="string">&quot;loading PortainerDB&quot;</span>&#125;</span><br><span class="line">2024/03/28 06:20:51 Password successfully updated <span class="keyword">for</span> user: admin</span><br><span class="line">2024/03/28 06:20:51 Use the following password to login: m8T!yCEG3&#123;+Rtp]el64ZW</span><br></pre></td></tr></table></div></figure>
+<figure class="highlight sh"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="string">&quot;level&quot;</span>:<span class="string">&quot;info&quot;</span>,<span class="string">&quot;filename&quot;</span>:<span class="string">&quot;portainer.db&quot;</span>,<span class="string">&quot;time&quot;</span>:<span class="string">&quot;2024-03-28T06:20:51Z&quot;</span>,<span class="string">&quot;message&quot;</span>:<span class="string">&quot;loading PortainerDB&quot;</span>&#125;</span><br><span class="line">2024/03/28 06:20:51 Password successfully updated <span class="keyword">for</span> user: admin</span><br><span class="line">2024/03/28 06:20:51 Use the following password to login: m8T!yCEG3&#123;+Rtp]el64ZW</span><br></pre></td></tr></table></div></figure>
 <blockquote>
-<p>用户 admin<br>密码 m8T!yCEG3{+Rtp]el64ZW<br>使用账号和密码登陆portainer，并马上进行后台修改密码。</p>
+<p>4、启动容器</p>
+</blockquote>
+<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker start portainer</span><br></pre></td></tr></table></div></figure>
+<blockquote>
+<p>用户 admin<br>密码 m8T!yCEG3{+Rtp]el64ZW<br>使用账号和密码登陆portainer，并马上进行后台密码修改。</p>
 </blockquote>
 </div><footer class="post-footer"><div class="post-ending ending"><div class="ending__text">------ 本文结束，感谢您的阅读 ------</div></div><div class="post-tags"><span class="post-tags-item"><span class="post-tags-item__icon"><i class="fas fa-tag"></i></span><a class="post-tags-item__link" href="https://www.689.im/tags/docker/">docker</a></span><span class="post-tags-item"><span class="post-tags-item__icon"><i class="fas fa-tag"></i></span><a class="post-tags-item__link" href="https://www.689.im/tags/portainer/">portainer</a></span></div><nav class="post-paginator paginator"><div class="paginator-prev"><a class="paginator-prev__link" href="/cce1856a.html"><span class="paginator-prev__icon"><i class="fas fa-angle-left"></i></span><span class="paginator-prev__text">acme.sh 申请 ssl 域名证书</span></a></div><div class="paginator-next"><a class="paginator-next__link" href="/17c7b154.html"><span class="paginator-prev__text">js相同值合并</span><span class="paginator-next__icon"><i class="fas fa-angle-right"></i></span></a></div></nav></footer></div></div></div><div class="clearfix"></div></div></main><footer class="footer" id="footer"><div class="footer-inner"><div><span class="daydayup">好好学习，天天向上！</span></div></div></footer><div class="loading-bar" id="loading-bar"><div class="loading-bar__progress"></div></div></div><div class="search-mask"></div><div class="search-popup"><span class="search-close"></span><div class="search-input"><input placeholder="搜索文章（支持多关键词，请用空格分隔）"></div><div class="search-results"></div></div><script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script><script src="https://cdn.bootcdn.net/ajax/libs/velocity/1.5.2/velocity.min.js"></script><script src="https://cdn.bootcdn.net/ajax/libs/velocity/1.5.2/velocity.ui.min.js"></script><script>function initSearch() {
   var isXML = true;
