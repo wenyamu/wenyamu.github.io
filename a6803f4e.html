@@ -6,7 +6,7 @@
 <meta property="og:description" content="Shadowsocks-libev 是一个轻量级安全 SOCKS5 代理，适用于嵌入式设备和低端设备。https:&#x2F;&#x2F;github.com&#x2F;shadowsocks&#x2F;shadowsocks-libev                     为什么要写这篇文章        我有一个香橙派，在下载 docker 镜像时，国内镜像源不稳定，用阿里云的容器加速器，个人免费版下载的镜像又很旧，跟不上官方的">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2024-06-30T14:42:00.000Z">
-<meta property="article:modified_time" content="2024-07-02T04:27:54.415Z">
+<meta property="article:modified_time" content="2024-07-02T10:57:03.745Z">
 <meta property="article:author" content="689">
 <meta property="article:tag" content="docker">
 <meta property="article:tag" content="shadowsocks">
@@ -51,7 +51,7 @@ window.CONFIG = CONFIG;</script></head><body><div class="container" id="containe
       <blockquote>
 <p>在服务端 和 香橙派上都要安装</p>
 </blockquote>
-<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt install -y shadowsocks-libev</span><br></pre></td></tr></table></div></figure>
+<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt install -y shadowsocks-libev</span><br></pre></td></tr></table></div></figure>
 
         <h2><span id="一-服务端">
           一、服务端</span></h2>
@@ -62,9 +62,9 @@ window.CONFIG = CONFIG;</script></head><body><div class="container" id="containe
 <p>此服务端可以正常访问 <code>http://hub.docker.com</code></p>
 </blockquote>
 <blockquote>
-<p><code>-s &quot;189.28.18.198&quot;</code> 必须是真实的远程服务器ip，不能是 <code>127.0.0.1</code> 或 <code>0.0.0.0</code><br><code>-p 8388</code> 服务器端口<br><code>-l 1080</code> 本地端口<br><code>-m &quot;aes-256-gcm&quot;</code> 加密<br><code>-k &quot;password&quot;</code> 密码</p>
+<p><code>-s &quot;189.28.18.198&quot;</code> 必须是真实的远程服务器ip，不能是 <code>127.0.0.1</code> 或 <code>0.0.0.0</code><br><code>-p 8388</code> 服务器端口<br><code>-l 1080</code> 本地端口<br><code>-m &quot;aes-256-gcm&quot;</code> 加密<br><code>-k &quot;password&quot;</code> 密码<br><code>--fast-open</code> 使用TCP Fast Open扩展</p>
 </blockquote>
-<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/usr/bin/ss-server -s &quot;189.28.18.198&quot; -p 8388 -l 1080 -m &quot;aes-256-gcm&quot; -k &quot;password&quot;</span><br></pre></td></tr></table></div></figure>
+<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">/usr/bin/ss-server \</span><br><span class="line">  -s <span class="string">&quot;189.28.18.198&quot;</span> \</span><br><span class="line">  -p 8388 \</span><br><span class="line">  -l 1080 \</span><br><span class="line">  -m <span class="string">&quot;aes-256-gcm&quot;</span> \</span><br><span class="line">  -k <span class="string">&quot;password&quot;</span> \</span><br><span class="line">  --fast-open</span><br></pre></td></tr></table></div></figure>
 
 <blockquote>
 <p>可以通过以下命令查询当前服务器的公网ip</p>
@@ -74,12 +74,12 @@ window.CONFIG = CONFIG;</script></head><body><div class="container" id="containe
 <blockquote>
 <p>改装后的命令如下</p>
 </blockquote>
-<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/usr/bin/ss-server -s &quot;$(curl -s ipinfo.io/ip)&quot; -p 8388 -l 1080 -m &quot;aes-256-gcm&quot; -k &quot;password&quot;</span><br></pre></td></tr></table></div></figure>
+<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">/usr/bin/ss-server \</span><br><span class="line">  -s <span class="string">&quot;<span class="subst">$(curl -s ipinfo.io/ip)</span>&quot;</span> \</span><br><span class="line">  -p 8388 \</span><br><span class="line">  -l 1080 \</span><br><span class="line">  -m <span class="string">&quot;aes-256-gcm&quot;</span> \</span><br><span class="line">  -k <span class="string">&quot;password&quot;</span> \</span><br><span class="line">  --fast-open</span><br></pre></td></tr></table></div></figure>
 
 <blockquote>
 <p>放行 8388 服务端口</p>
 </blockquote>
-<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo iptables -I INPUT -p tcp --dport 8388 -j ACCEPT</span><br><span class="line">sudo iptables -I INPUT -p udp --dport 8388 -j ACCEPT</span><br><span class="line"># 查看 8388 端口</span><br><span class="line">iptables -L | grep 8388</span><br></pre></td></tr></table></div></figure>
+<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">iptables -I INPUT -p tcp --dport 8388 -j ACCEPT</span><br><span class="line">iptables -I INPUT -p udp --dport 8388 -j ACCEPT</span><br><span class="line"><span class="comment"># 查看 8388 端口</span></span><br><span class="line">iptables -L | grep 8388</span><br><span class="line"><span class="comment"># 保存规则，不然重启后开放的端口会失效</span></span><br><span class="line">iptables-save &gt; /etc/iptables.up.rules</span><br></pre></td></tr></table></div></figure>
 
         <h2><span id="二-linux-客户端">
           二、linux 客户端</span></h2>
@@ -87,53 +87,53 @@ window.CONFIG = CONFIG;</script></head><body><div class="container" id="containe
         <h3><span id="香橙派运行debian-arm64">
           香橙派运行（debian arm64）</span></h3>
       <blockquote>
-<p>安装 privoxy</p>
+<p>shadowsocks 是 socks5 代理，shell 命令并不支持 socks5 代理，只支持 http&#x2F;https 代理。<br>privoxy 就是用来把 http 请求转发给 shadowsocks 的。</p>
 </blockquote>
-<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt install -y privoxy</span><br></pre></td></tr></table></div></figure>
+<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt install -y privoxy</span><br></pre></td></tr></table></div></figure>
 
 <blockquote>
 <p>备份配置文件</p>
 </blockquote>
-<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cp /etc/privoxy/config /etc/privoxy/config.bak</span><br></pre></td></tr></table></div></figure>
+<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cp</span> /etc/privoxy/config /etc/privoxy/config.bak</span><br></pre></td></tr></table></div></figure>
 
 <blockquote>
 <p>查看配置文件(过滤配置文件注释)</p>
 </blockquote>
-<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">grep -v &quot;#&quot; /etc/privoxy/config</span><br><span class="line"></span><br><span class="line"># 查看是否有以下两行，没有则编辑配置文件，去掉注释</span><br><span class="line">listen-address  127.0.0.1:8118</span><br><span class="line">listen-address  [::1]:8118</span><br></pre></td></tr></table></div></figure>
+<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">grep -v <span class="string">&quot;#&quot;</span> /etc/privoxy/config</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看是否有以下两行，没有则编辑配置文件，去掉注释</span></span><br><span class="line">listen-address  127.0.0.1:8118</span><br><span class="line">listen-address  [::1]:8118</span><br></pre></td></tr></table></div></figure>
 
 <blockquote>
 <p>创建域名列表文件 <code>gfwlist.action</code></p>
 </blockquote>
-<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">cat &gt; /etc/privoxy/gfwlist.action &lt;&lt; EOF</span><br><span class="line">&#123;+forward-override&#123;forward-socks5 127.0.0.1:1080 .&#125;&#125;</span><br><span class="line"># 可以在后面追加，一个域名一行</span><br><span class="line">.docker.com</span><br><span class="line">EOF</span><br></pre></td></tr></table></div></figure>
+<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cat</span> &gt; /etc/privoxy/gfwlist.action &lt;&lt; <span class="string">EOF</span></span><br><span class="line"><span class="string">&#123;+forward-override&#123;forward-socks5 127.0.0.1:1080 .&#125;&#125;</span></span><br><span class="line"><span class="string"># 可以在后面追加，一个域名一行</span></span><br><span class="line"><span class="string">.docker.com</span></span><br><span class="line"><span class="string">EOF</span></span><br></pre></td></tr></table></div></figure>
 
 <blockquote>
 <p>在配置文件末尾处追加 <code>actionsfile gfwlist.action</code> 引入新建的域名列表文件<br><code>-e &quot;\n&quot;</code> 把 \n 作为换行符输出，不作为字符串</p>
 </blockquote>
-<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo -e &quot;\nactionsfile gfwlist.action&quot; &gt;&gt; /etc/privoxy/config</span><br></pre></td></tr></table></div></figure>
+<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> -e <span class="string">&quot;\nactionsfile gfwlist.action&quot;</span> &gt;&gt; /etc/privoxy/config</span><br></pre></td></tr></table></div></figure>
 
 <blockquote>
 <p>重启 privoxy 使用配置文件生效</p>
 </blockquote>
-<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">systemctl restart privoxy</span><br><span class="line"><span class="comment">#systemctl start privoxy</span></span><br><span class="line"><span class="comment">#systemctl status privoxy</span></span><br></pre></td></tr></table></div></figure>
+<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">systemctl restart privoxy</span><br><span class="line"><span class="comment">#systemctl start privoxy</span></span><br><span class="line"><span class="comment">#systemctl status privoxy</span></span><br><span class="line"><span class="comment">#systemctl enable privoxy</span></span><br></pre></td></tr></table></div></figure>
 <blockquote>
 <p>docker 配置</p>
 </blockquote>
-<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">sudo mkdir -p /etc/systemd/system/docker.service.d</span><br><span class="line">sudo tee /etc/systemd/system/docker.service.d/proxy.conf &lt;&lt; EOF</span><br><span class="line">[Service]</span><br><span class="line">Environment=&quot;HTTP_PROXY=http://127.0.0.1:8118&quot;</span><br><span class="line">Environment=&quot;HTTPS_PROXY=http://127.0.0.1:8118&quot;</span><br><span class="line"># 不使用代理的地址</span><br><span class="line">Environment=&quot;NO_PROXY=localhost,127.0.0.1&quot;</span><br><span class="line">EOF</span><br></pre></td></tr></table></div></figure>
+<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">sudo <span class="built_in">mkdir</span> -p /etc/systemd/system/docker.service.d</span><br><span class="line">sudo <span class="built_in">tee</span> /etc/systemd/system/docker.service.d/http-proxy.conf &lt;&lt; <span class="string">EOF</span></span><br><span class="line"><span class="string">[Service]</span></span><br><span class="line"><span class="string">Environment=&quot;HTTP_PROXY=http://127.0.0.1:8118&quot;</span></span><br><span class="line"><span class="string">Environment=&quot;HTTPS_PROXY=http://127.0.0.1:8118&quot;</span></span><br><span class="line"><span class="string"># 不使用代理的地址</span></span><br><span class="line"><span class="string">Environment=&quot;NO_PROXY=localhost,127.0.0.1&quot;</span></span><br><span class="line"><span class="string">EOF</span></span><br></pre></td></tr></table></div></figure>
 
 <blockquote>
 <p>重启生效</p>
 </blockquote>
-<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl daemon-reload &amp;&amp; sudo systemctl restart docker</span><br></pre></td></tr></table></div></figure>
+<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl daemon-reload &amp;&amp; sudo systemctl restart docker</span><br></pre></td></tr></table></div></figure>
 
 <blockquote>
 <p>启动 ss-local 客户端服务(参数与服务端的参数一样)</p>
 </blockquote>
-<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/usr/bin/ss-local -s &quot;189.28.18.198&quot; -p 8388 -l 1080 -m &quot;aes-256-gcm&quot; -k &quot;password&quot;</span><br></pre></td></tr></table></div></figure>
+<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">/usr/bin/ss-local \</span><br><span class="line">  -s <span class="string">&quot;189.28.18.198&quot;</span> \</span><br><span class="line">  -p 8388 \</span><br><span class="line">  -l 1080 \</span><br><span class="line">  -m <span class="string">&quot;aes-256-gcm&quot;</span> \</span><br><span class="line">  -k <span class="string">&quot;password&quot;</span> \</span><br><span class="line">  --fast-open</span><br></pre></td></tr></table></div></figure>
 
 <blockquote>
 <p>下载镜像</p>
 </blockquote>
-<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull debian</span><br></pre></td></tr></table></div></figure>
+<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull debian</span><br></pre></td></tr></table></div></figure>
 
 
         <h3><span id="香橙派中使用-curl-测试代理是否生效这一步仅作测试可选操作">
@@ -170,27 +170,27 @@ window.CONFIG = CONFIG;</script></head><body><div class="container" id="containe
 
         <h3><span id="3-香橙派中-docker-代理的配置">
           3. 香橙派中 docker 代理的配置</span></h3>
-      <figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">sudo mkdir -p /etc/systemd/system/docker.service.d</span><br><span class="line">sudo tee /etc/systemd/system/docker.service.d/proxy.conf &lt;&lt; EOF</span><br><span class="line">[Service]</span><br><span class="line">Environment=&quot;HTTP_PROXY=http://192.168.1.3:1080&quot;</span><br><span class="line">Environment=&quot;HTTPS_PROXY=http://192.168.1.3:1080&quot;</span><br><span class="line"># 不使用代理的地址</span><br><span class="line">Environment=&quot;NO_PROXY=localhost,127.0.0.1&quot;</span><br><span class="line">EOF</span><br></pre></td></tr></table></div></figure>
+      <figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">sudo <span class="built_in">mkdir</span> -p /etc/systemd/system/docker.service.d</span><br><span class="line">sudo <span class="built_in">tee</span> /etc/systemd/system/docker.service.d/http-proxy.conf &lt;&lt; <span class="string">EOF</span></span><br><span class="line"><span class="string">[Service]</span></span><br><span class="line"><span class="string">Environment=&quot;HTTP_PROXY=http://192.168.1.3:1080&quot;</span></span><br><span class="line"><span class="string">Environment=&quot;HTTPS_PROXY=http://192.168.1.3:1080&quot;</span></span><br><span class="line"><span class="string"># 不使用代理的地址</span></span><br><span class="line"><span class="string">Environment=&quot;NO_PROXY=localhost,127.0.0.1&quot;</span></span><br><span class="line"><span class="string">EOF</span></span><br></pre></td></tr></table></div></figure>
 
 
         <h3><span id="4-让-docker-代理配置生效">
           4. 让 docker 代理配置生效</span></h3>
-      <figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl daemon-reload &amp;&amp; systemctl restart docker</span><br></pre></td></tr></table></div></figure>
+      <figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl daemon-reload &amp;&amp; systemctl restart docker</span><br></pre></td></tr></table></div></figure>
 
 <blockquote>
 <p>防止 <code>systemctl restart docker</code> 执行时，容器也跟着重启，可以加入 <code>&quot;live-restore&quot;: true</code></p>
 </blockquote>
-<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">cat &gt; /etc/docker/daemon.json &lt;&lt; EOF</span><br><span class="line">&#123;</span><br><span class="line">  &quot;registry-mirrors&quot;: [&quot;https://hub.docker.com/&quot;],</span><br><span class="line">  &quot;live-restore&quot;: true</span><br><span class="line">&#125;</span><br><span class="line">EOF</span><br></pre></td></tr></table></div></figure>
+<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cat</span> &gt; /etc/docker/daemon.json &lt;&lt; <span class="string">EOF</span></span><br><span class="line"><span class="string">&#123;</span></span><br><span class="line"><span class="string">  &quot;registry-mirrors&quot;: [&quot;https://hub.docker.com/&quot;],</span></span><br><span class="line"><span class="string">  &quot;live-restore&quot;: true</span></span><br><span class="line"><span class="string">&#125;</span></span><br><span class="line"><span class="string">EOF</span></span><br></pre></td></tr></table></div></figure>
 
 <blockquote>
 <p>查看代理信息是否修改成功</p>
 </blockquote>
-<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 方式一</span><br><span class="line">sudo docker info</span><br><span class="line"># 方式二</span><br><span class="line">systemctl show --property=Environment docker</span><br></pre></td></tr></table></div></figure>
+<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 方式一</span></span><br><span class="line">docker info</span><br><span class="line"><span class="comment"># 方式二</span></span><br><span class="line">systemctl show --property=Environment docker</span><br></pre></td></tr></table></div></figure>
 
 
         <h3><span id="5-下载镜像从官方镜像站下载">
           5. 下载镜像（从官方镜像站下载）</span></h3>
-      <figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull debian</span><br></pre></td></tr></table></div></figure>
+      <figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull debian</span><br></pre></td></tr></table></div></figure>
 
 
         <h2><span id="四-docker-容器">
@@ -198,7 +198,7 @@ window.CONFIG = CONFIG;</script></head><body><div class="container" id="containe
       <blockquote>
 <p><span class="exturl"><a class="exturl__link" target="_blank" rel="noopener" href="https://github.com/shadowsocks/shadowsocks-rust">https://github.com/shadowsocks/shadowsocks-rust</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span></p>
 </blockquote>
-<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">docker run --name sslocal-rust \</span><br><span class="line">  --restart always \</span><br><span class="line">  -p 1080:1080/tcp \</span><br><span class="line">  -v /path/to/config.json:/etc/shadowsocks-rust/config.json \</span><br><span class="line">  -dit ghcr.io/shadowsocks/sslocal-rust:latest</span><br><span class="line"></span><br><span class="line">docker run --name ssserver-rust \</span><br><span class="line">  --restart always \</span><br><span class="line">  -p 8388:8388/tcp \</span><br><span class="line">  -p 8388:8388/udp \</span><br><span class="line">  -v /path/to/config.json:/etc/shadowsocks-rust/config.json \</span><br><span class="line">  -dit ghcr.io/shadowsocks/ssserver-rust:latest</span><br></pre></td></tr></table></div></figure></div><footer class="post-footer"><div class="post-ending ending"><div class="ending__text">------ 本文结束，感谢您的阅读 ------</div></div><div class="post-tags"><span class="post-tags-item"><span class="post-tags-item__icon"><i class="fas fa-tag"></i></span><a class="post-tags-item__link" href="https://www.689.im/tags/docker/">docker</a></span><span class="post-tags-item"><span class="post-tags-item__icon"><i class="fas fa-tag"></i></span><a class="post-tags-item__link" href="https://www.689.im/tags/shadowsocks/">shadowsocks</a></span></div><nav class="post-paginator paginator"><div class="paginator-next"><a class="paginator-next__link" href="/979063cb.html"><span class="paginator-prev__text">香橙派、树莓派设置静态ip</span><span class="paginator-next__icon"><i class="fas fa-angle-right"></i></span></a></div></nav></footer></div></div></div><div class="clearfix"></div></div></main><footer class="footer" id="footer"><div class="footer-inner"><div><span class="daydayup">好好学习，天天向上！</span></div></div></footer><div class="loading-bar" id="loading-bar"><div class="loading-bar__progress"></div></div></div><div class="search-mask"></div><div class="search-popup"><span class="search-close"></span><div class="search-input"><input placeholder="搜索文章（支持多关键词，请用空格分隔）"></div><div class="search-results"></div></div><script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script><script src="//cdnjs.cloudflare.com/ajax/libs/velocity/1.5.2/velocity.min.js"></script><script src="//cdnjs.cloudflare.com/ajax/libs/velocity/1.5.2/velocity.ui.min.js"></script><script>function initSearch() {
+<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">docker run --name sslocal-rust \</span><br><span class="line">  --restart always \</span><br><span class="line">  -p 1080:1080/tcp \</span><br><span class="line">  -v /path/to/config.json:/etc/shadowsocks-rust/config.json \</span><br><span class="line">  -dit ghcr.io/shadowsocks/sslocal-rust:latest</span><br><span class="line"></span><br><span class="line">docker run --name ssserver-rust \</span><br><span class="line">  --restart always \</span><br><span class="line">  -p 8388:8388/tcp \</span><br><span class="line">  -p 8388:8388/udp \</span><br><span class="line">  -v /path/to/config.json:/etc/shadowsocks-rust/config.json \</span><br><span class="line">  -dit ghcr.io/shadowsocks/ssserver-rust:latest</span><br></pre></td></tr></table></div></figure></div><footer class="post-footer"><div class="post-ending ending"><div class="ending__text">------ 本文结束，感谢您的阅读 ------</div></div><div class="post-tags"><span class="post-tags-item"><span class="post-tags-item__icon"><i class="fas fa-tag"></i></span><a class="post-tags-item__link" href="https://www.689.im/tags/docker/">docker</a></span><span class="post-tags-item"><span class="post-tags-item__icon"><i class="fas fa-tag"></i></span><a class="post-tags-item__link" href="https://www.689.im/tags/shadowsocks/">shadowsocks</a></span></div><nav class="post-paginator paginator"><div class="paginator-next"><a class="paginator-next__link" href="/979063cb.html"><span class="paginator-prev__text">香橙派、树莓派设置静态ip</span><span class="paginator-next__icon"><i class="fas fa-angle-right"></i></span></a></div></nav></footer></div></div></div><div class="clearfix"></div></div></main><footer class="footer" id="footer"><div class="footer-inner"><div><span class="daydayup">好好学习，天天向上！</span></div></div></footer><div class="loading-bar" id="loading-bar"><div class="loading-bar__progress"></div></div></div><div class="search-mask"></div><div class="search-popup"><span class="search-close"></span><div class="search-input"><input placeholder="搜索文章（支持多关键词，请用空格分隔）"></div><div class="search-results"></div></div><script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script><script src="//cdnjs.cloudflare.com/ajax/libs/velocity/1.5.2/velocity.min.js"></script><script src="//cdnjs.cloudflare.com/ajax/libs/velocity/1.5.2/velocity.ui.min.js"></script><script>function initSearch() {
   var isXML = true;
   var search_path = 'search.json';
 
