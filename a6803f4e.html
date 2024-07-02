@@ -6,7 +6,7 @@
 <meta property="og:description" content="Shadowsocks-libev 是一个轻量级安全 SOCKS5 代理，适用于嵌入式设备和低端设备。https:&#x2F;&#x2F;github.com&#x2F;shadowsocks&#x2F;shadowsocks-libev                     为什么要写这篇文章        我有一个香橙派，在下载 docker 镜像时，国内镜像源不稳定，用阿里云的容器加速器，个人免费版下载的镜像又很旧，跟不上官方的">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2024-06-30T14:42:00.000Z">
-<meta property="article:modified_time" content="2024-07-01T15:11:10.907Z">
+<meta property="article:modified_time" content="2024-07-02T04:21:15.024Z">
 <meta property="article:author" content="689">
 <meta property="article:tag" content="docker">
 <meta property="article:tag" content="shadowsocks">
@@ -53,9 +53,11 @@ window.CONFIG = CONFIG;</script></head><body><div class="container" id="containe
 </blockquote>
 <figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt install -y shadowsocks-libev</span><br></pre></td></tr></table></div></figure>
 
-
-        <h2><span id="linux-服务端运行debian-amd64">
-          linux 服务端运行（debian amd64）</span></h2>
+        <h2><span id="一-服务端">
+          一、服务端</span></h2>
+      
+        <h3><span id="linux-服务端运行debian-amd64">
+          linux 服务端运行（debian amd64）</span></h3>
       <blockquote>
 <p>此服务端可以正常访问 <code>http://hub.docker.com</code></p>
 </blockquote>
@@ -67,7 +69,7 @@ window.CONFIG = CONFIG;</script></head><body><div class="container" id="containe
 <blockquote>
 <p>可以通过以下命令查询当前服务器的公网ip</p>
 </blockquote>
-<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># myip.ipip.net</span></span><br><span class="line">curl -s myip.ipip.net | grep -o <span class="string">&#x27;[0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># ipinfo.io</span></span><br><span class="line">curl -s ipinfo.io/ip</span><br></pre></td></tr></table></div></figure>
+<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 方式一 https://myip.ipip.net</span></span><br><span class="line">curl -s myip.ipip.net | grep -o <span class="string">&#x27;[0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 方式二 https://ipinfo.io</span></span><br><span class="line">curl -s ipinfo.io/ip</span><br></pre></td></tr></table></div></figure>
 
 <blockquote>
 <p>改装后的命令如下</p>
@@ -77,24 +79,76 @@ window.CONFIG = CONFIG;</script></head><body><div class="container" id="containe
 <blockquote>
 <p>放行 8388 服务端口</p>
 </blockquote>
-<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo iptables -I INPUT -p tcp --dport 8388 -j ACCEPT</span><br><span class="line"></span><br><span class="line"># 查看 8388 端口</span><br><span class="line">iptables -L | grep 8388</span><br></pre></td></tr></table></div></figure>
+<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo iptables -I INPUT -p tcp --dport 8388 -j ACCEPT</span><br><span class="line">sudo iptables -I INPUT -p udp --dport 8388 -j ACCEPT</span><br><span class="line"># 查看 8388 端口</span><br><span class="line">iptables -L | grep 8388</span><br></pre></td></tr></table></div></figure>
 
-
-        <h2><span id="香橙派运行debian-arm64">
-          香橙派运行（debian arm64）</span></h2>
-      <figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/usr/bin/ss-local -s &quot;189.28.18.198&quot; -p 8388 -l 1080 -m &quot;aes-256-gcm&quot; -k &quot;password&quot;</span><br></pre></td></tr></table></div></figure>
-
-
-        <h2><span id="香橙派中使用-curl-测试代理是否生效">
-          香橙派中使用 curl 测试代理是否生效</span></h2>
+        <h2><span id="二-linux-客户端">
+          二、linux 客户端</span></h2>
+      
+        <h3><span id="香橙派运行debian-arm64">
+          香橙派运行（debian arm64）</span></h3>
       <blockquote>
-<p><code>https://myip.ipip.net</code> 和 <code>https://ipinfo.io/</code> 返回ip信息</p>
+<p>安装 privoxy</p>
 </blockquote>
-<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 不加代理参数直接访问，无法访问</span></span><br><span class="line">curl http://hub.docker.com/</span><br><span class="line"></span><br><span class="line"><span class="comment"># 需要加上代理参数，才可以访问</span></span><br><span class="line">curl -x socks5h://localhost:1080 http://hub.docker.com/</span><br><span class="line"></span><br><span class="line"><span class="comment"># 不加代理参数直接访问，显示你家里的宽带ip（电信、移动、联通）</span></span><br><span class="line">curl myip.ipip.net</span><br><span class="line"></span><br><span class="line"><span class="comment"># 加上代理后，如果显示的是你服务端的公网ip，说明代理已经生效</span></span><br><span class="line"><span class="comment"># curl &gt;= 7.18.0</span></span><br><span class="line">curl --socks5-hostname 127.0.0.1:1080 myip.ipip.net</span><br><span class="line"><span class="comment"># curl &gt;= 7.21.7</span></span><br><span class="line">curl -x socks5h://localhost:1080 myip.ipip.net</span><br><span class="line"></span><br><span class="line"><span class="comment"># curl 加上代理下载文件</span></span><br><span class="line">curl --socks5-hostname 127.0.0.1:1080 https://download.abc.com/xyz.zip -o test.zip</span><br></pre></td></tr></table></div></figure>
+<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt install -y privoxy</span><br></pre></td></tr></table></div></figure>
+
+<blockquote>
+<p>备份配置文件</p>
+</blockquote>
+<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cp /etc/privoxy/config /etc/privoxy/config.bak</span><br></pre></td></tr></table></div></figure>
+
+<blockquote>
+<p>查看配置文件(过滤配置文件注释)</p>
+</blockquote>
+<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">grep -v &quot;#&quot; /etc/privoxy/config</span><br><span class="line"></span><br><span class="line"># 查看是否有以下两行，没有则编辑配置文件，去掉注释</span><br><span class="line">listen-address  127.0.0.1:8118</span><br><span class="line">listen-address  [::1]:8118</span><br></pre></td></tr></table></div></figure>
+
+<blockquote>
+<p>创建域名列表文件 <code>gfwlist.action</code></p>
+</blockquote>
+<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">cat &gt; /etc/privoxy/gfwlist.action &lt;&lt; EOF</span><br><span class="line">&#123;+forward-override&#123;forward-socks5 127.0.0.1:1080 .&#125;&#125;</span><br><span class="line"># 可以在后面追加，一个域名一行</span><br><span class="line">.docker.com</span><br><span class="line">EOF</span><br></pre></td></tr></table></div></figure>
+
+<blockquote>
+<p>在配置文件末尾处追加 <code>actionsfile gfwlist.action</code> 引入新建的域名列表文件<br><code>-e &quot;\n&quot;</code> 把 \n 作为换行符输出，不作为字符串</p>
+</blockquote>
+<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo -e &quot;\nactionsfile gfwlist.action&quot; &gt;&gt; /etc/privoxy/config</span><br></pre></td></tr></table></div></figure>
+
+<blockquote>
+<p>重启 privoxy 使用配置文件生效</p>
+</blockquote>
+<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">systemctl restart privoxy</span><br><span class="line"><span class="comment">#systemctl start privoxy</span></span><br><span class="line"><span class="comment">#systemctl status privoxy</span></span><br></pre></td></tr></table></div></figure>
+<blockquote>
+<p>docker 配置</p>
+</blockquote>
+<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">sudo mkdir -p /etc/systemd/system/docker.service.d</span><br><span class="line">sudo tee /etc/systemd/system/docker.service.d/proxy.conf &lt;&lt; EOF</span><br><span class="line">[Service]</span><br><span class="line">Environment=&quot;HTTP_PROXY=http://127.0.0.1:8118&quot;</span><br><span class="line">Environment=&quot;HTTPS_PROXY=http://127.0.0.1:8118&quot;</span><br><span class="line"># 不使用代理的地址</span><br><span class="line">Environment=&quot;NO_PROXY=localhost,127.0.0.1&quot;</span><br><span class="line">EOF</span><br></pre></td></tr></table></div></figure>
+
+<blockquote>
+<p>重启生效</p>
+</blockquote>
+<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl daemon-reload &amp;&amp; sudo systemctl restart docker</span><br></pre></td></tr></table></div></figure>
+
+<blockquote>
+<p>启动 ss-local 客户端服务(参数与服务端的参数一样)</p>
+</blockquote>
+<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/usr/bin/ss-local -s &quot;189.28.18.198&quot; -p 8388 -l 1080 -m &quot;aes-256-gcm&quot; -k &quot;password&quot;</span><br></pre></td></tr></table></div></figure>
+
+<blockquote>
+<p>下载镜像</p>
+</blockquote>
+<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull debian</span><br></pre></td></tr></table></div></figure>
 
 
-        <h2><span id="windows-访问-httphubdockercom">
-          windows 访问 <code>http://hub.docker.com</code></span></h2>
+        <h3><span id="香橙派中使用-curl-测试代理是否生效这一步仅作测试可选操作">
+          香橙派中使用 curl 测试代理是否生效(这一步仅作测试，可选操作)</span></h3>
+      <figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 不加代理参数直接访问，显示你家里的宽带ip（电信、移动、联通）</span></span><br><span class="line">curl myip.ipip.net</span><br><span class="line"></span><br><span class="line"><span class="comment"># 加上代理后，如果显示的是你服务端的公网ip，说明代理已经生效</span></span><br><span class="line"><span class="comment"># curl &gt;= 7.18.0</span></span><br><span class="line">curl --socks5-hostname 127.0.0.1:1080 myip.ipip.net</span><br><span class="line"><span class="comment"># curl &gt;= 7.21.7</span></span><br><span class="line">curl -x socks5h://localhost:1080 myip.ipip.net</span><br></pre></td></tr></table></div></figure>
+
+
+        <h2><span id="三-windows-客户端">
+          三、windows 客户端</span></h2>
+      <blockquote>
+<p>通过 windows 让香橙派下载 docker 镜像<br>使用此方法香橙派可以不运行客户端 <code>ss-local</code> 和 <code>privoxy</code> 也可以下载 docker 镜像</p>
+</blockquote>
+
+        <h3><span id="1-首先要让-windows-可以访问-httphubdockercom">
+          1. 首先要让 windows 可以访问 <code>http://hub.docker.com</code></span></h3>
       <blockquote>
 <p>下载 windows 客户端 <span class="exturl"><a class="exturl__link" target="_blank" rel="noopener" href="https://github.com/shadowsocks/shadowsocks-windows">https://github.com/shadowsocks/shadowsocks-windows</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span></p>
 </blockquote>
@@ -105,28 +159,23 @@ window.CONFIG = CONFIG;</script></head><body><div class="container" id="containe
 <p>点击确定，在任务栏右下角找到纸飞机图标，右键 – 系统代理 – PAC模式&#x2F;全局模式</p>
 </blockquote>
 <blockquote>
-<p>以上完成，windows 就可以访问 <code>http://hub.docker.com</code></p>
+<p>以上完成，windows 就可以成功访问 <code>http://hub.docker.com</code></p>
 </blockquote>
 
-        <h2><span id="遇到的问题">
-          遇到的问题</span></h2>
-      <p>原来想实现的效果是，在香橙派上运行 ss-local 客户端程序</p>
-<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/usr/bin/ss-local -s &quot;189.28.18.198&quot; -p 8388 -l 1080 -m &quot;aes-256-gcm&quot; -k &quot;password&quot;</span><br></pre></td></tr></table></div></figure>
-<p>然后直接在香橙派上配置 docker 代理</p>
-<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[Service]</span><br><span class="line">Environment=&quot;HTTP_PROXY=http://127.0.0.1:1080&quot;</span><br><span class="line">Environment=&quot;HTTPS_PROXY=http://127.0.0.1:1080&quot;</span><br></pre></td></tr></table></div></figure>
-<p>结果，虽然使用 curl 命令验证了香橙派 socks 代理配置成功，但是在配置 docker 代理上出了问题，一直不成功。</p>
-<blockquote>
-<p>最后通过 windows 电脑才代理成功。<br>在任务栏右下角找到纸飞机图标，右键 – 允许其他设备连入。<br>windows 电脑的本地局域网ip <code>192.168.1.3</code><br>以下就是通过 windows 电脑作为代理。</p>
+        <h3><span id="2-允许其他设备连入-windows-客户端">
+          2. 允许其他设备连入 windows 客户端</span></h3>
+      <blockquote>
+<p>在windows任务栏右下角找到纸飞机图标，右键 – 允许其他设备连入。<br>windows 电脑的本地局域网ip <code>192.168.1.3</code></p>
 </blockquote>
 
-        <h2><span id="香橙派中代理的配置">
-          香橙派中代理的配置</span></h2>
+        <h3><span id="3-香橙派中代理的配置">
+          3. 香橙派中代理的配置</span></h3>
       <figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">sudo mkdir -p /etc/systemd/system/docker.service.d</span><br><span class="line">sudo tee /etc/systemd/system/docker.service.d/proxy.conf &lt;&lt; EOF</span><br><span class="line">[Service]</span><br><span class="line">Environment=&quot;HTTP_PROXY=http://192.168.1.3:1080&quot;</span><br><span class="line">Environment=&quot;HTTPS_PROXY=http://192.168.1.3:1080&quot;</span><br><span class="line"># 不使用代理的地址</span><br><span class="line">Environment=&quot;NO_PROXY=localhost,127.0.0.1&quot;</span><br><span class="line">EOF</span><br></pre></td></tr></table></div></figure>
 
-<blockquote>
-<p>让配置生效</p>
-</blockquote>
-<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl daemon-reload &amp;&amp; sudo systemctl restart docker</span><br></pre></td></tr></table></div></figure>
+
+        <h3><span id="4-让-docker-代理配置生效">
+          4. 让 docker 代理配置生效</span></h3>
+      <figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl daemon-reload &amp;&amp; sudo systemctl restart docker</span><br></pre></td></tr></table></div></figure>
 
 <blockquote>
 <p>防止 <code>systemctl restart docker</code> 执行时，容器也跟着重启，可以加入 <code>&quot;live-restore&quot;: true</code></p>
@@ -138,14 +187,14 @@ window.CONFIG = CONFIG;</script></head><body><div class="container" id="containe
 </blockquote>
 <figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 方式一</span><br><span class="line">sudo docker info</span><br><span class="line"># 方式二</span><br><span class="line">systemctl show --property=Environment docker</span><br></pre></td></tr></table></div></figure>
 
-<blockquote>
-<p>下载镜像（从官方镜像站下载）</p>
-</blockquote>
-<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull image:tag</span><br></pre></td></tr></table></div></figure>
+
+        <h3><span id="5-下载镜像从官方镜像站下载">
+          5. 下载镜像（从官方镜像站下载）</span></h3>
+      <figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull debian</span><br></pre></td></tr></table></div></figure>
 
 
-        <h2><span id="docker-容器">
-          docker 容器</span></h2>
+        <h2><span id="四-docker-容器">
+          四、docker 容器</span></h2>
       <blockquote>
 <p><span class="exturl"><a class="exturl__link" target="_blank" rel="noopener" href="https://github.com/shadowsocks/shadowsocks-rust">https://github.com/shadowsocks/shadowsocks-rust</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span></p>
 </blockquote>
