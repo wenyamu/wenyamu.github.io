@@ -37,8 +37,8 @@ https://www.689.im/tags/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/index.html
 https://www.689.im/tags/git/index.html
 https://www.689.im/tags/shadowsocks/index.html
 https://www.689.im/tags/ssh/index.html
-https://www.689.im/tags/pm2/index.html
 https://www.689.im/tags/openssl/index.html
+https://www.689.im/tags/pm2/index.html
 https://www.689.im/tags/python/index.html
 https://www.689.im/tags/sync/index.html
 https://www.689.im/tags/rsync/index.html
