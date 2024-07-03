@@ -6,7 +6,7 @@
 <meta property="og:description" content="Shadowsocks-libev 是一个轻量级安全 SOCKS5 代理，适用于嵌入式设备和低端设备。https:&#x2F;&#x2F;github.com&#x2F;shadowsocks&#x2F;shadowsocks-libev                     为什么要写这篇文章        我有一个香橙派，在下载 docker 镜像时，国内镜像源不稳定，用阿里云的容器加速器，个人免费版下载的镜像又很旧，跟不上官方的">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2024-06-30T14:42:00.000Z">
-<meta property="article:modified_time" content="2024-07-02T14:43:42.738Z">
+<meta property="article:modified_time" content="2024-07-03T15:48:30.242Z">
 <meta property="article:author" content="689">
 <meta property="article:tag" content="docker">
 <meta property="article:tag" content="shadowsocks">
@@ -50,8 +50,8 @@ window.CONFIG = CONFIG;</script></head><body><div class="container" id="containe
         <h2><span id="一-服务端">
           一、服务端</span></h2>
       
-        <h3><span id="linux-服务端运行debian-amd64">
-          linux 服务端运行（debian amd64）</span></h3>
+        <h3><span id="linux-服务端debian-amd64">
+          linux 服务端（debian amd64）</span></h3>
       <blockquote>
 <p>安装 shadowsocks-libev</p>
 </blockquote>
@@ -63,18 +63,18 @@ window.CONFIG = CONFIG;</script></head><body><div class="container" id="containe
 <figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看 ss-server 是否运行</span></span><br><span class="line">ps aux | grep -i ss-server</span><br><span class="line"><span class="comment"># 会返回以下</span></span><br><span class="line">/usr/bin/ss-server -c /etc/shadowsocks-libev/config.json</span><br></pre></td></tr></table></div></figure>
 
 <blockquote>
-<p>修改配置文件<br>这里使用 <code>curl -s ipinfo.io/ip</code> 获取服务器的公网ip</p>
+<p>修改配置文件</p>
 </blockquote>
 
     <div class="note-plugin info">
       <span class="note-plugin__icon note-plugin__icon--info">
               <i class="fas fa-info-circle"></i>
             </span>
-      <p>注意 <code>server</code> 必须是真实的服务器公网ip，不能是 <code>127.0.0.1</code> 或 <code>0.0.0.0</code> (这好像是个bug)</p>
+      <p>注意 <code>server</code> 可以用 ipv6 <code>[::0]</code> 、 ipv4 <code>0.0.0.0</code> 来表示本机公网ip<br>也可以是真实的服务器公网ip，可以使用 <code>curl -s ipinfo.io/ip</code> 获取本机公网ip<br>但不能是 <code>127.0.0.1</code> 、 <code>[::1]</code></p>
     </div>
   
 
-<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">cat &gt; /etc/shadowsocks-libev/config.json &lt;&lt; EOF</span><br><span class="line">&#123;</span><br><span class="line">    &quot;server&quot;:[&quot;$(curl -s ipinfo.io/ip)&quot;],</span><br><span class="line">    &quot;mode&quot;:&quot;tcp_and_udp&quot;,</span><br><span class="line">    &quot;server_port&quot;:8388,</span><br><span class="line">    &quot;local_port&quot;:1080,</span><br><span class="line">    &quot;password&quot;:&quot;password&quot;,</span><br><span class="line">    &quot;timeout&quot;:86400,</span><br><span class="line">    &quot;method&quot;:&quot;aes-256-gcm&quot;,</span><br><span class="line">    &quot;fast_open&quot;: true</span><br><span class="line">&#125;</span><br><span class="line">EOF</span><br></pre></td></tr></table></div></figure>
+<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">cat &gt; /etc/shadowsocks-libev/config.json &lt;&lt; EOF</span><br><span class="line">&#123;</span><br><span class="line">    &quot;server&quot;:[&quot;[::0]&quot;, &quot;0.0.0.0&quot;],</span><br><span class="line">    &quot;mode&quot;:&quot;tcp_and_udp&quot;,</span><br><span class="line">    &quot;server_port&quot;:8388,</span><br><span class="line">    &quot;local_port&quot;:1080,</span><br><span class="line">    &quot;password&quot;:&quot;password&quot;,</span><br><span class="line">    &quot;timeout&quot;:86400,</span><br><span class="line">    &quot;method&quot;:&quot;aes-256-gcm&quot;,</span><br><span class="line">    &quot;fast_open&quot;: true</span><br><span class="line">&#125;</span><br><span class="line">EOF</span><br></pre></td></tr></table></div></figure>
 
 <blockquote>
 <p>重启 shadowsocks-libev 使配置文件生效</p>
@@ -89,8 +89,8 @@ window.CONFIG = CONFIG;</script></head><body><div class="container" id="containe
         <h2><span id="二-linux-客户端">
           二、linux 客户端</span></h2>
       
-        <h3><span id="香橙派运行debian-arm64">
-          香橙派运行（debian arm64）</span></h3>
+        <h3><span id="香橙派debian-arm64">
+          香橙派（debian arm64）</span></h3>
       <blockquote>
 <p>安装 shadowsocks-libev</p>
 </blockquote>
@@ -142,7 +142,7 @@ window.CONFIG = CONFIG;</script></head><body><div class="container" id="containe
 <blockquote>
 <p>重启生效</p>
 </blockquote>
-<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl daemon-reload &amp;&amp; sudo systemctl restart docker</span><br></pre></td></tr></table></div></figure>
+<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl daemon-reload &amp;&amp; systemctl restart docker</span><br></pre></td></tr></table></div></figure>
 
 <blockquote>
 <p>启动 ss-local 客户端服务(与服务端的参数一样)</p>
@@ -184,7 +184,7 @@ window.CONFIG = CONFIG;</script></head><body><div class="container" id="containe
       <span class="note-plugin__icon note-plugin__icon--success">
               <i class="fas fa-check-circle"></i>
             </span>
-      <p><strong>操作说明</strong><br>双击 <code>Shadowsocks.exe</code> 进行如下配置<br>服务器地址: 189.28.18.198<br>服务器端口: 8388<br>密码: password<br>加密: aes-256-gcm<br>代理端口: 1080<br>点击确定，在任务栏右下角找到纸飞机图标，右键 – 系统代理 – PAC模式&#x2F;全局模式</p>
+      <p><strong>操作说明</strong><br>双击 <code>Shadowsocks.exe</code> 进行如下配置<br>服务器地址: <code>189.28.18.198</code><br>服务器端口: <code>8388</code><br>密码: <code>password</code><br>加密: <code>aes-256-gcm</code><br>代理端口: <code>1080</code><br>点击确定，在任务栏右下角找到纸飞机图标，右键 – 系统代理 – PAC模式&#x2F;全局模式</p>
     </div>
   
 <blockquote>
@@ -199,27 +199,48 @@ window.CONFIG = CONFIG;</script></head><body><div class="container" id="containe
 
         <h3><span id="3-香橙派中-docker-代理的配置">
           3. 香橙派中 docker 代理的配置</span></h3>
-      <figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">sudo <span class="built_in">mkdir</span> -p /etc/systemd/system/docker.service.d</span><br><span class="line">sudo <span class="built_in">tee</span> /etc/systemd/system/docker.service.d/http-proxy.conf &lt;&lt; <span class="string">EOF</span></span><br><span class="line"><span class="string">[Service]</span></span><br><span class="line"><span class="string">Environment=&quot;HTTP_PROXY=http://192.168.1.3:1080&quot;</span></span><br><span class="line"><span class="string">Environment=&quot;HTTPS_PROXY=http://192.168.1.3:1080&quot;</span></span><br><span class="line"><span class="string"># 不使用代理的地址</span></span><br><span class="line"><span class="string">Environment=&quot;NO_PROXY=localhost,127.0.0.1&quot;</span></span><br><span class="line"><span class="string">EOF</span></span><br></pre></td></tr></table></div></figure>
+      <blockquote>
+<p><code>docker pull</code> 加速下载镜像</p>
+</blockquote>
+<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">sudo <span class="built_in">mkdir</span> -p /etc/systemd/system/docker.service.d</span><br><span class="line">sudo <span class="built_in">tee</span> /etc/systemd/system/docker.service.d/http-proxy.conf &lt;&lt; <span class="string">EOF</span></span><br><span class="line"><span class="string">[Service]</span></span><br><span class="line"><span class="string">Environment=&quot;HTTP_PROXY=http://192.168.1.3:1080&quot;</span></span><br><span class="line"><span class="string">Environment=&quot;HTTPS_PROXY=http://192.168.1.3:1080&quot;</span></span><br><span class="line"><span class="string"># 不使用代理的地址</span></span><br><span class="line"><span class="string">Environment=&quot;NO_PROXY=localhost,127.0.0.1&quot;</span></span><br><span class="line"><span class="string">EOF</span></span><br></pre></td></tr></table></div></figure>
+
+<blockquote>
+<p><code>docker build</code> 加速创建镜像</p>
+</blockquote>
+
+    <div class="note-plugin info">
+      <span class="note-plugin__icon note-plugin__icon--info">
+              <i class="fas fa-info-circle"></i>
+            </span>
+      <p>注意: 配置 <code>~/.docker/config.json</code> 的代理设置后，容器中会保留这些变量，有安全风险</p>
+    </div>
+  
+<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cat</span> &gt; ~/.docker/config.json &lt;&lt; <span class="string">EOF</span></span><br><span class="line"><span class="string">&#123;</span></span><br><span class="line"><span class="string">  &quot;proxies&quot;: &#123;</span></span><br><span class="line"><span class="string">    &quot;default&quot;: &#123;</span></span><br><span class="line"><span class="string">      &quot;httpProxy&quot;: &quot;http://192.168.1.3:1080&quot;,</span></span><br><span class="line"><span class="string">      &quot;httpsProxy&quot;: &quot;http://192.168.1.3:1080&quot;,</span></span><br><span class="line"><span class="string">      &quot;noProxy&quot;: &quot;*.test.example.com, .example2.com&quot;</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">  &#125;</span></span><br><span class="line"><span class="string">&#125;</span></span><br><span class="line"><span class="string">EOF</span></span><br></pre></td></tr></table></div></figure>
+
+
+    <div class="note-plugin success">
+      <span class="note-plugin__icon note-plugin__icon--success">
+              <i class="fas fa-check-circle"></i>
+            </span>
+      <p>不修改 <code>~/.docker/config.json</code> 文件<br>直接在 <code>docker build --build-arg</code> 后跟上代理变量，此变量不会保留在容器中 </p>
+    </div>
+  
+<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">docker build \</span><br><span class="line">--build-arg HTTPS_PROXY=<span class="string">&quot;http://192.168.1.3:1080&quot;</span> \</span><br><span class="line">--build-arg HTTP_PROXY=<span class="string">&quot;http://192.168.1.3:1080&quot;</span> \</span><br><span class="line">-t my_image:tag .</span><br></pre></td></tr></table></div></figure>
 
 
         <h3><span id="4-让-docker-代理配置生效">
           4. 让 docker 代理配置生效</span></h3>
-      <figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl daemon-reload &amp;&amp; systemctl restart docker</span><br></pre></td></tr></table></div></figure>
+      <figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 只修改 `~/.docker/config.json` 文件，不需要此操作</span></span><br><span class="line">systemctl daemon-reload &amp;&amp; systemctl restart docker</span><br></pre></td></tr></table></div></figure>
 
 <blockquote>
-<p>防止 <code>systemctl restart docker</code> 执行时，容器也跟着重启，可以加入 <code>&quot;live-restore&quot;: true</code></p>
-</blockquote>
-<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cat</span> &gt; /etc/docker/daemon.json &lt;&lt; <span class="string">EOF</span></span><br><span class="line"><span class="string">&#123;</span></span><br><span class="line"><span class="string">  &quot;registry-mirrors&quot;: [&quot;https://hub.docker.com/&quot;],</span></span><br><span class="line"><span class="string">  &quot;live-restore&quot;: true</span></span><br><span class="line"><span class="string">&#125;</span></span><br><span class="line"><span class="string">EOF</span></span><br></pre></td></tr></table></div></figure>
-
-<blockquote>
-<p>查看代理信息是否修改成功</p>
+<p>查看代理信息是否修改成功<br><code>/etc/systemd/system/docker.service.d/http-proxy.conf</code> 文件的配置项</p>
 </blockquote>
 <figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 方式一</span></span><br><span class="line">docker info</span><br><span class="line"><span class="comment"># 方式二</span></span><br><span class="line">systemctl show --property=Environment docker</span><br></pre></td></tr></table></div></figure>
 
 
-        <h3><span id="5-下载镜像从官方镜像站下载">
-          5. 下载镜像（从官方镜像站下载）</span></h3>
-      <figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull debian</span><br></pre></td></tr></table></div></figure>
+        <h3><span id="5-应用">
+          5. 应用</span></h3>
+      <figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 加速下载镜像(新增 `~/etc/systemd/system/docker.service.d/http-proxy.conf` 文件)</span></span><br><span class="line">docker pull debian</span><br><span class="line"><span class="comment"># 加速创建镜像(修改 `~/.docker/config.json` 文件)</span></span><br><span class="line">docker build -t my_image:tag .</span><br></pre></td></tr></table></div></figure>
 
 
         <h2><span id="四-docker-容器">
