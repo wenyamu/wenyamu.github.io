@@ -6,7 +6,7 @@
 <meta property="og:description" content="Shadowsocks-libev 是一个轻量级安全 SOCKS5 代理，适用于嵌入式设备和低端设备。https:&#x2F;&#x2F;github.com&#x2F;shadowsocks&#x2F;shadowsocks-libev                     为什么要写这篇文章        我有一个香橙派，在下载 docker 镜像时，国内镜像源不稳定，用阿里云的容器加速器，个人免费版下载的镜像又很旧，跟不上官方的">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2024-06-30T14:42:00.000Z">
-<meta property="article:modified_time" content="2024-07-04T03:54:09.392Z">
+<meta property="article:modified_time" content="2024-07-05T15:40:24.026Z">
 <meta property="article:author" content="689">
 <meta property="article:tag" content="docker">
 <meta property="article:tag" content="shadowsocks">
@@ -74,7 +74,7 @@ window.CONFIG = CONFIG;</script></head><body><div class="container" id="containe
     </div>
   
 
-<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">cat &gt; /etc/shadowsocks-libev/config.json &lt;&lt; EOF</span><br><span class="line">&#123;</span><br><span class="line">    &quot;server&quot;:[&quot;[::0]&quot;, &quot;0.0.0.0&quot;],</span><br><span class="line">    &quot;mode&quot;:&quot;tcp_and_udp&quot;,</span><br><span class="line">    &quot;server_port&quot;:8388,</span><br><span class="line">    &quot;local_port&quot;:1080,</span><br><span class="line">    &quot;password&quot;:&quot;password&quot;,</span><br><span class="line">    &quot;timeout&quot;:86400,</span><br><span class="line">    &quot;method&quot;:&quot;aes-256-gcm&quot;,</span><br><span class="line">    &quot;fast_open&quot;: true</span><br><span class="line">&#125;</span><br><span class="line">EOF</span><br></pre></td></tr></table></div></figure>
+<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cat</span> &gt; /etc/shadowsocks-libev/config.json &lt;&lt; <span class="string">EOF</span></span><br><span class="line"><span class="string">&#123;</span></span><br><span class="line"><span class="string">    &quot;server&quot;:[&quot;[::0]&quot;, &quot;0.0.0.0&quot;],</span></span><br><span class="line"><span class="string">    &quot;mode&quot;:&quot;tcp_and_udp&quot;,</span></span><br><span class="line"><span class="string">    &quot;server_port&quot;:8388,</span></span><br><span class="line"><span class="string">    &quot;local_port&quot;:1080,</span></span><br><span class="line"><span class="string">    &quot;password&quot;:&quot;password&quot;,</span></span><br><span class="line"><span class="string">    &quot;timeout&quot;:86400,</span></span><br><span class="line"><span class="string">    &quot;method&quot;:&quot;aes-256-gcm&quot;,</span></span><br><span class="line"><span class="string">    &quot;fast_open&quot;: true</span></span><br><span class="line"><span class="string">&#125;</span></span><br><span class="line"><span class="string">EOF</span></span><br></pre></td></tr></table></div></figure>
 
 <blockquote>
 <p>重启 shadowsocks-libev 使配置文件生效</p>
@@ -91,24 +91,24 @@ window.CONFIG = CONFIG;</script></head><body><div class="container" id="containe
       
         <h3><span id="香橙派debian-arm64">
           香橙派（debian arm64）</span></h3>
-      <blockquote>
-<p>安装 shadowsocks-libev</p>
-</blockquote>
-<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt install -y shadowsocks-libev</span><br></pre></td></tr></table></div></figure>
+      
+        <h3><span id="1-安装-shadowsocks-libev">
+          1、安装 shadowsocks-libev</span></h3>
+      <figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt install -y shadowsocks-libev</span><br></pre></td></tr></table></div></figure>
 
 <blockquote>
 <p>停止 <code>shadowsocks-libev</code> 默认运行的 <code>ss-server</code>，并禁用开机自启</p>
 </blockquote>
 <figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 停止掉默认运行的 ss-server</span></span><br><span class="line">systemctl stop shadowsocks-libev.service</span><br><span class="line"><span class="comment"># 禁用开机自启</span></span><br><span class="line">systemctl <span class="built_in">disable</span> shadowsocks-libev.service</span><br></pre></td></tr></table></div></figure>
-<blockquote>
-<p>安装 privoxy</p>
-</blockquote>
 
+        <h3><span id="2-安装-privoxy">
+          2、安装 privoxy</span></h3>
+      
     <div class="note-plugin info">
       <span class="note-plugin__icon note-plugin__icon--info">
               <i class="fas fa-info-circle"></i>
             </span>
-      <p>shadowsocks 是 socks5 代理，shell 命令并不支持 socks5 代理，只支持 http&#x2F;https 代理。<br>privoxy 就是用来把 http 请求转发给 shadowsocks 的。</p>
+      <p>shadowsocks 是 socks5 代理。<br>docker 原生不支持 socks5 代理。<br>使用 privoxy 作为代理服务器转发流量。</p>
     </div>
   
 
@@ -122,30 +122,36 @@ window.CONFIG = CONFIG;</script></head><body><div class="container" id="containe
 <blockquote>
 <p>查看配置文件(过滤配置文件注释)</p>
 </blockquote>
-<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">grep -v <span class="string">&quot;#&quot;</span> /etc/privoxy/config</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看是否有以下两行，没有则编辑配置文件，去掉注释</span></span><br><span class="line">listen-address  127.0.0.1:8118</span><br><span class="line">listen-address  [::1]:8118</span><br></pre></td></tr></table></div></figure>
+<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">grep -v <span class="string">&quot;#&quot;</span> /etc/privoxy/config</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看是否含有以下配置，没有则编辑配置文件，如下：</span></span><br><span class="line">listen-address  0.0.0.0:8118</span><br><span class="line">listen-address  [::0]:8118</span><br><span class="line">forward-socks5  /  127.0.0.1:1080  .</span><br></pre></td></tr></table></div></figure>
 
 <blockquote>
-<p>创建域名列表文件 <code>gfwlist.action</code></p>
+<p>创建域名列表文件 <code>namelist.action</code></p>
 </blockquote>
-<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cat</span> &gt; /etc/privoxy/gfwlist.action &lt;&lt; <span class="string">EOF</span></span><br><span class="line"><span class="string">&#123;+forward-override&#123;forward-socks5 127.0.0.1:1080 .&#125;&#125;</span></span><br><span class="line"><span class="string"># 可以在后面追加，一个域名一行</span></span><br><span class="line"><span class="string">.docker.com</span></span><br><span class="line"><span class="string">EOF</span></span><br></pre></td></tr></table></div></figure>
+<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cat</span> &gt; /etc/privoxy/namelist.action &lt;&lt; <span class="string">EOF</span></span><br><span class="line"><span class="string">&#123;+forward-override&#123;forward-socks5 127.0.0.1:1080 .&#125;&#125;</span></span><br><span class="line"><span class="string"># 可以在后面追加，一个域名一行</span></span><br><span class="line"><span class="string">.docker.com</span></span><br><span class="line"><span class="string">EOF</span></span><br></pre></td></tr></table></div></figure>
 
 <blockquote>
-<p>在配置文件末尾处追加 <code>actionsfile gfwlist.action</code> 引入新建的域名列表文件<br><code>-e &quot;\n&quot;</code> 把 \n 作为换行符输出，不作为字符串</p>
+<p>在配置文件末尾处追加 <code>actionsfile namelist.action</code> 引入新建的域名列表文件</p>
 </blockquote>
-<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> -e <span class="string">&quot;\nactionsfile gfwlist.action&quot;</span> &gt;&gt; /etc/privoxy/config</span><br><span class="line"><span class="comment"># 重启使配置文件生效</span></span><br><span class="line">systemctl restart privoxy</span><br></pre></td></tr></table></div></figure>
+<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> -e <span class="string">&quot;\nactionsfile namelist.action&quot;</span> &gt;&gt; /etc/privoxy/config</span><br></pre></td></tr></table></div></figure>
 
 <blockquote>
-<p>Docker 配置</p>
+<p>重启 <code>privoxy</code>（配置文件修改会即时生效，不用重启）</p>
 </blockquote>
-<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">sudo <span class="built_in">mkdir</span> -p /etc/systemd/system/docker.service.d</span><br><span class="line">sudo <span class="built_in">tee</span> /etc/systemd/system/docker.service.d/http-proxy.conf &lt;&lt; <span class="string">EOF</span></span><br><span class="line"><span class="string">[Service]</span></span><br><span class="line"><span class="string">Environment=&quot;HTTP_PROXY=http://127.0.0.1:8118&quot;</span></span><br><span class="line"><span class="string">Environment=&quot;HTTPS_PROXY=http://127.0.0.1:8118&quot;</span></span><br><span class="line"><span class="string"># 不使用代理的地址</span></span><br><span class="line"><span class="string">Environment=&quot;NO_PROXY=localhost,127.0.0.1&quot;</span></span><br><span class="line"><span class="string">EOF</span></span><br></pre></td></tr></table></div></figure>
+<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl restart privoxy</span><br></pre></td></tr></table></div></figure>
 
-<blockquote>
-<p>重启 Docker</p>
+
+        <h3><span id="3-加速下载镜像-docker-代理配置">
+          3、加速下载镜像 docker 代理配置</span></h3>
+      <blockquote>
+<p>适用于直接下载<code>docker pull</code>和创建容器时的自动下载<code>docker run</code></p>
 </blockquote>
-<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl daemon-reload &amp;&amp; systemctl restart docker</span><br></pre></td></tr></table></div></figure>
+<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">sudo <span class="built_in">mkdir</span> -p /etc/systemd/system/docker.service.d</span><br><span class="line">sudo <span class="built_in">tee</span> /etc/systemd/system/docker.service.d/http-proxy.conf &lt;&lt; <span class="string">EOF</span></span><br><span class="line"><span class="string">[Service]</span></span><br><span class="line"><span class="string">Environment=&quot;HTTP_PROXY=http://127.0.0.1:8118&quot;</span></span><br><span class="line"><span class="string">Environment=&quot;HTTPS_PROXY=http://127.0.0.1:8118&quot;</span></span><br><span class="line"><span class="string"># 不使用代理的地址</span></span><br><span class="line"><span class="string">Environment=&quot;NO_PROXY=localhost,127.0.0.1&quot;</span></span><br><span class="line"><span class="string">EOF</span></span><br><span class="line">systemctl daemon-reload</span><br><span class="line">systemctl restart docker</span><br></pre></td></tr></table></div></figure>
 
-<blockquote>
-<p>启动 <code>ss-local</code> 客户端<br>也可以使用配置文件启动（与服务端的参数和启动方式一样）</p>
+
+        <h3><span id="4-启动-ss-local-客户端">
+          4、启动 <code>ss-local</code> 客户端</span></h3>
+      <blockquote>
+<p>也可以使用配置文件启动（与服务端的参数和启动方式一样）</p>
 </blockquote>
 
     <div class="note-plugin success">
@@ -158,14 +164,49 @@ window.CONFIG = CONFIG;</script></head><body><div class="container" id="containe
 <figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">/usr/bin/ss-local \</span><br><span class="line">  -s <span class="string">&quot;189.28.18.198&quot;</span> \</span><br><span class="line">  -p 8388 \</span><br><span class="line">  -l 1080 \</span><br><span class="line">  -m <span class="string">&quot;aes-256-gcm&quot;</span> \</span><br><span class="line">  -k <span class="string">&quot;password&quot;</span> \</span><br><span class="line">  --fast-open</span><br></pre></td></tr></table></div></figure>
 
 <blockquote>
-<p>下载镜像</p>
-</blockquote>
-<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull debian</span><br></pre></td></tr></table></div></figure>
-
-<blockquote>
 <p>香橙派中使用 curl 测试代理是否生效</p>
 </blockquote>
-<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 不加代理参数直接访问，显示你家里的宽带ip（电信、移动、联通）</span></span><br><span class="line">curl myip.ipip.net</span><br><span class="line"></span><br><span class="line"><span class="comment"># 加上代理后，如果显示的是你服务端的公网ip，说明代理已经生效</span></span><br><span class="line"><span class="comment"># curl &gt;= 7.18.0</span></span><br><span class="line">curl --socks5-hostname 127.0.0.1:1080 myip.ipip.net</span><br><span class="line"><span class="comment"># curl &gt;= 7.21.7</span></span><br><span class="line">curl -x socks5h://localhost:1080 myip.ipip.net</span><br></pre></td></tr></table></div></figure>
+<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 不加代理参数直接访问，显示你家里的宽带ip（电信、移动、联通）</span></span><br><span class="line">curl myip.ipip.net</span><br><span class="line"></span><br><span class="line"><span class="comment"># 加上代理参数后，如果显示的是你服务端的公网ip，说明代理已经生效</span></span><br><span class="line"><span class="comment"># curl &gt;= 7.18.0</span></span><br><span class="line">curl --socks5-hostname 127.0.0.1:1080 myip.ipip.net</span><br><span class="line"><span class="comment"># curl &gt;= 7.21.7</span></span><br><span class="line">curl -x socks5h://localhost:1080 myip.ipip.net</span><br></pre></td></tr></table></div></figure>
+
+
+        <h3><span id="5-应用">
+          5、应用</span></h3>
+      <blockquote>
+<p>加速下载镜像，适用于直接下载<code>docker pull</code>和创建容器时的自动下载<code>docker run</code></p>
+</blockquote>
+<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker pull debian</span><br><span class="line">docker run -d --name <span class="built_in">test</span> debian:latest</span><br></pre></td></tr></table></div></figure>
+
+<blockquote>
+<p>加速创建镜像</p>
+</blockquote>
+
+    <div class="note-plugin info">
+      <span class="note-plugin__icon note-plugin__icon--info">
+              <i class="fas fa-info-circle"></i>
+            </span>
+      <p>（这里的 ip 地址是默认虚拟网卡 docker0 的地址 <code>172.17.0.1</code>）<br>因为容器要与宿主机通信，要访问到宿主机的代理<br>如果局域网中其他设备，也需要代理，可以使用香橙派的ip <code>192.168.1.121</code>（此时香橙派相当于一个代理服务器）</p>
+    </div>
+  
+<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">docker build \</span><br><span class="line">--build-arg HTTPS_PROXY=<span class="string">&quot;http://172.17.0.1:8118&quot;</span> \</span><br><span class="line">--build-arg HTTP_PROXY=<span class="string">&quot;http://172.17.0.1:8118&quot;</span> \</span><br><span class="line">-t my_image:tag .</span><br><span class="line"></span><br><span class="line">docker build \</span><br><span class="line">--build-arg HTTPS_PROXY=<span class="string">&quot;http://192.168.1.121:8118&quot;</span> \</span><br><span class="line">--build-arg HTTP_PROXY=<span class="string">&quot;http://192.168.1.121:8118&quot;</span> \</span><br><span class="line">-t my_image:tag .</span><br></pre></td></tr></table></div></figure>
+
+<blockquote>
+<p>如果想在香橙派创建的 docker 容器中加速安装软件，需要在容器中设置如下代理</p>
+</blockquote>
+<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> HTTP_PROXY=<span class="string">&quot;http://172.17.0.1:8118&quot;</span> HTTPS_PROXY=<span class="string">&quot;http://172.17.0.1:8118&quot;</span></span><br><span class="line"><span class="comment"># 或者局域网中其他设备，也需要代理，可以使用香橙派的ip `192.168.1.121`（此时香橙派相当于一个代理服务器）</span></span><br><span class="line"><span class="built_in">export</span> HTTP_PROXY=<span class="string">&quot;http://192.168.1.121:8118&quot;</span> HTTPS_PROXY=<span class="string">&quot;http://192.168.1.121:8118&quot;</span></span><br><span class="line">apt install -y htop</span><br></pre></td></tr></table></div></figure>
+
+<blockquote>
+<p>香橙派设置代理，实现访问 <code>http://hub.docker.com</code></p>
+</blockquote>
+
+    <div class="note-plugin info">
+      <span class="note-plugin__icon note-plugin__icon--info">
+              <i class="fas fa-info-circle"></i>
+            </span>
+      <p>注意：代理名是小写的 <code>http_proxy</code>,<code>https_proxy</code></p>
+    </div>
+  
+
+<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 香橙派自身使用代理</span></span><br><span class="line"><span class="built_in">export</span> http_proxy=<span class="string">&quot;http://127.0.0.1:8118&quot;</span> https_proxy=<span class="string">&quot;http://127.0.0.1:8118&quot;</span></span><br><span class="line"><span class="comment"># 局域网中其它设备使用代理，香橙派在局域网中的ip `192.168.1.121`（此时香橙派相当于一个代理服务器）</span></span><br><span class="line"><span class="built_in">export</span> http_proxy=<span class="string">&quot;http://192.168.1.121:8118&quot;</span> https_proxy=<span class="string">&quot;http://192.168.1.121:8118&quot;</span></span><br><span class="line"><span class="comment"># 如果成功，wget 会下载 html 文件</span></span><br><span class="line">wget http://hub.docker.com</span><br><span class="line"><span class="comment"># curl 不加代理参数，此时显示的不再是你家的宽带ip，而是服务端的公网ip</span></span><br><span class="line">curl myip.ipip.net</span><br></pre></td></tr></table></div></figure>
 
 
         <h2><span id="三-windows-客户端">
@@ -180,7 +221,7 @@ window.CONFIG = CONFIG;</script></head><body><div class="container" id="containe
   
 
         <h3><span id="1-首先要让-windows-可以访问-httphubdockercom">
-          1. 首先要让 windows 可以访问 <code>http://hub.docker.com</code></span></h3>
+          1、首先要让 windows 可以访问 <code>http://hub.docker.com</code></span></h3>
       <blockquote>
 <p>下载 windows 客户端 <span class="exturl"><a class="exturl__link" target="_blank" rel="noopener" href="https://github.com/shadowsocks/shadowsocks-windows">https://github.com/shadowsocks/shadowsocks-windows</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span></p>
 </blockquote>
@@ -197,46 +238,77 @@ window.CONFIG = CONFIG;</script></head><body><div class="container" id="containe
 </blockquote>
 
         <h3><span id="2-允许其他设备连入-windows-客户端">
-          2. 允许其他设备连入 windows 客户端</span></h3>
+          2、允许其他设备连入 windows 客户端</span></h3>
       <blockquote>
 <p>在 windows 任务栏右下角找到纸飞机图标，右键 – 允许其他设备连入。<br>查看 windows 的本地局域网 ip <code>192.168.1.3</code></p>
 </blockquote>
 
         <h3><span id="3-香橙派中-docker-代理的配置">
-          3. 香橙派中 docker 代理的配置</span></h3>
+          3、香橙派中 docker 代理的配置</span></h3>
+      
+        <h3><span id="31-加速下载镜像">
+          3.1、加速下载镜像</span></h3>
       <blockquote>
-<p><code>docker pull</code> 加速下载镜像</p>
+<p>适用于 <code>docker pull</code> 直接下载 和 <code>docker run</code> 安装时的自动下载</p>
 </blockquote>
-<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">sudo <span class="built_in">mkdir</span> -p /etc/systemd/system/docker.service.d</span><br><span class="line">sudo <span class="built_in">tee</span> /etc/systemd/system/docker.service.d/http-proxy.conf &lt;&lt; <span class="string">EOF</span></span><br><span class="line"><span class="string">[Service]</span></span><br><span class="line"><span class="string">Environment=&quot;HTTP_PROXY=http://192.168.1.3:1080&quot;</span></span><br><span class="line"><span class="string">Environment=&quot;HTTPS_PROXY=http://192.168.1.3:1080&quot;</span></span><br><span class="line"><span class="string"># 不使用代理的地址</span></span><br><span class="line"><span class="string">Environment=&quot;NO_PROXY=localhost,127.0.0.1&quot;</span></span><br><span class="line"><span class="string">EOF</span></span><br></pre></td></tr></table></div></figure>
+<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> -p /etc/systemd/system/docker.service.d</span><br><span class="line"><span class="built_in">tee</span> /etc/systemd/system/docker.service.d/http-proxy.conf &lt;&lt; <span class="string">EOF</span></span><br><span class="line"><span class="string">[Service]</span></span><br><span class="line"><span class="string">Environment=&quot;HTTP_PROXY=http://192.168.1.3:1080&quot;</span></span><br><span class="line"><span class="string">Environment=&quot;HTTPS_PROXY=http://192.168.1.3:1080&quot;</span></span><br><span class="line"><span class="string"># 不使用代理的地址</span></span><br><span class="line"><span class="string">Environment=&quot;NO_PROXY=localhost,127.0.0.1&quot;</span></span><br><span class="line"><span class="string">EOF</span></span><br><span class="line">systemctl daemon-reload</span><br><span class="line">systemctl restart docker</span><br></pre></td></tr></table></div></figure>
 
-<blockquote>
-<p><code>docker build</code> 加速创建镜像</p>
+
+        <h3><span id="32-加速创建镜像方式一">
+          3.2、加速创建镜像(方式一)</span></h3>
+      <blockquote>
+<p><code>docker build -t my_image:tag .</code></p>
 </blockquote>
 
     <div class="note-plugin info">
       <span class="note-plugin__icon note-plugin__icon--info">
               <i class="fas fa-info-circle"></i>
             </span>
-      <p>（此配置文件保存后即生效，不需要重新启动 Docker）<br>注意: <code>~/.docker/config.json</code> 的代理信息，会在容器中保留，有安全风险<br>进入容器后输入 <code>env</code> 或 <code>export</code> 就可以查看到</p>
+      <p>（此配置文件保存后即生效，不需要重新启动 Docker）<br>注意: <code>~/.docker/config.json</code> 的代理信息，会在随后创建的容器中出现，之前创建的容器不受影响<br>进入容器后输入 <code>env</code> 或 <code>export</code> 就可以查看到<br>（创建的镜像中并不会存在代理信息，只对本机创建的容器有影响）</p>
     </div>
   
 <figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cat</span> &gt; ~/.docker/config.json &lt;&lt; <span class="string">EOF</span></span><br><span class="line"><span class="string">&#123;</span></span><br><span class="line"><span class="string">  &quot;proxies&quot;: &#123;</span></span><br><span class="line"><span class="string">    &quot;default&quot;: &#123;</span></span><br><span class="line"><span class="string">      &quot;httpProxy&quot;: &quot;http://192.168.1.3:1080&quot;,</span></span><br><span class="line"><span class="string">      &quot;httpsProxy&quot;: &quot;http://192.168.1.3:1080&quot;,</span></span><br><span class="line"><span class="string">      &quot;noProxy&quot;: &quot;*.test.example.com, .example2.com&quot;</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">  &#125;</span></span><br><span class="line"><span class="string">&#125;</span></span><br><span class="line"><span class="string">EOF</span></span><br></pre></td></tr></table></div></figure>
 
-
+        <h3><span id="33-加速创建镜像方式二">
+          3.3、加速创建镜像(方式二)</span></h3>
+      
     <div class="note-plugin success">
       <span class="note-plugin__icon note-plugin__icon--success">
               <i class="fas fa-check-circle"></i>
             </span>
-      <p>不修改 <code>~/.docker/config.json</code> 文件<br>直接在 <code>docker build --build-arg</code> 后跟上代理变量，此变量不会保留在容器中</p>
+      <p>如果不想修改 <code>~/.docker/config.json</code> 文件<br>可以在 <code>docker build --build-arg</code> 后跟上代理设置，创建的容器中不会出现代理信息</p>
     </div>
   
 <figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">docker build \</span><br><span class="line">--build-arg HTTPS_PROXY=<span class="string">&quot;http://192.168.1.3:1080&quot;</span> \</span><br><span class="line">--build-arg HTTP_PROXY=<span class="string">&quot;http://192.168.1.3:1080&quot;</span> \</span><br><span class="line">-t my_image:tag .</span><br></pre></td></tr></table></div></figure>
 
-<blockquote>
-<p>如果你想在容器中安装软件，在创建容器时通过 <code>--env</code>指定代理（变量名的大小写都要）</p>
-</blockquote>
-<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">docker run -itd \</span><br><span class="line">--env HTTPS_PROXY=&quot;http://192.168.1.3:1080&quot; \</span><br><span class="line">--env https_proxy=&quot;http://192.168.1.3:1080&quot; \</span><br><span class="line">--env HTTP_PROXY=&quot;http://192.168.1.3:1080&quot; \</span><br><span class="line">--env http_proxy=&quot;http://192.168.1.3:1080&quot; \</span><br><span class="line">--name test \</span><br><span class="line">my_image:tag</span><br></pre></td></tr></table></div></figure>
 
+        <h3><span id="34-在容器中加速安装软件">
+          3.4、在容器中加速安装软件</span></h3>
+      <blockquote>
+<p>如果你想在容器中加速安装软件，在创建容器时通过 <code>--env</code>指定代理</p>
+</blockquote>
+<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">docker run -itd \</span><br><span class="line">--<span class="built_in">env</span> HTTPS_PROXY=<span class="string">&quot;http://192.168.1.3:1080&quot;</span> \</span><br><span class="line">--<span class="built_in">env</span> HTTP_PROXY=<span class="string">&quot;http://192.168.1.3:1080&quot;</span> \</span><br><span class="line">--name <span class="built_in">test</span> \</span><br><span class="line">my_image:tag</span><br></pre></td></tr></table></div></figure>
+<blockquote>
+<p>或者在进入容器后，通过 <code>export</code>指定代理</p>
+</blockquote>
+<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> HTTP_PROXY=<span class="string">&quot;http://192.168.1.3:1080&quot;</span> HTTPS_PROXY=<span class="string">&quot;http://192.168.1.3:1080&quot;</span></span><br></pre></td></tr></table></div></figure>
+
+<blockquote>
+<p>设置代理，需要注意的知识点</p>
+</blockquote>
+<blockquote>
+<blockquote>
+<p>如果变量名只有大写的 <code>HTTP_PROXY</code> <code>HTTPS_PROXY</code><br>可以加速安装软件，使用代理<br>执行 <code>curl myip.ipip.net</code><br>返回的是家中宽带的ip（移动&#x2F;联通&#x2F;电信）<br>当前 IP：x.x.x.x  来自于：中国 移动</p>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<p>如果变量名只有小写的 <code>http_proxy</code> <code>https_proxy</code><br>无法加速安装软件，没有使用代理<br>执行 <code>curl myip.ipip.net</code><br>返回的是服务端的公网ip<br>当前 IP：189.28.18.198  来自于：美国 加利福尼亚州 洛杉矶</p>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>所以，设置代理时，最好把大小写代理名全都设置上</p>
+</blockquote>
 
         <h3><span id="4-让-docker-代理配置生效">
           4. 让 docker 代理配置生效</span></h3>
