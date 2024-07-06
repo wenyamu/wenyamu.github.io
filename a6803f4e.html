@@ -6,7 +6,7 @@
 <meta property="og:description" content="Shadowsocks-libev 是一个轻量级安全 SOCKS5 代理，适用于嵌入式设备和低端设备。https:&#x2F;&#x2F;github.com&#x2F;shadowsocks&#x2F;shadowsocks-libev                     为什么要写这篇文章        我有一个香橙派，在下载 docker 镜像时，国内镜像源不稳定，用阿里云的容器加速器，个人免费版下载的镜像又很旧，跟不上官方的">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2024-06-30T14:42:00.000Z">
-<meta property="article:modified_time" content="2024-07-06T06:50:59.996Z">
+<meta property="article:modified_time" content="2024-07-06T07:07:48.136Z">
 <meta property="article:author" content="689">
 <meta property="article:tag" content="docker">
 <meta property="article:tag" content="shadowsocks">
@@ -47,11 +47,8 @@ window.CONFIG = CONFIG;</script></head><body><div class="container" id="containe
 <span id="more"></span>
 
 
-        <h2><span id="一-服务端">
-          一、服务端</span></h2>
-      
-        <h3><span id="linux-服务端debian-amd64">
-          linux 服务端（debian amd64）</span></h3>
+        <h2><span id="一-linux-服务端debian-amd64">
+          一、linux 服务端（debian amd64）</span></h2>
       <blockquote>
 <p>安装 shadowsocks-libev</p>
 </blockquote>
@@ -86,11 +83,8 @@ window.CONFIG = CONFIG;</script></head><body><div class="container" id="containe
 </blockquote>
 <figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">iptables -I INPUT -p tcp --dport 8388 -j ACCEPT</span><br><span class="line">iptables -I INPUT -p udp --dport 8388 -j ACCEPT</span><br><span class="line"><span class="comment"># 保存规则，不然重启后开放的端口会失效</span></span><br><span class="line">iptables-save &gt; /etc/iptables.up.rules</span><br><span class="line"><span class="comment"># 查看 8388 端口</span></span><br><span class="line">iptables -L | grep 8388</span><br></pre></td></tr></table></div></figure>
 
-        <h2><span id="二-linux-客户端">
-          二、linux 客户端</span></h2>
-      
-        <h3><span id="香橙派debian-arm64">
-          香橙派（debian arm64）</span></h3>
+        <h2><span id="二-linux-客户端代理香橙派-debian-arm64">
+          二、linux 客户端代理（香橙派 debian arm64）</span></h2>
       
         <h3><span id="1-安装-shadowsocks-libev">
           1、安装 shadowsocks-libev</span></h3>
@@ -101,8 +95,23 @@ window.CONFIG = CONFIG;</script></head><body><div class="container" id="containe
 </blockquote>
 <figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 停止掉默认运行的 ss-server</span></span><br><span class="line">systemctl stop shadowsocks-libev.service</span><br><span class="line"><span class="comment"># 禁用开机自启</span></span><br><span class="line">systemctl <span class="built_in">disable</span> shadowsocks-libev.service</span><br></pre></td></tr></table></div></figure>
 
-        <h3><span id="2-安装-privoxy">
-          2、安装 privoxy</span></h3>
+        <h3><span id="2-启动-ss-local-客户端">
+          2、启动 <code>ss-local</code> 客户端</span></h3>
+      <blockquote>
+<p>也可以使用配置文件启动（与服务端的参数和启动方式一样）</p>
+</blockquote>
+
+    <div class="note-plugin success">
+      <span class="note-plugin__icon note-plugin__icon--success">
+              <i class="fas fa-check-circle"></i>
+            </span>
+      <p><strong>参数说明</strong><br><code>-s &quot;189.28.18.198&quot;</code> 远程服务器ip（服务端的公网ip）<br><code>-p 8388</code> 服务器端口<br><code>-l 1080</code> 本地端口<br><code>-m &quot;aes-256-gcm&quot;</code> 加密<br><code>-k &quot;password&quot;</code> 密码<br><code>--fast-open</code> 使用TCP Fast Open扩展</p>
+    </div>
+  
+<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">/usr/bin/ss-local \</span><br><span class="line">  -s <span class="string">&quot;189.28.18.198&quot;</span> \</span><br><span class="line">  -p 8388 \</span><br><span class="line">  -l 1080 \</span><br><span class="line">  -m <span class="string">&quot;aes-256-gcm&quot;</span> \</span><br><span class="line">  -k <span class="string">&quot;password&quot;</span> \</span><br><span class="line">  --fast-open</span><br></pre></td></tr></table></div></figure>
+
+        <h3><span id="3-安装-privoxy">
+          3、安装 privoxy</span></h3>
       
     <div class="note-plugin info">
       <span class="note-plugin__icon note-plugin__icon--info">
@@ -140,28 +149,12 @@ window.CONFIG = CONFIG;</script></head><body><div class="container" id="containe
 <figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl restart privoxy</span><br></pre></td></tr></table></div></figure>
 
 
-        <h3><span id="3-加速下载镜像-docker-代理配置">
-          3、加速下载镜像 docker 代理配置</span></h3>
+        <h3><span id="4-加速下载镜像-docker-代理配置">
+          4、加速下载镜像 docker 代理配置</span></h3>
       <blockquote>
 <p>适用于直接下载<code>docker pull</code>和创建容器时的自动下载<code>docker run</code></p>
 </blockquote>
 <figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">sudo <span class="built_in">mkdir</span> -p /etc/systemd/system/docker.service.d</span><br><span class="line">sudo <span class="built_in">tee</span> /etc/systemd/system/docker.service.d/http-proxy.conf &lt;&lt; <span class="string">EOF</span></span><br><span class="line"><span class="string">[Service]</span></span><br><span class="line"><span class="string">Environment=&quot;HTTP_PROXY=http://127.0.0.1:8118&quot;</span></span><br><span class="line"><span class="string">Environment=&quot;HTTPS_PROXY=http://127.0.0.1:8118&quot;</span></span><br><span class="line"><span class="string"># 不使用代理的地址</span></span><br><span class="line"><span class="string">Environment=&quot;NO_PROXY=localhost,127.0.0.1&quot;</span></span><br><span class="line"><span class="string">EOF</span></span><br><span class="line">systemctl daemon-reload</span><br><span class="line">systemctl restart docker</span><br></pre></td></tr></table></div></figure>
-
-
-        <h3><span id="4-启动-ss-local-客户端">
-          4、启动 <code>ss-local</code> 客户端</span></h3>
-      <blockquote>
-<p>也可以使用配置文件启动（与服务端的参数和启动方式一样）</p>
-</blockquote>
-
-    <div class="note-plugin success">
-      <span class="note-plugin__icon note-plugin__icon--success">
-              <i class="fas fa-check-circle"></i>
-            </span>
-      <p><strong>参数说明</strong><br><code>-s &quot;189.28.18.198&quot;</code> 远程服务器ip（服务端的公网ip）<br><code>-p 8388</code> 服务器端口<br><code>-l 1080</code> 本地端口<br><code>-m &quot;aes-256-gcm&quot;</code> 加密<br><code>-k &quot;password&quot;</code> 密码<br><code>--fast-open</code> 使用TCP Fast Open扩展</p>
-    </div>
-  
-<figure class="highlight bash"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">/usr/bin/ss-local \</span><br><span class="line">  -s <span class="string">&quot;189.28.18.198&quot;</span> \</span><br><span class="line">  -p 8388 \</span><br><span class="line">  -l 1080 \</span><br><span class="line">  -m <span class="string">&quot;aes-256-gcm&quot;</span> \</span><br><span class="line">  -k <span class="string">&quot;password&quot;</span> \</span><br><span class="line">  --fast-open</span><br></pre></td></tr></table></div></figure>
 
 
         <h3><span id="5-使用方法">
@@ -202,8 +195,8 @@ window.CONFIG = CONFIG;</script></head><body><div class="container" id="containe
 <figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">docker run -itd \</span><br><span class="line">--env HTTPS_PROXY=&quot;http://192.168.1.121:8118&quot; \</span><br><span class="line">--env HTTP_PROXY=&quot;http://192.168.1.121:8118&quot; \</span><br><span class="line">--name test \</span><br><span class="line">my_image:tag</span><br></pre></td></tr></table></div></figure>
 
 
-        <h2><span id="三-windows-客户端">
-          三、windows 客户端</span></h2>
+        <h2><span id="三-windows-客户端代理pc-win10-x64">
+          三、windows 客户端代理(PC win10 x64)</span></h2>
       
     <div class="note-plugin info">
       <span class="note-plugin__icon note-plugin__icon--info">
