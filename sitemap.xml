@@ -2,18 +2,18 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://www.689.im/a6803f4e.html</loc>
+    <loc>https://www.689.im/17c7b154.html</loc>
     
-    <lastmod>2024-07-12</lastmod>
+    <lastmod>2024-07-13</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://www.689.im/17c7b154.html</loc>
+    <loc>https://www.689.im/a6803f4e.html</loc>
     
-    <lastmod>2024-07-10</lastmod>
+    <lastmod>2024-07-12</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -274,7 +274,7 @@
 
   <url>
     <loc>https://www.689.im/</loc>
-    <lastmod>2024-07-12</lastmod>
+    <lastmod>2024-07-13</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -282,154 +282,154 @@
   
   <url>
     <loc>https://www.689.im/tags/docker/index.html</loc>
-    <lastmod>2024-07-12</lastmod>
+    <lastmod>2024-07-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://www.689.im/tags/portainer/index.html</loc>
-    <lastmod>2024-07-12</lastmod>
+    <lastmod>2024-07-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://www.689.im/tags/wireguard/index.html</loc>
-    <lastmod>2024-07-12</lastmod>
+    <lastmod>2024-07-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://www.689.im/tags/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/index.html</loc>
-    <lastmod>2024-07-12</lastmod>
+    <lastmod>2024-07-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://www.689.im/tags/ssl/index.html</loc>
-    <lastmod>2024-07-12</lastmod>
+    <lastmod>2024-07-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://www.689.im/tags/https/index.html</loc>
-    <lastmod>2024-07-12</lastmod>
+    <lastmod>2024-07-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://www.689.im/tags/slim/index.html</loc>
-    <lastmod>2024-07-12</lastmod>
+    <lastmod>2024-07-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://www.689.im/tags/git/index.html</loc>
-    <lastmod>2024-07-12</lastmod>
+    <lastmod>2024-07-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://www.689.im/tags/shadowsocks/index.html</loc>
-    <lastmod>2024-07-12</lastmod>
+    <lastmod>2024-07-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://www.689.im/tags/ssh/index.html</loc>
-    <lastmod>2024-07-12</lastmod>
+    <lastmod>2024-07-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://www.689.im/tags/pm2/index.html</loc>
-    <lastmod>2024-07-12</lastmod>
+    <lastmod>2024-07-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://www.689.im/tags/openssl/index.html</loc>
-    <lastmod>2024-07-12</lastmod>
+    <lastmod>2024-07-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://www.689.im/tags/python/index.html</loc>
-    <lastmod>2024-07-12</lastmod>
+    <lastmod>2024-07-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://www.689.im/tags/sync/index.html</loc>
-    <lastmod>2024-07-12</lastmod>
+    <lastmod>2024-07-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://www.689.im/tags/rsync/index.html</loc>
-    <lastmod>2024-07-12</lastmod>
+    <lastmod>2024-07-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://www.689.im/tags/sersync/index.html</loc>
-    <lastmod>2024-07-12</lastmod>
+    <lastmod>2024-07-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://www.689.im/tags/flask/index.html</loc>
-    <lastmod>2024-07-12</lastmod>
+    <lastmod>2024-07-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://www.689.im/tags/supervisor/index.html</loc>
-    <lastmod>2024-07-12</lastmod>
+    <lastmod>2024-07-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://www.689.im/tags/gunicorn/index.html</loc>
-    <lastmod>2024-07-12</lastmod>
+    <lastmod>2024-07-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://www.689.im/tags/%E9%A6%99%E6%A9%99%E6%B4%BE/index.html</loc>
-    <lastmod>2024-07-12</lastmod>
+    <lastmod>2024-07-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://www.689.im/tags/%E6%A0%91%E8%8E%93%E6%B4%BE/index.html</loc>
-    <lastmod>2024-07-12</lastmod>
+    <lastmod>2024-07-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://www.689.im/tags/linux-%E5%BC%80%E5%8F%91%E6%9D%BF/index.html</loc>
-    <lastmod>2024-07-12</lastmod>
+    <lastmod>2024-07-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
@@ -438,42 +438,42 @@
   
   <url>
     <loc>https://www.689.im/categories/linux/index.html</loc>
-    <lastmod>2024-07-12</lastmod>
+    <lastmod>2024-07-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://www.689.im/categories/docker/index.html</loc>
-    <lastmod>2024-07-12</lastmod>
+    <lastmod>2024-07-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://www.689.im/categories/frp/index.html</loc>
-    <lastmod>2024-07-12</lastmod>
+    <lastmod>2024-07-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://www.689.im/categories/node/index.html</loc>
-    <lastmod>2024-07-12</lastmod>
+    <lastmod>2024-07-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://www.689.im/categories/python/index.html</loc>
-    <lastmod>2024-07-12</lastmod>
+    <lastmod>2024-07-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://www.689.im/categories/supervisor/index.html</loc>
-    <lastmod>2024-07-12</lastmod>
+    <lastmod>2024-07-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
